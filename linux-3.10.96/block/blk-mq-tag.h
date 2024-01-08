@@ -2,7 +2,7 @@
 #define INT_BLK_MQ_TAG_H
 
 #include "blk-mq.h"
-
+  
 /*
  * Tag address space map.
  */
@@ -11,42 +11,42 @@ struct blk_mq_tags;
 #else
 
 //nvme_dev_add->blk_mq_alloc_tag_set->blk_mq_alloc_rq_maps->__blk_mq_alloc_rq_maps->__blk_mq_alloc_rq_map->blk_mq_alloc_rq_map
-//..->blk_mq_init_tags£¬ÖĞ·ÖÅäblk_mq_tags£¬ÉèÖÃÆä³ÉÔ±static_rqs¡¢rqs¡¢nr_tags¡¢nr_reserved_tags
+//..->blk_mq_init_tagsï¼Œä¸­åˆ†é…blk_mq_tagsï¼Œè®¾ç½®å…¶æˆå‘˜static_rqsã€rqsã€nr_tagsã€nr_reserved_tags
 
-//Ã¿¸öÓ²¼ş¶ÓÁĞ¶ÔÓ¦Ò»¸öblk_mq_tags£¬Ó²¼ş¶ÓÁĞ½á¹¹ÊÇblk_mq_hw_ctx£¬¶şÕß¶¼´ú±íÓ²¼ş¶ÓÁĞ°É£¬µ«ÊÇÒâÒå²»Ò»Ñù£¬blk_mq_hw_ctx´ÓÕûÀíÉÏÃèÊö
-//Ó²¼ş¶ÓÁĞ£¬blk_mq_tagsÖ÷ÒªÓÃÓÚ´ÓÕâÀïÈ¡³örequest°É,ÊÇµÄ£¬bio×ª»»³ÉreqÊ±£¬¾ÍÊÇ´Óblk_mq_tagsµÄstatic_rqs[]Êı×é·ÖÅä¿ÕÏĞµÄreq°É¡£
-//blk_mq_hw_ctx½á¹¹µÄ³ÉÔ±blk_mq_tag_setµÄtags[]Ö¸ÕëÊı×é±£´æÃ¿¸öÓ²¼ş¶ÓÁĞ¶ÀÓĞµÄblk_mq_tags
+//æ¯ä¸ªç¡¬ä»¶é˜Ÿåˆ—å¯¹åº”ä¸€ä¸ªblk_mq_tagsï¼Œç¡¬ä»¶é˜Ÿåˆ—ç»“æ„æ˜¯blk_mq_hw_ctxï¼ŒäºŒè€…éƒ½ä»£è¡¨ç¡¬ä»¶é˜Ÿåˆ—å§ï¼Œä½†æ˜¯æ„ä¹‰ä¸ä¸€æ ·ï¼Œblk_mq_hw_ctxä»æ•´ç†ä¸Šæè¿°
+//ç¡¬ä»¶é˜Ÿåˆ—ï¼Œblk_mq_tagsä¸»è¦ç”¨äºä»è¿™é‡Œå–å‡ºrequestå§,æ˜¯çš„ï¼Œbioè½¬æ¢æˆreqæ—¶ï¼Œå°±æ˜¯ä»blk_mq_tagsçš„static_rqs[]æ•°ç»„åˆ†é…ç©ºé—²çš„reqå§ã€‚
+//blk_mq_hw_ctxç»“æ„çš„æˆå‘˜blk_mq_tag_setçš„tags[]æŒ‡é’ˆæ•°ç»„ä¿å­˜æ¯ä¸ªç¡¬ä»¶é˜Ÿåˆ—ç‹¬æœ‰çš„blk_mq_tags
 struct blk_mq_tags {
-	unsigned int nr_tags;//À´×Ôset->queue_depth£¬Ò»¸öÓ²¼ş¶ÓÁĞµÄ¶ÓÁĞÉî¶È£¬¼ûblk_mq_init_tags()
+	unsigned int nr_tags;//æ¥è‡ªset->queue_depthï¼Œä¸€ä¸ªç¡¬ä»¶é˜Ÿåˆ—çš„é˜Ÿåˆ—æ·±åº¦ï¼Œè§blk_mq_init_tags()
 	
-	//static_rqs[]Àï¿ÕÏĞµÄrequestµÄÊı×éÏÂ±êµÄÆ«ÒÆ£¬¼ûblk_mq_get_tag()¡£ÔÙÉîÈëÒ»²½£¬blk_mq_get_driver_tag->blk_mq_tag_is_reserved£¬ºÃÏñ
-	//nr_reserved_tagsÊÇÔ¤ÁôµÄtag×ÜÊı£¬±ÈÈç£¬static_rqs[]Êı×é¹²ÓĞ100¸ö³ÉÔ±£¬nr_reserved_tagsÊÇ70£¬ÄÇ¾ÍÊÇÔ¤Áô70¸ö£¬Ô¤ÁôµÄ·ÖÅäÍêÁË£¬ÄÇ¾Í´Ó
-	//Ê£ÓàµÄ30¸ö·ÖÅä?????ÕâĞ©reqµÄÏÂ±êÊÇ70+0/1/2/3µÈ¡£static_rqs[tag]Êı×éÏÂ±êÓÃtag±äÁ¿±íÊ¾£¬Ò»¸öreqÒ»¸ötag£¬ºÜ¹Ø¼ü!!!!!
-	unsigned int nr_reserved_tags;//blk_mq_init_tags()ÖĞ·ÖÅä
+	//static_rqs[]é‡Œç©ºé—²çš„requestçš„æ•°ç»„ä¸‹æ ‡çš„åç§»ï¼Œè§blk_mq_get_tag()ã€‚å†æ·±å…¥ä¸€æ­¥ï¼Œblk_mq_get_driver_tag->blk_mq_tag_is_reservedï¼Œå¥½åƒ
+	//nr_reserved_tagsæ˜¯é¢„ç•™çš„tagæ€»æ•°ï¼Œæ¯”å¦‚ï¼Œstatic_rqs[]æ•°ç»„å…±æœ‰100ä¸ªæˆå‘˜ï¼Œnr_reserved_tagsæ˜¯70ï¼Œé‚£å°±æ˜¯é¢„ç•™70ä¸ªï¼Œé¢„ç•™çš„åˆ†é…å®Œäº†ï¼Œé‚£å°±ä»
+	//å‰©ä½™çš„30ä¸ªåˆ†é…?????è¿™äº›reqçš„ä¸‹æ ‡æ˜¯70+0/1/2/3ç­‰ã€‚static_rqs[tag]æ•°ç»„ä¸‹æ ‡ç”¨tagå˜é‡è¡¨ç¤ºï¼Œä¸€ä¸ªreqä¸€ä¸ªtagï¼Œå¾ˆå…³é”®!!!!!
+	unsigned int nr_reserved_tags;//blk_mq_init_tags()ä¸­åˆ†é…
 
 	atomic_t active_queues;
     
-    //Õâ¸öbitmap_tags£¬Ó¦¸ÃÓÃÀ´±êÊ¶static_rqs[]Êı×éÀïÄÄ¸örequest±»·ÖÅäÊ¹ÓÃÁË£¬¿ÉÒÔÀí½â³ÉÒ»¸öbitÎ»0/1±êÊ¶¸ÃrequestÊÇ·ñ±»·ÖÅäÁË
-    //blk_mq_put_tagÈ¥³ıtag£¬blk_mq_get_tag()»ñÈ¡tag
-	struct sbitmap_queue bitmap_tags;//blk_mq_init_tags->blk_mq_init_bitmap_tags ÖĞ·ÖÅä¡£ÎŞµ÷¶ÈÆ÷µÄreq·ÖÅätagÊ¹ÓÃ¡£
-	struct sbitmap_queue breserved_tags;//blk_mq_init_tags->blk_mq_init_bitmap_tags ÖĞ·ÖÅä¡£Ê¹ÓÃµ÷¶ÈÆ÷µÄreq·ÖÅätagÊ¹ÓÃ¡£
+    //è¿™ä¸ªbitmap_tagsï¼Œåº”è¯¥ç”¨æ¥æ ‡è¯†static_rqs[]æ•°ç»„é‡Œå“ªä¸ªrequestè¢«åˆ†é…ä½¿ç”¨äº†ï¼Œå¯ä»¥ç†è§£æˆä¸€ä¸ªbitä½0/1æ ‡è¯†è¯¥requestæ˜¯å¦è¢«åˆ†é…äº†
+    //blk_mq_put_tagå»é™¤tagï¼Œblk_mq_get_tag()è·å–tag
+	struct sbitmap_queue bitmap_tags;//blk_mq_init_tags->blk_mq_init_bitmap_tags ä¸­åˆ†é…ã€‚æ— è°ƒåº¦å™¨çš„reqåˆ†é…tagä½¿ç”¨ã€‚
+	struct sbitmap_queue breserved_tags;//blk_mq_init_tags->blk_mq_init_bitmap_tags ä¸­åˆ†é…ã€‚ä½¿ç”¨è°ƒåº¦å™¨çš„reqåˆ†é…tagä½¿ç”¨ã€‚
 
-/*ÔÚ·ÖÅäreqÊ±£¬Òª´Óblk_mq_tagsÀï·ÖÅäÒ»¸ötag£¬¼ûblk_mq_alloc_rqs¡£Æô¶¯reqÓ²¼ş´«ÊäÇ°£¬Ò²Òª´Óblk_mq_tagsÀï·ÖÅäÒ»¸ö¿ÕÏĞtag£¬¼û
-blk_mq_get_driver_tag¡£¿´×îºó¶¼µ÷ÓÃblk_mq_get_tag´Óbitmap_tagsµÃµ½Ò»¸ö¿ÕÏĞbit£¬´ú±íµÄ¿ÕÏĞµÄtag¡£ÓĞ±ØÒªÖ´ĞĞÁ½´ÎÂğ£¬É¶ÒâË¼
+/*åœ¨åˆ†é…reqæ—¶ï¼Œè¦ä»blk_mq_tagsé‡Œåˆ†é…ä¸€ä¸ªtagï¼Œè§blk_mq_alloc_rqsã€‚å¯åŠ¨reqç¡¬ä»¶ä¼ è¾“å‰ï¼Œä¹Ÿè¦ä»blk_mq_tagsé‡Œåˆ†é…ä¸€ä¸ªç©ºé—²tagï¼Œè§
+blk_mq_get_driver_tagã€‚çœ‹æœ€åéƒ½è°ƒç”¨blk_mq_get_tagä»bitmap_tagså¾—åˆ°ä¸€ä¸ªç©ºé—²bitï¼Œä»£è¡¨çš„ç©ºé—²çš„tagã€‚æœ‰å¿…è¦æ‰§è¡Œä¸¤æ¬¡å—ï¼Œå•¥æ„æ€
 ?????????????????????????????*/
 
-    //ÔÚblk_mq_get_driver_tag()->blk_mq_get_tag£¬hctx->  tags->rqs[req->tag]=req£¬reqÀ´×Ô½ø³ÌµÄplug->mq_listÁ´±í£¬
-    //¸³Öµºó¾Í½¨Á¢ÁËreqÓëÓ²¼ş¶ÓÁĞµÄ¹ØÏµ¡£ÕâÀï±£´æ´Óstatic_rqs·ÖÅäµÃµ½µÄreq¡£
-	struct request **rqs;//ÔÚ__blk_mq_alloc_request()ÕâÀï±ß±£´æµÄreqÊÇ¸Õ´Óstatic_rqs[]µÃµ½µÄ¿ÕÏĞµÄreq
+    //åœ¨blk_mq_get_driver_tag()->blk_mq_get_tagï¼Œhctx->  tags->rqs[req->tag]=reqï¼Œreqæ¥è‡ªè¿›ç¨‹çš„plug->mq_listé“¾è¡¨ï¼Œ
+    //èµ‹å€¼åå°±å»ºç«‹äº†reqä¸ç¡¬ä»¶é˜Ÿåˆ—çš„å…³ç³»ã€‚è¿™é‡Œä¿å­˜ä»static_rqsåˆ†é…å¾—åˆ°çš„reqã€‚
+	struct request **rqs;//åœ¨__blk_mq_alloc_request()è¿™é‡Œè¾¹ä¿å­˜çš„reqæ˜¯åˆšä»static_rqs[]å¾—åˆ°çš„ç©ºé—²çš„req
 
-    /*static_rqs[]ÀïµÄreq×ÜÊıÓ²¼ş¶ÓÁĞÍ¬Ê±×î¶àÖ§³ÖµÄ£¬bio×ªreqÊ±¶¼Òª´Óstatic_rqs[]³¢ÊÔµÃµ½Ò»¸ö¿ÕÏĞµÄ£¬µÃ²»µ½¾ÍÒªĞİÃßµÈ´ı
-     nvmeÓ²¼ş´«ÊäÒÑÓĞµÄreq£¬´«ÊäÍê³ÉºóÊÍ·Åµô£¬static_rqs[]¾ÍÓĞ¿ÕÏĞµÄreq¿ÉÒÔ·ÖÅäÁË¡£¼ûblk_mq_get_tag()
+    /*static_rqs[]é‡Œçš„reqæ€»æ•°ç¡¬ä»¶é˜Ÿåˆ—åŒæ—¶æœ€å¤šæ”¯æŒçš„ï¼Œbioè½¬reqæ—¶éƒ½è¦ä»static_rqs[]å°è¯•å¾—åˆ°ä¸€ä¸ªç©ºé—²çš„ï¼Œå¾—ä¸åˆ°å°±è¦ä¼‘çœ ç­‰å¾…
+     nvmeç¡¬ä»¶ä¼ è¾“å·²æœ‰çš„reqï¼Œä¼ è¾“å®Œæˆåé‡Šæ”¾æ‰ï¼Œstatic_rqs[]å°±æœ‰ç©ºé—²çš„reqå¯ä»¥åˆ†é…äº†ã€‚è§blk_mq_get_tag()
      */
-	//static_rqsÖ¸ÕëÊı×é£¬¸ÃÊı×éÒ»¸ö³ÉÔ±±£´æÃ¿Ò»²ã¶ÓÁĞÉî¶È¶ÔÓ¦µÄrequest½á¹¹Ê×µØÖ·¡£Ó²¼ş¶ÓÁĞÃ¿Ò»²ãÉî¶È£¬¶ÔÓ¦Ò»¸örequest½á¹¹¡£
-	//·ÖÅä¹ı³Ì¼û__blk_mq_alloc_rq_map->blk_mq_alloc_rqs¡£Ê¹ÓÃ¹ı³Ì¼ûblk_mq_get_tag(),¸üÏêÏ¸¼ûÉÏ±ßnr_reserved_tags±äÁ¿µÄ×¢ÊÍ¡£
+	//static_rqsæŒ‡é’ˆæ•°ç»„ï¼Œè¯¥æ•°ç»„ä¸€ä¸ªæˆå‘˜ä¿å­˜æ¯ä¸€å±‚é˜Ÿåˆ—æ·±åº¦å¯¹åº”çš„requestç»“æ„é¦–åœ°å€ã€‚ç¡¬ä»¶é˜Ÿåˆ—æ¯ä¸€å±‚æ·±åº¦ï¼Œå¯¹åº”ä¸€ä¸ªrequestç»“æ„ã€‚
+	//åˆ†é…è¿‡ç¨‹è§__blk_mq_alloc_rq_map->blk_mq_alloc_rqsã€‚ä½¿ç”¨è¿‡ç¨‹è§blk_mq_get_tag(),æ›´è¯¦ç»†è§ä¸Šè¾¹nr_reserved_tagså˜é‡çš„æ³¨é‡Šã€‚
 	struct request **static_rqs;
 
-	//blk_mq_alloc_rqs()ÖĞ·ÖÅäpage,È»ºóÌí¼Óµ½page_list£¬
+	//blk_mq_alloc_rqs()ä¸­åˆ†é…page,ç„¶åæ·»åŠ åˆ°page_listï¼Œ
 	struct list_head page_list;
 };
 #endif
@@ -90,11 +90,11 @@ extern void __blk_mq_tag_idle(struct blk_mq_hw_ctx *);
 
 static inline bool blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
 {
-    //Ã»ÓĞÉèÖÃ¹²Ïítag±êÖ¾·µ»Øfalse
+    //æ²¡æœ‰è®¾ç½®å…±äº«tagæ ‡å¿—è¿”å›false
 	if (!(hctx->flags & BLK_MQ_F_TAG_SHARED))
 		return false;
     
-    //·ñÔò·µ»Øtrue
+    //å¦åˆ™è¿”å›true
 	return __blk_mq_tag_busy(hctx);
 }
 
