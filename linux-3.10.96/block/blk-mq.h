@@ -5,28 +5,28 @@
 
 #include "blk-stat.h"
 #include "blk-mq-tag.h"
-
+   
 struct blk_mq_tag_set;
 
-//ÃèÊöÈí¼ş¶ÓÁĞ£¬Ã¿¸öCPUÒ»¸ö
+//æè¿°è½¯ä»¶é˜Ÿåˆ—ï¼Œæ¯ä¸ªCPUä¸€ä¸ª
 struct blk_mq_ctx {
-	//struct {----Ó°Ïì´úÂëÔÄ¶Á£¬ÏÈ×¢ÊÍµô
-		spinlock_t		lock;//Èí¼ş¶ÓÁĞËø£¬Ã¿¸öCPU¶ÀÓĞ£¬¶à½ø³Ì¶ÁĞ´ÎÄ¼ş£¬±ÜÃâ¶àºË¾ºÕùËø
+	//struct {----å½±å“ä»£ç é˜…è¯»ï¼Œå…ˆæ³¨é‡Šæ‰
+		spinlock_t		lock;//è½¯ä»¶é˜Ÿåˆ—é”ï¼Œæ¯ä¸ªCPUç‹¬æœ‰ï¼Œå¤šè¿›ç¨‹è¯»å†™æ–‡ä»¶ï¼Œé¿å…å¤šæ ¸ç«äº‰é”
 		
- //blk_mq_make_request->blk_mq_merge_bio->blk_mq_attempt_merge£¬¾ÍÊÇÒÀ´Î±éÀúÈí¼ş¶ÓÁĞctx->rq_listÁ´±íÉÏµÄreq£¬È»ºó¿´reqÄÜ·ñÓëbioÇ°Ïî»òÕßºóÏîºÏ²¢
- //blk_mq_sched_insert_requests->blk_mq_insert_requests°Ñµ±Ç°½ø³ÌµÄplugÁ´±íÉÏµÄreq²åÈëµ½Èí¼ş¶ÓÁĞrq_listÉÏ£¬ÕâĞ©reqÃ²ËÆÊÇ
- //Ó²¼ş¶ÓÁĞÃ»ÓĞÀ´µÃ¼°´¦ÀíµÄÈëreq£¬ÄÑµÀÈí¼ş¶ÓÁĞ¾ÍÊÇ½ÓÅÌÓ²¼ş¶ÓÁĞÊ£ÏÂµÄÑ½
-        struct list_head	rq_list;//Èí¼ş¶ÓÁĞ´æ·ÅreqµÄÁ´±í
+ //blk_mq_make_request->blk_mq_merge_bio->blk_mq_attempt_mergeï¼Œå°±æ˜¯ä¾æ¬¡éå†è½¯ä»¶é˜Ÿåˆ—ctx->rq_listé“¾è¡¨ä¸Šçš„reqï¼Œç„¶åçœ‹reqèƒ½å¦ä¸bioå‰é¡¹æˆ–è€…åé¡¹åˆå¹¶
+ //blk_mq_sched_insert_requests->blk_mq_insert_requestsæŠŠå½“å‰è¿›ç¨‹çš„plugé“¾è¡¨ä¸Šçš„reqæ’å…¥åˆ°è½¯ä»¶é˜Ÿåˆ—rq_listä¸Šï¼Œè¿™äº›reqè²Œä¼¼æ˜¯
+ //ç¡¬ä»¶é˜Ÿåˆ—æ²¡æœ‰æ¥å¾—åŠå¤„ç†çš„å…¥reqï¼Œéš¾é“è½¯ä»¶é˜Ÿåˆ—å°±æ˜¯æ¥ç›˜ç¡¬ä»¶é˜Ÿåˆ—å‰©ä¸‹çš„å‘€
+        struct list_head	rq_list;//è½¯ä»¶é˜Ÿåˆ—å­˜æ”¾reqçš„é“¾è¡¨
 	//}  ____cacheline_aligned_in_smp;
 
-    //Èí¼ş¶ÓÁĞ¶ÔÓ¦µÄCPU±àºÅ£¬¸ù¾İÕâ¸öCPU±àºÅÈ¥Ñ°ÕÒÓ²¼ş¶ÓÁĞ½á¹¹Ìå£¬¿´blk_mq_make_request->blk_mq_sched_bio_merge->__blk_mq_sched_bio_merge->blk_mq_map_queue
-    //blk_mq_init_cpu_queuesÒ²ÓĞ¸³Öµ
+    //è½¯ä»¶é˜Ÿåˆ—å¯¹åº”çš„CPUç¼–å·ï¼Œæ ¹æ®è¿™ä¸ªCPUç¼–å·å»å¯»æ‰¾ç¡¬ä»¶é˜Ÿåˆ—ç»“æ„ä½“ï¼Œçœ‹blk_mq_make_request->blk_mq_sched_bio_merge->__blk_mq_sched_bio_merge->blk_mq_map_queue
+    //blk_mq_init_cpu_queuesä¹Ÿæœ‰èµ‹å€¼
     unsigned int		cpu;
 
-    //Ó²¼ş¶ÓÁĞ¹ØÁªµÄµÚ¼¸¸öÈí¼ş¶ÓÁĞ¡£Ó²¼ş¶ÓÁĞÃ¿¹ØÁªÒ»¸öÈí¼ş¶ÓÁĞ£¬ÏÈindex_hw = hctx->nr_ctx£¬È»ºóhctx->ctxs[hctx->nr_ctx++] = ctx
-    //°ÑÈí¼ş¶ÓÁĞ½á¹¹±£´æµ½hctx->ctxs[hctx->nr_ctx++]£¬hctx->ctxs[]ÊÇÓ²¼ş¶ÓÁĞ±£´æÈí¼ş¶ÓÁĞ½á¹¹µÄÖ¸ÕëÊı×é¡£index_hw±íÊ¾Èí¼ş¶ÓÁĞ½á¹¹ÔÚ
-    //Ó²¼ş¶ÓÁĞhctx->ctxs[]Êı×éµÄ±£´æÎ»ÖÃ¡£Ò»¸öÓ²¼ş¶ÓÁĞ¿ÉÄÜ¶ÔÓ¦¶à¸öÈí¼ş¶ÓÁĞ£¬¹Êhctx->ctxs[]¿ÉÄÜ±£´æ¶à¸öÈí¼ş¶ÓÁĞ½á¹¹£¬×î¶àCPU¸öÊıÄÇÑù¡£
-    unsigned int		index_hw;//blk_mq_map_swqueue()ÖĞ¸³Öµ
+    //ç¡¬ä»¶é˜Ÿåˆ—å…³è”çš„ç¬¬å‡ ä¸ªè½¯ä»¶é˜Ÿåˆ—ã€‚ç¡¬ä»¶é˜Ÿåˆ—æ¯å…³è”ä¸€ä¸ªè½¯ä»¶é˜Ÿåˆ—ï¼Œå…ˆindex_hw = hctx->nr_ctxï¼Œç„¶åhctx->ctxs[hctx->nr_ctx++] = ctx
+    //æŠŠè½¯ä»¶é˜Ÿåˆ—ç»“æ„ä¿å­˜åˆ°hctx->ctxs[hctx->nr_ctx++]ï¼Œhctx->ctxs[]æ˜¯ç¡¬ä»¶é˜Ÿåˆ—ä¿å­˜è½¯ä»¶é˜Ÿåˆ—ç»“æ„çš„æŒ‡é’ˆæ•°ç»„ã€‚index_hwè¡¨ç¤ºè½¯ä»¶é˜Ÿåˆ—ç»“æ„åœ¨
+    //ç¡¬ä»¶é˜Ÿåˆ—hctx->ctxs[]æ•°ç»„çš„ä¿å­˜ä½ç½®ã€‚ä¸€ä¸ªç¡¬ä»¶é˜Ÿåˆ—å¯èƒ½å¯¹åº”å¤šä¸ªè½¯ä»¶é˜Ÿåˆ—ï¼Œæ•…hctx->ctxs[]å¯èƒ½ä¿å­˜å¤šä¸ªè½¯ä»¶é˜Ÿåˆ—ç»“æ„ï¼Œæœ€å¤šCPUä¸ªæ•°é‚£æ ·ã€‚
+    unsigned int		index_hw;//blk_mq_map_swqueue()ä¸­èµ‹å€¼
 
 	RH_KABI_DEPRECATE(unsigned int, ipi_redirect)
 
@@ -37,7 +37,7 @@ struct blk_mq_ctx {
 	/* incremented at completion time */
 	unsigned long		____cacheline_aligned_in_smp rq_completed[2];
 
-	struct request_queue	*queue;//´ÅÅÌÓ²¼şÎ¨Ò»µÄ¶ÓÁĞ£¬blk_mq_init_cpu_queuesÖĞ¸³Öµ
+	struct request_queue	*queue;//ç£ç›˜ç¡¬ä»¶å”¯ä¸€çš„é˜Ÿåˆ—ï¼Œblk_mq_init_cpu_queuesä¸­èµ‹å€¼
 	struct kobject		kobj;
 } ____cacheline_aligned_in_smp;
 
@@ -96,15 +96,15 @@ void blk_mq_try_issue_list_directly(struct blk_mq_hw_ctx *hctx,
  */
 int blk_mq_map_queues(struct blk_mq_tag_set *set);
 extern int blk_mq_hw_queue_to_node(unsigned int *map, unsigned int);
-//¸ù¾İCPU±àºÅÏÈ´Óq->mq_map[cpu]ÕÒµ½Ó²¼ş¶ÓÁĞ±àºÅ£¬ÔÙq->queue_hw_ctx[Ó²¼ş¶ÓÁĞ±àºÅ]·µ»ØÓ²¼ş¶ÓÁĞÎ¨Ò»µÄblk_mq_hw_ctx½á¹¹Ìå
-//Èç¹ûÓ²¼ş¶ÓÁĞÖ»ÓĞÒ»¸ö£¬ÄÇ×ÜÊÇ·µ»Ø0ºÅÓ²¼ş¶ÓÁĞµÄblk_mq_hw_ctx¡£Ã¿¸öCPU¶¼ÓĞÎ¨Ò»¶ÔÓ¦µÄÓ²¼ş¶ÓÁĞ£¬ÕâÔÚ³õÊ¼»¯Ê±¾ÍÒÑ¾­È·¶¨ÁË£¬
-//¿´blk_mq_update_queue_map()ÊÇÔõÃ´·ÖÅäCPUµÄÓ²¼ş¶ÓÁĞµÄ
-/*ºËĞÄÊÇ¸ù¾İÈí¼ş¶ÓÁĞËùÊôµÄCPU±àºÅ£¬È¡³ö¸ÃCPU¶ÔÓ¦µÄÓ²¼ş¶ÓÁĞ±àºÅ£¬×îºó´Óq->queue_hw_ctx[Ó²¼ş¶ÓÁĞ±àºÅ]È¡³öÓ²¼ş¶ÓÁĞ½á¹¹*/
+//æ ¹æ®CPUç¼–å·å…ˆä»q->mq_map[cpu]æ‰¾åˆ°ç¡¬ä»¶é˜Ÿåˆ—ç¼–å·ï¼Œå†q->queue_hw_ctx[ç¡¬ä»¶é˜Ÿåˆ—ç¼–å·]è¿”å›ç¡¬ä»¶é˜Ÿåˆ—å”¯ä¸€çš„blk_mq_hw_ctxç»“æ„ä½“
+//å¦‚æœç¡¬ä»¶é˜Ÿåˆ—åªæœ‰ä¸€ä¸ªï¼Œé‚£æ€»æ˜¯è¿”å›0å·ç¡¬ä»¶é˜Ÿåˆ—çš„blk_mq_hw_ctxã€‚æ¯ä¸ªCPUéƒ½æœ‰å”¯ä¸€å¯¹åº”çš„ç¡¬ä»¶é˜Ÿåˆ—ï¼Œè¿™åœ¨åˆå§‹åŒ–æ—¶å°±å·²ç»ç¡®å®šäº†ï¼Œ
+//çœ‹blk_mq_update_queue_map()æ˜¯æ€ä¹ˆåˆ†é…CPUçš„ç¡¬ä»¶é˜Ÿåˆ—çš„
+/*æ ¸å¿ƒæ˜¯æ ¹æ®è½¯ä»¶é˜Ÿåˆ—æ‰€å±çš„CPUç¼–å·ï¼Œå–å‡ºè¯¥CPUå¯¹åº”çš„ç¡¬ä»¶é˜Ÿåˆ—ç¼–å·ï¼Œæœ€åä»q->queue_hw_ctx[ç¡¬ä»¶é˜Ÿåˆ—ç¼–å·]å–å‡ºç¡¬ä»¶é˜Ÿåˆ—ç»“æ„*/
 static inline struct blk_mq_hw_ctx *blk_mq_map_queue(struct request_queue *q,
 		int cpu)
 {
-    //q->queue_hw_ctx[]Êı×é±£´æµÄÊÇÃ¿¸öÓ²¼ş¶ÓÁĞµÄblk_mq_hw_ctx½á¹¹ÌåÖ¸Õë£¬q->mq_map[cpu]±£´æµÄÊÇÓ²¼ş¶ÓÁĞ±àºÅ£¬
-    //ÕâÑù¾ÍÓĞÎÊÌâÁË£¬Èç¹ûÖ»ÓĞÒ»¸öÓ²¼ş¶ÓÁĞÔõÃ´°ì?q->mq_map[0~CPU¸öÊı-1]ÄÑµÀ¶¼ÊÇ0£¬¼´Ó²¼ş¶ÓÁĞ0±àºÅ£¬ÊÇµÄ£¬È«ÊÇ0£¬·µ»Øq->queue_hw_ctx[0]
+    //q->queue_hw_ctx[]æ•°ç»„ä¿å­˜çš„æ˜¯æ¯ä¸ªç¡¬ä»¶é˜Ÿåˆ—çš„blk_mq_hw_ctxç»“æ„ä½“æŒ‡é’ˆï¼Œq->mq_map[cpu]ä¿å­˜çš„æ˜¯ç¡¬ä»¶é˜Ÿåˆ—ç¼–å·ï¼Œ
+    //è¿™æ ·å°±æœ‰é—®é¢˜äº†ï¼Œå¦‚æœåªæœ‰ä¸€ä¸ªç¡¬ä»¶é˜Ÿåˆ—æ€ä¹ˆåŠ?q->mq_map[0~CPUä¸ªæ•°-1]éš¾é“éƒ½æ˜¯0ï¼Œå³ç¡¬ä»¶é˜Ÿåˆ—0ç¼–å·ï¼Œæ˜¯çš„ï¼Œå…¨æ˜¯0ï¼Œè¿”å›q->queue_hw_ctx[0]
 	return q->queue_hw_ctx[q->mq_map[cpu]];
 }
 
@@ -132,7 +132,7 @@ static inline struct blk_mq_ctx *__blk_mq_get_ctx(struct request_queue *q,
  * care about preemption, since we know the ctx's are persistent. This does
  * mean that we can't rely on ctx always matching the currently running CPU.
  */
-//´Óq->queue_ctxµÃµ½Ã¿¸öCPU×¨ÊôµÄÈí¼ş¶ÓÁĞ
+//ä»q->queue_ctxå¾—åˆ°æ¯ä¸ªCPUä¸“å±çš„è½¯ä»¶é˜Ÿåˆ—
 static inline struct blk_mq_ctx *blk_mq_get_ctx(struct request_queue *q)
 {
 	return __blk_mq_get_ctx(q, get_cpu());
@@ -146,21 +146,21 @@ static inline void blk_mq_put_ctx(struct blk_mq_ctx *ctx)
 struct blk_mq_alloc_data {
 	/* input parameter */
 	struct request_queue *q;
-	unsigned int flags;//blk_mq_sched_get_request()ÓĞµ÷¶ÈÆ÷ÉèÖÃBLK_MQ_REQ_INTERNAL£¬blk_mq_get_driver_tagÖĞÉèÖÃBLK_MQ_REQ_RESERVED
+	unsigned int flags;//blk_mq_sched_get_request()æœ‰è°ƒåº¦å™¨è®¾ç½®BLK_MQ_REQ_INTERNALï¼Œblk_mq_get_driver_tagä¸­è®¾ç½®BLK_MQ_REQ_RESERVED
 	unsigned int shallow_depth;
 
 	/* input & output parameter */
-	struct blk_mq_ctx *ctx;//Èí¼ş¶ÓÁĞ
-	struct blk_mq_hw_ctx *hctx;//Ó²¼ş¶ÓÁĞ
+	struct blk_mq_ctx *ctx;//è½¯ä»¶é˜Ÿåˆ—
+	struct blk_mq_hw_ctx *hctx;//ç¡¬ä»¶é˜Ÿåˆ—
 };
 
 static inline struct blk_mq_tags *blk_mq_tags_from_data(struct blk_mq_alloc_data *data)
 {
-    //ÓĞµ÷¶ÈÆ÷Ê±·µ»ØÓ²¼ş¶ÓÁĞµÄhctx->sched_tags
+    //æœ‰è°ƒåº¦å™¨æ—¶è¿”å›ç¡¬ä»¶é˜Ÿåˆ—çš„hctx->sched_tags
 	if (data->flags & BLK_MQ_REQ_INTERNAL)
 		return data->hctx->sched_tags;
     
-    //ÎŞµ÷¶ÈÆ÷Ê±·µ»ØÓ²¼ş¶ÓÁĞµÄhctx->tags
+    //æ— è°ƒåº¦å™¨æ—¶è¿”å›ç¡¬ä»¶é˜Ÿåˆ—çš„hctx->tags
 	return data->hctx->tags;
 }
 
@@ -188,7 +188,7 @@ static inline void blk_mq_put_dispatch_budget(struct blk_mq_hw_ctx *hctx)
 {
 	struct request_queue *q = hctx->queue;
 
-	if (q->mq_ops->aux_ops && q->mq_ops->aux_ops->put_budget)//nvmeÓ¦¸ÃÃ»ÓĞ
+	if (q->mq_ops->aux_ops && q->mq_ops->aux_ops->put_budget)//nvmeåº”è¯¥æ²¡æœ‰
 		q->mq_ops->aux_ops->put_budget(hctx);
 }
 
@@ -196,7 +196,7 @@ static inline bool blk_mq_get_dispatch_budget(struct blk_mq_hw_ctx *hctx)
 {
 	struct request_queue *q = hctx->queue;
 
-	if (q->mq_ops->aux_ops && q->mq_ops->aux_ops->get_budget)//nvmeÓ¦¸ÃÃ»ÓĞ
+	if (q->mq_ops->aux_ops && q->mq_ops->aux_ops->get_budget)//nvmeåº”è¯¥æ²¡æœ‰
 		return q->mq_ops->aux_ops->get_budget(hctx);
 	return true;
 }
@@ -204,9 +204,9 @@ static inline bool blk_mq_get_dispatch_budget(struct blk_mq_hw_ctx *hctx)
 static inline void __blk_mq_put_driver_tag(struct blk_mq_hw_ctx *hctx,
 					   struct request *rq)
 {
-    //tags->bitmap_tagsÖĞ°´ÕÕreq->tagÕâ¸ötag±àºÅÊÍ·Åtag
+    //tags->bitmap_tagsä¸­æŒ‰ç…§req->tagè¿™ä¸ªtagç¼–å·é‡Šæ”¾tag
 	blk_mq_put_tag(hctx, hctx->tags, rq->mq_ctx, rq->tag);
-    //rq->tagÖÃ-1
+    //rq->tagç½®-1
 	rq->tag = -1;
 
 	if (rq->cmd_flags & REQ_MQ_INFLIGHT) {
@@ -220,7 +220,7 @@ static inline void blk_mq_put_driver_tag_hctx(struct blk_mq_hw_ctx *hctx,
 {
 	if (rq->tag == -1 || rq_aux(rq)->internal_tag == -1)
 		return;
-    //tags->bitmap_tagsÖĞ°´ÕÕreq->tagÕâ¸ötag±àºÅÊÍ·Åtag
+    //tags->bitmap_tagsä¸­æŒ‰ç…§req->tagè¿™ä¸ªtagç¼–å·é‡Šæ”¾tag
 	__blk_mq_put_driver_tag(hctx, rq);
 }
 
@@ -230,9 +230,9 @@ static inline void blk_mq_put_driver_tag(struct request *rq)
 
 	if (rq->tag == -1 || rq_aux(rq)->internal_tag == -1)
 		return;
-    //¸ù¾İcpu±àºÅÕÒµ½Ó²¼ş¶ÓÁĞ
+    //æ ¹æ®cpuç¼–å·æ‰¾åˆ°ç¡¬ä»¶é˜Ÿåˆ—
 	hctx = blk_mq_map_queue(rq->q, rq->mq_ctx->cpu);
-    //tags->bitmap_tagsÖĞ°´ÕÕreq->tagÕâ¸ötag±àºÅÊÍ·Åtag
+    //tags->bitmap_tagsä¸­æŒ‰ç…§req->tagè¿™ä¸ªtagç¼–å·é‡Šæ”¾tag
 	__blk_mq_put_driver_tag(hctx, rq);
 }
 
