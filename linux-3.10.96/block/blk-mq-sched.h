@@ -1,6 +1,6 @@
 #ifndef BLK_MQ_SCHED_H
 #define BLK_MQ_SCHED_H
-
+  
 void blk_mq_sched_free_hctx_data(struct request_queue *q,
 				 void (*exit)(struct blk_mq_hw_ctx *));
 
@@ -35,8 +35,8 @@ void blk_mq_sched_exit_hctx(struct request_queue *q, struct blk_mq_hw_ctx *hctx,
 
 int blk_mq_sched_init(struct request_queue *q);
 
-//ÔÚIOµ÷¶ÈÆ÷¶ÓÁĞÀï²éÕÒÊÇ·ñÓĞ¿ÉÒÔºÏ²¢µÄreq£¬ÕÒµ½Ôò¿ÉÒÔbioºóÏî»òÇ°ÏîºÏ²¢µ½req£¬»¹»á´¥·¢¶ş´ÎºÏ²¢£¬»¹»á¶ÔºÏ²¢ºóµÄreqÔÚIOµ÷¶ÈËã·¨¶ÓÁĞÀïÖØĞÂÅÅĞò
-//Õâ¸öºÏ²¢¸úÈí¼ş¶ÓÁĞºÍÓ²¼ş¶ÓÁĞÃ»ÓĞ°ëÃ«Ç®µÄ¹ØÏµ°É
+//åœ¨IOè°ƒåº¦å™¨é˜Ÿåˆ—é‡ŒæŸ¥æ‰¾æ˜¯å¦æœ‰å¯ä»¥åˆå¹¶çš„reqï¼Œæ‰¾åˆ°åˆ™å¯ä»¥bioåé¡¹æˆ–å‰é¡¹åˆå¹¶åˆ°reqï¼Œè¿˜ä¼šè§¦å‘äºŒæ¬¡åˆå¹¶ï¼Œè¿˜ä¼šå¯¹åˆå¹¶åçš„reqåœ¨IOè°ƒåº¦ç®—æ³•é˜Ÿåˆ—é‡Œé‡æ–°æ’åº
+//è¿™ä¸ªåˆå¹¶è·Ÿè½¯ä»¶é˜Ÿåˆ—å’Œç¡¬ä»¶é˜Ÿåˆ—æ²¡æœ‰åŠæ¯›é’±çš„å…³ç³»å§
 static inline bool
 blk_mq_sched_bio_merge(struct request_queue *q, struct bio *bio)
 {
@@ -108,7 +108,7 @@ static inline bool blk_mq_sched_has_work(struct blk_mq_hw_ctx *hctx)
 
 	return false;
 }
-//²âÊÔhctx->stateÊÇ·ñÉèÖÃÁËBLK_MQ_S_SCHED_RESTARTÎ»
+//æµ‹è¯•hctx->stateæ˜¯å¦è®¾ç½®äº†BLK_MQ_S_SCHED_RESTARTä½
 static inline bool blk_mq_sched_needs_restart(struct blk_mq_hw_ctx *hctx)
 {
 	return test_bit(BLK_MQ_S_SCHED_RESTART, &hctx->state);
