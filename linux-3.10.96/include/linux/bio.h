@@ -19,7 +19,7 @@
  */
 #ifndef __LINUX_BIO_H
 #define __LINUX_BIO_H
-
+  
 #include <linux/highmem.h>
 #include <linux/mempool.h>
 #include <linux/ioprio.h>
@@ -63,8 +63,8 @@
  */
 #define bio_iovec_idx(bio, idx)	(&((bio)->bi_io_vec[(idx)]))
 #define bio_iovec(bio)		bio_iovec_idx((bio), (bio)->bi_idx)
-#define bio_page(bio)		bio_iovec((bio))->bv_page//bio¶ÔÓ¦µÄbhµÄÄÚ´æpage
-#define bio_offset(bio)		bio_iovec((bio))->bv_offset//Ó¦¸Ãbio¶ÔÓ¦µÄbhµÄÄÚ´æpageµÄÒ³ÄÚÆ«ÒÆ°É
+#define bio_page(bio)		bio_iovec((bio))->bv_page//bioå¯¹åº”çš„bhçš„å†…å­˜page
+#define bio_offset(bio)		bio_iovec((bio))->bv_offset//åº”è¯¥bioå¯¹åº”çš„bhçš„å†…å­˜pageçš„é¡µå†…åç§»å§
 #define bio_segments(bio)	((bio)->bi_vcnt - (bio)->bi_idx)
 #define bio_sectors(bio)	((bio)->bi_size >> 9)
 #define bio_end_sector(bio)	((bio)->bi_sector + bio_sectors((bio)))
@@ -76,7 +76,7 @@ static inline unsigned int bio_cur_bytes(struct bio *bio)
 	else /* dataless requests such as discard */
 		return bio->bi_size;
 }
-//¸Ãbio¶ÔÓ¦µÄbhµÄÄÚ´æpageµØÖ·£¬¿¼ÂÇÁËoffset
+//è¯¥bioå¯¹åº”çš„bhçš„å†…å­˜pageåœ°å€ï¼Œè€ƒè™‘äº†offset
 static inline void *bio_data(struct bio *bio)
 {
 	if (bio->bi_vcnt)
@@ -404,7 +404,7 @@ static inline bool bio_mergeable(struct bio *bio)
  * member of the bio.  The bio_list also caches the last list member to allow
  * fast access to the tail.
  */
-//Õâ¸öbio_listµÄÁ½¸ö³ÉÔ±¶¼ÊÇstruct bio
+//è¿™ä¸ªbio_listçš„ä¸¤ä¸ªæˆå‘˜éƒ½æ˜¯struct bio
 struct bio_list {
 	struct bio *head;
 	struct bio *tail;
@@ -433,19 +433,19 @@ static inline unsigned bio_list_size(const struct bio_list *bl)
 
 	return sz;
 }
-//??????????????????ÔÝÊ±¸ã²»Çå³þbio addµÄÂß¼­
+//??????????????????æš‚æ—¶æžä¸æ¸…æ¥šbio addçš„é€»è¾‘
 static inline void bio_list_add(struct bio_list *bl, struct bio *bio)
 {
-    //ÐÂµÄbio->bi_nextÎªNULL£¬¿´À´ÕâÊÇ×÷ÎªÎ²²¿µÄbio
+    //æ–°çš„bio->bi_nextä¸ºNULLï¼Œçœ‹æ¥è¿™æ˜¯ä½œä¸ºå°¾éƒ¨çš„bio
 	bio->bi_next = NULL;
 
-    //Ìí¼ÓµÚÒ»¸öbioÊ±£¬bl->tailºÍbl->headÓ¦¸Ã¶¼ÊÇNULL.µÚ¶þ´ÎÌí¼Ó£¬bl->tailÖ¸ÏòµÚÒ»´ÎµÄbio£¬
+    //æ·»åŠ ç¬¬ä¸€ä¸ªbioæ—¶ï¼Œbl->tailå’Œbl->headåº”è¯¥éƒ½æ˜¯NULL.ç¬¬äºŒæ¬¡æ·»åŠ ï¼Œbl->tailæŒ‡å‘ç¬¬ä¸€æ¬¡çš„bioï¼Œ
 	if (bl->tail)
-		bl->tail->bi_next = bio;//ÐÂµÄbioÒÀ´ÎÌí¼Óµ½bl->tailÁ´±íµÄÎ²²¿
+		bl->tail->bi_next = bio;//æ–°çš„bioä¾æ¬¡æ·»åŠ åˆ°bl->tailé“¾è¡¨çš„å°¾éƒ¨
 	else
-		bl->head = bio;//headÖ¸ÏòÐÂµÄbio£¬È¡³öbioÊ±¾ÍÊÇ´Óbl->headÈ¡³ö
+		bl->head = bio;//headæŒ‡å‘æ–°çš„bioï¼Œå–å‡ºbioæ—¶å°±æ˜¯ä»Žbl->headå–å‡º
 
-    //bl->tailÓÀÔ¶Ö¸Ïò×îÐÂÌí¼ÓµÄÖ¸Ïòbio
+    //bl->tailæ°¸è¿œæŒ‡å‘æœ€æ–°æ·»åŠ çš„æŒ‡å‘bio
 	bl->tail = bio;
 }
 
@@ -490,14 +490,14 @@ static inline struct bio *bio_list_peek(struct bio_list *bl)
 {
 	return bl->head;
 }
-//´ÓblÁ´±íÉÏÈ¡³öÒ»¸öbio
+//ä»Žblé“¾è¡¨ä¸Šå–å‡ºä¸€ä¸ªbio
 static inline struct bio *bio_list_pop(struct bio_list *bl)
 {
-    //bl->headÖ¸ÏòµÄbio¾ÍÊÇÂíÉÏÒªÊ¹ÓÃµÄbio
+    //bl->headæŒ‡å‘çš„bioå°±æ˜¯é©¬ä¸Šè¦ä½¿ç”¨çš„bio
 	struct bio *bio = bl->head;
 
 	if (bio) {
-        //bl->headÖ¸ÏòÏÂÒ»¸öbio
+        //bl->headæŒ‡å‘ä¸‹ä¸€ä¸ªbio
 		bl->head = bl->head->bi_next;
 		if (!bl->head)
 			bl->tail = NULL;
