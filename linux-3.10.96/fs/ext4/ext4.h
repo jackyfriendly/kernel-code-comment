@@ -33,7 +33,7 @@
 #ifdef __KERNEL__
 #include <linux/compat.h>
 #endif
-
+  
 /*
  * The fourth extended filesystem constants/structures
  */
@@ -80,10 +80,10 @@
 typedef int ext4_grpblk_t;
 
 /* data type for filesystem-wide blocks number */
-typedef unsigned long long ext4_fsblk_t;//ÎïÀí¿éµØÖ·£¬»òÕßÎïÀí¿éºÅ
+typedef unsigned long long ext4_fsblk_t;//ç‰©ç†å—åœ°å€ï¼Œæˆ–è€…ç‰©ç†å—å·
 
 /* data type for file logical block number */
-typedef __u32 ext4_lblk_t;//ÎÄ¼şÂß¼­¿éµØÖ·
+typedef __u32 ext4_lblk_t;//æ–‡ä»¶é€»è¾‘å—åœ°å€
 
 /* data type for block group number */
 typedef unsigned int ext4_group_t;
@@ -128,15 +128,15 @@ struct ext4_allocation_request {
 	/* target inode for block we're allocating */
 	struct inode *inode;
 	/* how many blocks we want to allocate */
-	unsigned int len;//Ïë·ÖÅäµÄÎïÀí¿é¸öÊı
+	unsigned int len;//æƒ³åˆ†é…çš„ç‰©ç†å—ä¸ªæ•°
 	/* logical block in target inode */
-	ext4_lblk_t logical;//ext4_ext_map_blocks()ÖĞ¸³Öµmap->m_lblk£¬¾ÍÊÇÆğÊ¼Âß¼­¿éºÅ
+	ext4_lblk_t logical;//ext4_ext_map_blocks()ä¸­èµ‹å€¼map->m_lblkï¼Œå°±æ˜¯èµ·å§‹é€»è¾‘å—å·
 	/* the closest logical allocated block to the left */
-	ext4_lblk_t lleft;//ext4_ext_search_left()ÖĞÉèÖÃ
+	ext4_lblk_t lleft;//ext4_ext_search_left()ä¸­è®¾ç½®
 	/* the closest logical allocated block to the right */
-	ext4_lblk_t lright;//ext4_ext_search_right()ÖĞÉèÖÃ
+	ext4_lblk_t lright;//ext4_ext_search_right()ä¸­è®¾ç½®
 	/* phys. target (a hint) */
-	ext4_fsblk_t goal;//ÆğÊ¼Ïë·ÖÅäµÄÎïÀí¿éºÅ£¬ext4_ext_map_blocks->ext4_mb_new_blocks()ÖĞÕıÊÇÒÔgoalÎª»ù×¼³¢ÊÔ·ÖÅäÎïÀí¿é
+	ext4_fsblk_t goal;//èµ·å§‹æƒ³åˆ†é…çš„ç‰©ç†å—å·ï¼Œext4_ext_map_blocks->ext4_mb_new_blocks()ä¸­æ­£æ˜¯ä»¥goalä¸ºåŸºå‡†å°è¯•åˆ†é…ç‰©ç†å—
 	/* phys. block for the closest logical allocated block to the left */
 	ext4_fsblk_t pleft;
 	/* phys. block for the closest logical allocated block to the right */
@@ -170,9 +170,9 @@ struct ext4_allocation_request {
 				 EXT4_MAP_UNINIT | EXT4_MAP_FROM_CLUSTER)
 
 struct ext4_map_blocks {
-	ext4_fsblk_t m_pblk;//Âß¼­¿éºÅÓ³ÉäµÄÆğÊ¼ÎïÀí¿éºÅ
-	ext4_lblk_t m_lblk;//±¾´Î¶ÁÈ¡µÄÎÄ¼şÆğÊ¼Âß¼­¿éºÅ
-	unsigned int m_len;//Ó³ÉäµÄÎïÀí¿é¸öÊı
+	ext4_fsblk_t m_pblk;//é€»è¾‘å—å·æ˜ å°„çš„èµ·å§‹ç‰©ç†å—å·
+	ext4_lblk_t m_lblk;//æœ¬æ¬¡è¯»å–çš„æ–‡ä»¶èµ·å§‹é€»è¾‘å—å·
+	unsigned int m_len;//æ˜ å°„çš„ç‰©ç†å—ä¸ªæ•°
 	unsigned int m_flags;
 };
 
@@ -276,7 +276,7 @@ struct ext4_io_submit {
 /* Translate a block number to a cluster number */
 #define EXT4_B2C(sbi, blk)	((blk) >> (sbi)->s_cluster_bits)
 /* Translate a cluster number to a block number */
-//Óë¿ÕÏĞblockÊıÓĞ¹Ø£¬sbi->s_cluster_bitsÊÇ0
+//ä¸ç©ºé—²blockæ•°æœ‰å…³ï¼Œsbi->s_cluster_bitsæ˜¯0
 #define EXT4_C2B(sbi, cluster)	((cluster) << (sbi)->s_cluster_bits)
 /* Translate # of blks to # of clusters */
 #define EXT4_NUM_B2C(sbi, blks)	(((blks) + (sbi)->s_cluster_ratio - 1) >> \
@@ -295,21 +295,21 @@ struct ext4_io_submit {
 /*
  * Structure of a blocks group descriptor
  */
-//¿é×éÃèÊö·û½á¹¹Ìå£¬¹Ø¼ü³ÉÔ±°üº¬Êı¾İ¿éÎ»Í¼block bitmap£¬
-//ext4_get_group_desc()º¯ÊıÖĞ¶Ô²éÕÒ¿é×éÃèÊö·ûÓĞÏêÏ¸½âÊÍ
+//å—ç»„æè¿°ç¬¦ç»“æ„ä½“ï¼Œå…³é”®æˆå‘˜åŒ…å«æ•°æ®å—ä½å›¾block bitmapï¼Œ
+//ext4_get_group_desc()å‡½æ•°ä¸­å¯¹æŸ¥æ‰¾å—ç»„æè¿°ç¬¦æœ‰è¯¦ç»†è§£é‡Š
 struct ext4_group_desc
 {
-    //Êı¾İ¿éÎ»Í¼ ¶ÔÓ¦µÄÎïÀí¿éºÅ
+    //æ•°æ®å—ä½å›¾ å¯¹åº”çš„ç‰©ç†å—å·
 	__le32	bg_block_bitmap_lo;	/* Blocks bitmap block */
-    //inodeÎ»Í¼ ¶ÔÓ¦µÄÎïÀí¿éºÅ£¬¼ûext4_inode_bitmap()
+    //inodeä½å›¾ å¯¹åº”çš„ç‰©ç†å—å·ï¼Œè§ext4_inode_bitmap()
 	__le32	bg_inode_bitmap_lo;	/* Inodes bitmap block */
-    //ÓÉ bg_inode_table_lo ºÍ bg_inode_table_hi ×éºÏµÃµ½ bgÕâ¸ö¿é×éµÄinode tableµÄÆğÊ¼ÎïÀí¿éºÅ£¬¼ûext4_inode_table()
+    //ç”± bg_inode_table_lo å’Œ bg_inode_table_hi ç»„åˆå¾—åˆ° bgè¿™ä¸ªå—ç»„çš„inode tableçš„èµ·å§‹ç‰©ç†å—å·ï¼Œè§ext4_inode_table()
 	__le32	bg_inode_table_lo;	/* Inodes table block */
-    //Óëbg_free_blocks_count_hiÒ»Æğ×é³É¿é×é¿ÕÏĞÎïÀí¿é¸öÊı,ext4_mb_mark_diskspace_used->ext4_free_group_clusters_set()ÖĞÉèÖÃ
+    //ä¸bg_free_blocks_count_hiä¸€èµ·ç»„æˆå—ç»„ç©ºé—²ç‰©ç†å—ä¸ªæ•°,ext4_mb_mark_diskspace_used->ext4_free_group_clusters_set()ä¸­è®¾ç½®
 	__le16	bg_free_blocks_count_lo;/* Free blocks count */
-    //ext4_free_inodes_set()ÖĞÉèÖÃ ¿é×é¿ÕÏĞinode¸öÊı µÍÎ»
+    //ext4_free_inodes_set()ä¸­è®¾ç½® å—ç»„ç©ºé—²inodeä¸ªæ•° ä½ä½
 	__le16	bg_free_inodes_count_lo;/* Free inodes count */
-    //ext4_used_dirs_set()ÖĞÉèÖÃ¿é×éÒÑ·ÖÅäµÄÄ¿Â¼inode¸öÊı
+    //ext4_used_dirs_set()ä¸­è®¾ç½®å—ç»„å·²åˆ†é…çš„ç›®å½•inodeä¸ªæ•°
 	__le16	bg_used_dirs_count_lo;	/* Directories count */
 	__le16	bg_flags;		/* EXT4_BG_flags (INODE_UNINIT, etc) */
 	__le32  bg_exclude_bitmap_lo;   /* Exclude bitmap for snapshots */
@@ -321,9 +321,9 @@ struct ext4_group_desc
 	__le32	bg_inode_bitmap_hi;	/* Inodes bitmap block MSB */
 	__le32	bg_inode_table_hi;	/* Inodes table block MSB */
 	__le16	bg_free_blocks_count_hi;/* Free blocks count MSB */
-    //ext4_free_inodes_set()ÖĞÉèÖÃ ¿é×é¿ÕÏĞinode¸öÊı ¸ßÎ»
+    //ext4_free_inodes_set()ä¸­è®¾ç½® å—ç»„ç©ºé—²inodeä¸ªæ•° é«˜ä½
 	__le16	bg_free_inodes_count_hi;/* Free inodes count MSB */
-    //ext4_used_dirs_set()ÖĞÉèÖÃ ¿é×éµÄÒÑ·ÖÅäµÄÄ¿Â¼inode¸öÊı ¸ßÎ»
+    //ext4_used_dirs_set()ä¸­è®¾ç½® å—ç»„çš„å·²åˆ†é…çš„ç›®å½•inodeä¸ªæ•° é«˜ä½
 	__le16	bg_used_dirs_count_hi;	/* Directories count MSB */
 	__le16  bg_itable_unused_hi;    /* Unused inodes count MSB */
 	__le32  bg_exclude_bitmap_hi;   /* Exclude bitmap block MSB */
@@ -344,10 +344,10 @@ struct ext4_group_desc
  */
 
 struct flex_groups {
-    //flex group¿é×é¿ÕÏĞµÄclusterÊı£¬ÆäÊµ¾ÍÊÇ¿ÕÏĞblockÊı£¬Ò»¸öclusterÒ»¸öblock
+    //flex groupå—ç»„ç©ºé—²çš„clusteræ•°ï¼Œå…¶å®å°±æ˜¯ç©ºé—²blockæ•°ï¼Œä¸€ä¸ªclusterä¸€ä¸ªblock
 	atomic64_t	free_clusters;
-	atomic_t	free_inodes;//flex group¿é×é¿ÕÏĞinodeÊı£¬__ext4_new_inode()ÖĞ¼õ1
-	atomic_t	used_dirs;//flex group¿é×éÊ¹ÓÃµÄÄ¿Â¼Êı£¬__ext4_new_inode()ÖĞ¼Ó1
+	atomic_t	free_inodes;//flex groupå—ç»„ç©ºé—²inodeæ•°ï¼Œ__ext4_new_inode()ä¸­å‡1
+	atomic_t	used_dirs;//flex groupå—ç»„ä½¿ç”¨çš„ç›®å½•æ•°ï¼Œ__ext4_new_inode()ä¸­åŠ 1
 };
 
 #define EXT4_BG_INODE_UNINIT	0x0001 /* Inode table/bitmap not in use */
@@ -360,13 +360,13 @@ struct flex_groups {
 #define EXT4_MIN_DESC_SIZE		32
 #define EXT4_MIN_DESC_SIZE_64BIT	64
 #define	EXT4_MAX_DESC_SIZE		EXT4_MIN_BLOCK_SIZE
-#define EXT4_DESC_SIZE(s)		(EXT4_SB(s)->s_desc_size)//64×Ö½Ú
+#define EXT4_DESC_SIZE(s)		(EXT4_SB(s)->s_desc_size)//64å­—èŠ‚
 #ifdef __KERNEL__
-//Ã¿¸ö¿é×é(»òÕßflex group¿é×é)µÄblock¸öÊı
+//æ¯ä¸ªå—ç»„(æˆ–è€…flex groupå—ç»„)çš„blockä¸ªæ•°
 # define EXT4_BLOCKS_PER_GROUP(s)	(EXT4_SB(s)->s_blocks_per_group)//32768
 # define EXT4_CLUSTERS_PER_GROUP(s)	(EXT4_SB(s)->s_clusters_per_group)//32768
 # define EXT4_DESC_PER_BLOCK(s)		(EXT4_SB(s)->s_desc_per_block)//64
-//Ã¿¸ö¿é×éµÄ×î¶àµÄinodeÊı
+//æ¯ä¸ªå—ç»„çš„æœ€å¤šçš„inodeæ•°
 # define EXT4_INODES_PER_GROUP(s)	(EXT4_SB(s)->s_inodes_per_group)//8192
 # define EXT4_DESC_PER_BLOCK_BITS(s)	(EXT4_SB(s)->s_desc_per_block_bits)//6
 #else
@@ -830,10 +830,10 @@ do {									       \
 /*
  * fourth extended file system inode data in memory
  */
-//__ext4_new_inode()ÖĞ¶Ôext4_inode_info´óÁ¿¸³Öµ
+//__ext4_new_inode()ä¸­å¯¹ext4_inode_infoå¤§é‡èµ‹å€¼
 struct ext4_inode_info {
-    //¹²15*4=60¸ö×Ö½Ú£¬Ò»¸öext4_extent_headerÕ¼12×Ö½Ú£¬Ò»¸öext4_extent_idxÕ¼12×Ö½Ú£¬Ò»¸öext4_extentÕ¼12×Ö½Ú£¬
-    //i_data¿ÉÒÔ±£´æ1¸öext4_extent_header+4¸öext4_extent_idx(»ò4¸öext4_extent)
+    //å…±15*4=60ä¸ªå­—èŠ‚ï¼Œä¸€ä¸ªext4_extent_headerå 12å­—èŠ‚ï¼Œä¸€ä¸ªext4_extent_idxå 12å­—èŠ‚ï¼Œä¸€ä¸ªext4_extentå 12å­—èŠ‚ï¼Œ
+    //i_dataå¯ä»¥ä¿å­˜1ä¸ªext4_extent_header+4ä¸ªext4_extent_idx(æˆ–4ä¸ªext4_extent)
 	__le32	i_data[15];	/* unconverted */
 	__u32	i_dtime;
 	ext4_fsblk_t	i_file_acl;
@@ -845,8 +845,8 @@ struct ext4_inode_info {
 	 * place a file's data blocks near its inode block, and new inodes
 	 * near to their parent directory's inode.
 	 */
-	ext4_group_t	i_block_group;//inodeËùÊôµÄ¿é×é±àºÅ
-	//±£´æÁËÉÏÒ»´ÎÔÚdir¸¸Ä¿Â¼ÕÒµ½µÄ×ÓÄ¿Â¼»ò×ÓÎÄ¼şµÄÎïÀí¿é¶ÔÓ¦µÄÂß¼­¿éºÅ£¬¼ûext4_find_entry()
+	ext4_group_t	i_block_group;//inodeæ‰€å±çš„å—ç»„ç¼–å·
+	//ä¿å­˜äº†ä¸Šä¸€æ¬¡åœ¨dirçˆ¶ç›®å½•æ‰¾åˆ°çš„å­ç›®å½•æˆ–å­æ–‡ä»¶çš„ç‰©ç†å—å¯¹åº”çš„é€»è¾‘å—å·ï¼Œè§ext4_find_entry()
 	ext4_lblk_t	i_dir_start_lookup;
 #if (BITS_PER_LONG < 64)
 	unsigned long	i_state_flags;		/* Dynamic state flags */
@@ -912,7 +912,7 @@ struct ext4_inode_info {
 	unsigned int i_es_lru_nr;	/* protected by i_es_lock */
 
 	/* ialloc */
-    //__ext4_new_inode()¼ÇÂ¼ÉÏÒ»´Î·ÖÅäinodeËùÊôµÄ¿é×é
+    //__ext4_new_inode()è®°å½•ä¸Šä¸€æ¬¡åˆ†é…inodeæ‰€å±çš„å—ç»„
 	ext4_group_t	i_last_alloc_group;
 
 	/* allocation reservation info for delalloc */
@@ -1060,15 +1060,15 @@ extern void ext4_set_bits(void *bm, int cur, int len);
  * Structure of the super block
  */
 struct ext4_super_block {
-/*00*/	__le32	s_inodes_count;		/* Inodes count */ //ÎÄ¼şÏµÍ³inode¸öÊı
-    //s_blocks_count_lo  ºÍ s_blocks_count_hi ×é³Éblock¸öÊı
+/*00*/	__le32	s_inodes_count;		/* Inodes count */ //æ–‡ä»¶ç³»ç»Ÿinodeä¸ªæ•°
+    //s_blocks_count_lo  å’Œ s_blocks_count_hi ç»„æˆblockä¸ªæ•°
 	__le32	s_blocks_count_lo;	/* Blocks count */
 	__le32	s_r_blocks_count_lo;	/* Reserved blocks count */
-    //Óë s_free_blocks_count_hi ×é³É¿ÕÏĞblock¸öÊı
+    //ä¸ s_free_blocks_count_hi ç»„æˆç©ºé—²blockä¸ªæ•°
 	__le32	s_free_blocks_count_lo;	/* Free blocks count */
 /*10*/	__le32	s_free_inodes_count;	/* Free inodes count */
-    //ÊÇ¿é×éµÄµÚÒ»¸ödata blockÎïÀí¿éºÅÂğ?²»ÊÇ£¬Êµ¼Ê´òÓ¡ÊÇ0¡£Ó¦¸Ã¾ÍÊÇext4ÎÄ¼şÏµÍ³µÄµÚÒ»¸öÎïÀí¿éºÅ£¬Ïà¶ÔÓÚext4·ÖÇøÆğÊ¼µØÖ·À´ËµµÄ
-    //Ê¹ÓÃÓë¸³Öµ¼ûext4_group_first_block_noºÍext4_get_group_no_and_offset
+    //æ˜¯å—ç»„çš„ç¬¬ä¸€ä¸ªdata blockç‰©ç†å—å·å—?ä¸æ˜¯ï¼Œå®é™…æ‰“å°æ˜¯0ã€‚åº”è¯¥å°±æ˜¯ext4æ–‡ä»¶ç³»ç»Ÿçš„ç¬¬ä¸€ä¸ªç‰©ç†å—å·ï¼Œç›¸å¯¹äºext4åˆ†åŒºèµ·å§‹åœ°å€æ¥è¯´çš„
+    //ä½¿ç”¨ä¸èµ‹å€¼è§ext4_group_first_block_noå’Œext4_get_group_no_and_offset
 	__le32	s_first_data_block;	/* First Data Block */
 	__le32	s_log_block_size;	/* Block size */
 	__le32	s_log_cluster_size;	/* Allocation cluster size */
@@ -1135,7 +1135,7 @@ struct ext4_super_block {
 	__le32	s_mkfs_time;		/* When the filesystem was created */
 	__le32	s_jnl_blocks[17];	/* Backup of the journal inode */
 	/* 64bit support valid if EXT4_FEATURE_COMPAT_64BIT */
-/*150*/	__le32	s_blocks_count_hi;	/* Blocks count *///Óës_blocks_count_lo ×é³ÉÎïÀí¿é¸öÊı
+/*150*/	__le32	s_blocks_count_hi;	/* Blocks count *///ä¸s_blocks_count_lo ç»„æˆç‰©ç†å—ä¸ªæ•°
 	__le32	s_r_blocks_count_hi;	/* Reserved blocks count */
 	__le32	s_free_blocks_count_hi;	/* Free blocks count */
 	__le16	s_min_extra_isize;	/* All inodes have at least # bytes */
@@ -1191,7 +1191,7 @@ struct ext4_super_block {
  */
 struct ext4_sb_info {
 	unsigned long s_desc_size;	/* Size of a group descriptor in bytes */
-    //Ã¿¸öÎïÀí¿é¿ÉÒÔÈİÄÉµÄinodeÊı
+    //æ¯ä¸ªç‰©ç†å—å¯ä»¥å®¹çº³çš„inodeæ•°
 	unsigned long s_inodes_per_block;/* Number of inodes per block */
 	unsigned long s_blocks_per_group;/* Number of blocks in a group */
 	unsigned long s_clusters_per_group; /* Number of clusters in a group */
@@ -1199,18 +1199,18 @@ struct ext4_sb_info {
 	unsigned long s_itb_per_group;	/* Number of inode table blocks per group */
 	unsigned long s_gdb_count;	/* Number of group descriptor blocks */
 	unsigned long s_desc_per_block;	/* Number of group descriptors per block */
-    //ÎÄ¼şÏµÍ³¿é×é¸öÊı
+    //æ–‡ä»¶ç³»ç»Ÿå—ç»„ä¸ªæ•°
 	ext4_group_t s_groups_count;	/* Number of groups in the fs */
 	ext4_group_t s_blockfile_groups;/* Groups acceptable for non-extent files */
 	unsigned long s_overhead;  /* # of fs overhead clusters */
 	unsigned int s_cluster_ratio;	/* Number of blocks per cluster */
-    //Êµ¼Ê²âÊÔÊÇ0£¬Ó¦¸ÃÊÇÒ»¸öcluster°üº¬µÄÎïÀí¿é¸öÊı°É
+    //å®é™…æµ‹è¯•æ˜¯0ï¼Œåº”è¯¥æ˜¯ä¸€ä¸ªclusteråŒ…å«çš„ç‰©ç†å—ä¸ªæ•°å§
 	unsigned int s_cluster_bits;	/* log2 of s_cluster_ratio */
 	loff_t s_bitmap_maxbytes;	/* max bytes for bitmap files */
 	struct buffer_head * s_sbh;	/* Buffer containing the super block */
-    //Ö¸Ïòsb
+    //æŒ‡å‘sb
 	struct ext4_super_block *s_es;	/* Pointer to the super block in the buffer */
-    //±£´æ¿é×éÃèÊö·û£¬¼ûext4_get_group_desc()
+    //ä¿å­˜å—ç»„æè¿°ç¬¦ï¼Œè§ext4_get_group_desc()
 	struct buffer_head **s_group_desc;
 	unsigned int s_mount_opt;
 	unsigned int s_mount_opt2;
@@ -1227,17 +1227,17 @@ struct ext4_sb_info {
 	int s_inode_size;
 	int s_first_ino;
 	unsigned int s_inode_readahead_blks;
-	unsigned int s_inode_goal;//Ä¬ÈÏÊÇ0
+	unsigned int s_inode_goal;//é»˜è®¤æ˜¯0
 	spinlock_t s_next_gen_lock;
 	u32 s_next_generation;
 	u32 s_hash_seed[4];
 	int s_def_hash_version;
 	int s_hash_unsigned;	/* 3 if hash should be signed, 0 if not */
-    //ext4×ÜµÄ¿ÕÏĞÎïÀí¿éÊı¸öÊı£¬ext4_mb_mark_diskspace_used->ext4_free_group_clusters_set()ÖĞÉèÖÃ
+    //ext4æ€»çš„ç©ºé—²ç‰©ç†å—æ•°ä¸ªæ•°ï¼Œext4_mb_mark_diskspace_used->ext4_free_group_clusters_set()ä¸­è®¾ç½®
 	struct percpu_counter s_freeclusters_counter;
-    //¿ÕÏĞµÄinodeÊı£¬__ext4_new_inode()ÖĞ¼õ1
+    //ç©ºé—²çš„inodeæ•°ï¼Œ__ext4_new_inode()ä¸­å‡1
 	struct percpu_counter s_freeinodes_counter;
-    //¿ÕÏĞµÄÄ¿Â¼inode£¬__ext4_new_inode()ÖĞ¼õ1
+    //ç©ºé—²çš„ç›®å½•inodeï¼Œ__ext4_new_inode()ä¸­å‡1
 	struct percpu_counter s_dirs_counter;
 	struct percpu_counter s_dirtyclusters_counter;
 	struct blockgroup_lock *s_blockgroup_lock;
@@ -1247,7 +1247,7 @@ struct ext4_sb_info {
 	struct super_block *s_sb;
 
 	/* Journaling */
-    //ext4 journal¿ØÖÆ½á¹¹£¬ext4_fill_super->ext4_load_journal()ÖĞmount³õÊ¼»¯Ê±¸³Öµ£¬Ò»¸ö¿éÉè±¸ÎÄ¼şÏµÍ³Ó¦¸ÃÖ»ÓĞÒ»¸ö°É
+    //ext4 journalæ§åˆ¶ç»“æ„ï¼Œext4_fill_super->ext4_load_journal()ä¸­mountåˆå§‹åŒ–æ—¶èµ‹å€¼ï¼Œä¸€ä¸ªå—è®¾å¤‡æ–‡ä»¶ç³»ç»Ÿåº”è¯¥åªæœ‰ä¸€ä¸ªå§
 	struct journal_s *s_journal;
 	struct list_head s_orphan;
 	struct mutex s_orphan_lock;
@@ -1632,16 +1632,16 @@ struct ext4_dir_entry {
  * bigger than 255 chars, it's safe to reclaim the extra byte for the
  * file_type field.
  */
-//Ã¿¸öÄ¿Â¼ÏÂ ×ÓÄ¿Â¼ºÍ×ÓÎÄ¼ş ¶¼¶ÔÓ¦Ò»¸öext4_dir_entry_2½á¹¹£¬±£´æÁË×ÓÎÄ¼ş»ò×ÓÄ¿Â¼
-//µÄinode±àºÅ¡¢Ãû×Ö¡¢Ãû×Ö³¤¶ÈµÈ¹Ø¼üĞÅÏ¢
+//æ¯ä¸ªç›®å½•ä¸‹ å­ç›®å½•å’Œå­æ–‡ä»¶ éƒ½å¯¹åº”ä¸€ä¸ªext4_dir_entry_2ç»“æ„ï¼Œä¿å­˜äº†å­æ–‡ä»¶æˆ–å­ç›®å½•
+//çš„inodeç¼–å·ã€åå­—ã€åå­—é•¿åº¦ç­‰å…³é”®ä¿¡æ¯
 struct ext4_dir_entry_2 {
-    ////¸¸Ä¿Â¼ÏÂµÄ×ÓÎÄ¼ş»ò×ÓÄ¿Â¼inodeºÅ
+    ////çˆ¶ç›®å½•ä¸‹çš„å­æ–‡ä»¶æˆ–å­ç›®å½•inodeå·
 	__le32	inode;			/* Inode number */
-    //ext4_insert_dentry()ÖĞ¸³Öµ£¬Ò»¸öext4_dir_entry_2½á¹¹Õ¼µÄ×Ö½ÚÊı°É
+    //ext4_insert_dentry()ä¸­èµ‹å€¼ï¼Œä¸€ä¸ªext4_dir_entry_2ç»“æ„å çš„å­—èŠ‚æ•°å§
 	__le16	rec_len;		/* Directory entry length */
 	__u8	name_len;		/* Name length */
 	__u8	file_type;
-    //¸¸Ä¿Â¼ÏÂµÄ×ÓÎÄ¼ş»ò×ÓÄ¿Â¼Ãû×Ö
+    //çˆ¶ç›®å½•ä¸‹çš„å­æ–‡ä»¶æˆ–å­ç›®å½•åå­—
 	char	name[EXT4_NAME_LEN];	/* File name */
 };
 
@@ -1731,7 +1731,7 @@ static inline __le16 ext4_rec_len_to_disk(unsigned len, unsigned blocksize)
  * Hash Tree Directory indexing
  * (c) Daniel Phillips, 2001
  */
-//²âÊÔÃ»³ÉÁ¢
+//æµ‹è¯•æ²¡æˆç«‹
 #define is_dx(dir) (EXT4_HAS_COMPAT_FEATURE(dir->i_sb, \
 				      EXT4_FEATURE_COMPAT_DIR_INDEX) && \
 		    ext4_test_inode_flag((dir), EXT4_INODE_INDEX))
@@ -1794,18 +1794,18 @@ struct dx_hash_info
 /*
  * Describe an inode's exact location on disk and in memory
  */
-struct ext4_iloc//¸³ÖµÔÚ__ext4_get_inode_loc
+struct ext4_iloc//èµ‹å€¼åœ¨__ext4_get_inode_loc
 {
-    //inode½á¹¹ËùÔÚµÄÎïÀí¿éµÄbh£¬Õâ¸öÎïÀí¿éÊÇinode tableÀïµÄÒ»¸öÎïÀí¿é£¬±£´æµÄÊÇÒ»¸ö¸öinode½á¹¹£¬__ext4_get_inode_loc()¸³Öµ
+    //inodeç»“æ„æ‰€åœ¨çš„ç‰©ç†å—çš„bhï¼Œè¿™ä¸ªç‰©ç†å—æ˜¯inode tableé‡Œçš„ä¸€ä¸ªç‰©ç†å—ï¼Œä¿å­˜çš„æ˜¯ä¸€ä¸ªä¸ªinodeç»“æ„ï¼Œ__ext4_get_inode_loc()èµ‹å€¼
 	struct buffer_head *bh;
-	unsigned long offset;//¸ù¾İinodeºÅÔÚ¿é×éÄÚµÄÆ«ÒÆ¼ÆËã¸ÃinodeÔÚinode tableµÄÆ«ÒÆ,Ò²ÊÇ__ext4_get_inode_loc()ÖĞ¸³Öµ
-    //inodeËùÊô¿é×éºÅ ext4_mark_inode_dirty->ext4_reserve_inode_write->ext4_get_inode_loc->__ext4_get_inode_loc()¸³Öµ
+	unsigned long offset;//æ ¹æ®inodeå·åœ¨å—ç»„å†…çš„åç§»è®¡ç®—è¯¥inodeåœ¨inode tableçš„åç§»,ä¹Ÿæ˜¯__ext4_get_inode_loc()ä¸­èµ‹å€¼
+    //inodeæ‰€å±å—ç»„å· ext4_mark_inode_dirty->ext4_reserve_inode_write->ext4_get_inode_loc->__ext4_get_inode_loc()èµ‹å€¼
 	ext4_group_t block_group;
 };
 
 static inline struct ext4_inode *ext4_raw_inode(struct ext4_iloc *iloc)
 {
-    //iloc->bhÊÇÎÄ¼şinodeÔªÊı¾İËùÔÚÎïÀí¿é¶ÔÓ¦µÄbh£¬iloc->bh->b_dataÊÇ¸ÃÎïÀí¿éµÄÊı¾İ±£´æµ½ÄÚ´æµÄÊ×µØÖ·£¬
+    //iloc->bhæ˜¯æ–‡ä»¶inodeå…ƒæ•°æ®æ‰€åœ¨ç‰©ç†å—å¯¹åº”çš„bhï¼Œiloc->bh->b_dataæ˜¯è¯¥ç‰©ç†å—çš„æ•°æ®ä¿å­˜åˆ°å†…å­˜çš„é¦–åœ°å€ï¼Œ
 	return (struct ext4_inode *) (iloc->bh->b_data + iloc->offset);
 }
 
@@ -1825,11 +1825,11 @@ struct dir_private_info {
 };
 
 /* calculate the first block number of the group */
-//µÃµ½group_noÕâ¸ö¿é×éµÚÒ»¸öÎïÀí¿éºÅ£¬¾ÍÊÇ¸Ã¿é×éµÄÆğÊ¼ÎïÀí¿éºÅ
+//å¾—åˆ°group_noè¿™ä¸ªå—ç»„ç¬¬ä¸€ä¸ªç‰©ç†å—å·ï¼Œå°±æ˜¯è¯¥å—ç»„çš„èµ·å§‹ç‰©ç†å—å·
 static inline ext4_fsblk_t
 ext4_group_first_block_no(struct super_block *sb, ext4_group_t group_no)
 {
-    //group_no(group_no¿é×éµÚÒ»¸öÎïÀí¿éºÅ) = ¿é×é(»òÕßflex group¿é×é)ºÅ * Ã¿¸ö¿é×é¸öblock¸öÊı + µÚÒ»¸ö¿é×é(»òÕßflex group¿é×é)µÄµÚÒ»¸öÎïÀí¿éºÅ
+    //group_no(group_noå—ç»„ç¬¬ä¸€ä¸ªç‰©ç†å—å·) = å—ç»„(æˆ–è€…flex groupå—ç»„)å· * æ¯ä¸ªå—ç»„ä¸ªblockä¸ªæ•° + ç¬¬ä¸€ä¸ªå—ç»„(æˆ–è€…flex groupå—ç»„)çš„ç¬¬ä¸€ä¸ªç‰©ç†å—å·
 	return group_no * (ext4_fsblk_t)EXT4_BLOCKS_PER_GROUP(sb) +
 		le32_to_cpu(EXT4_SB(sb)->s_es->s_first_data_block);
 }
@@ -2307,7 +2307,7 @@ static inline int ext4_has_group_desc_csum(struct super_block *sb)
 					  EXT4_FEATURE_RO_COMPAT_GDT_CSUM) ||
 	       (EXT4_SB(sb)->s_chksum_driver != NULL);
 }
-//×Üblock¸öÊı
+//æ€»blockä¸ªæ•°
 static inline ext4_fsblk_t ext4_blocks_count(struct ext4_super_block *es)
 {
 	return ((ext4_fsblk_t)le32_to_cpu(es->s_blocks_count_hi) << 32) |
@@ -2319,7 +2319,7 @@ static inline ext4_fsblk_t ext4_r_blocks_count(struct ext4_super_block *es)
 	return ((ext4_fsblk_t)le32_to_cpu(es->s_r_blocks_count_hi) << 32) |
 		le32_to_cpu(es->s_r_blocks_count_lo);
 }
-//¿ÕÏĞblock¸öÊı
+//ç©ºé—²blockä¸ªæ•°
 static inline ext4_fsblk_t ext4_free_blocks_count(struct ext4_super_block *es)
 {
 	return ((ext4_fsblk_t)le32_to_cpu(es->s_free_blocks_count_hi) << 32) |
@@ -2386,13 +2386,13 @@ static inline ext4_group_t ext4_get_groups_count(struct super_block *sb)
 	smp_rmb();
 	return ngroups;
 }
-//ÓÉ ¿é×éºÅ³ıÒÔ16 µÃµ½flex group¿é×éºÅ
+//ç”± å—ç»„å·é™¤ä»¥16 å¾—åˆ°flex groupå—ç»„å·
 static inline ext4_group_t ext4_flex_group(struct ext4_sb_info *sbi,
 					     ext4_group_t block_group)
 {
 	return block_group >> sbi->s_log_groups_per_flex;
 }
-//Ò»¸öflex group¿é×é°üº¬µÄÊµ¼Ê¿é×é¸öÊı£¬Êµ¼Ê²âÊÔÊÇ16
+//ä¸€ä¸ªflex groupå—ç»„åŒ…å«çš„å®é™…å—ç»„ä¸ªæ•°ï¼Œå®é™…æµ‹è¯•æ˜¯16
 static inline unsigned int ext4_flex_bg_size(struct ext4_sb_info *sbi)
 {
 	return 1 << sbi->s_log_groups_per_flex;
