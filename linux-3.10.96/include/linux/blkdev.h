@@ -38,7 +38,7 @@ struct blk_flush_queue;
 struct pr_ops;
 struct blk_queue_stats;
 struct blk_stat_callback;
-
+  
 #define BLKDEV_MIN_RQ	4
 #define BLKDEV_MAX_RQ	128	/* Default maximum */
 
@@ -46,7 +46,7 @@ struct blk_stat_callback;
  * Maximum number of blkcg policies allowed to be registered concurrently.
  * Defined here to simplify include dependency.
  */
-#define BLKCG_MAX_POLS		2//ÕâÓ¦¸ÃÊÇblock²ãÁ½ÖÖ¿ØÖÆ²ßÂÔ
+#define BLKCG_MAX_POLS		2//è¿™åº”è¯¥æ˜¯blockå±‚ä¸¤ç§æŽ§åˆ¶ç­–ç•¥
 
 struct request;
 typedef void (rq_end_io_fn)(struct request *, int);
@@ -101,13 +101,13 @@ enum rq_cmd_type_bits {
  * if you modify this structure, be sure to check block/blk-core.c:blk_rq_init()
  * as well! //struct bio
  */
-//Ò»¸öbio´ú±íÒ»¸öIOÇëÇó£¬Òª¶ÁÐ´Ò»Æ¬Á¬ÐøµÄ´ÅÅÌ¿Õ¼ä£¬±ÈÈç¶ÁÐ´´ÅÅÌµØÖ·0~8K¡£Ò»¸öbio_vec´ú±íÒ»¸öpageÒ³ÄÚ´æ£¬Ò»¸öbio¿ÉÄÜ¶ÔÓ¦¶à¸öbio_vec
-//µ±bioµÄ¶ÔÓ¦´ÅÅÌ·¶Î§ÊÇ8K£¬ÄÇËü¶ÔÓ¦Á½¸öbio_vec¡£Ò»¸öreq¿ÉÒÔºÏ²¢¶à¸öIOÇëÇó¼´bio£¬ÕâÐ©bioµÄ´ÅÅÌ¿Õ¼ä·¶Î§¿ÉÒÔÁ¬³ÉÒ»Æ¬¡£
+//ä¸€ä¸ªbioä»£è¡¨ä¸€ä¸ªIOè¯·æ±‚ï¼Œè¦è¯»å†™ä¸€ç‰‡è¿žç»­çš„ç£ç›˜ç©ºé—´ï¼Œæ¯”å¦‚è¯»å†™ç£ç›˜åœ°å€0~8Kã€‚ä¸€ä¸ªbio_vecä»£è¡¨ä¸€ä¸ªpageé¡µå†…å­˜ï¼Œä¸€ä¸ªbioå¯èƒ½å¯¹åº”å¤šä¸ªbio_vec
+//å½“bioçš„å¯¹åº”ç£ç›˜èŒƒå›´æ˜¯8Kï¼Œé‚£å®ƒå¯¹åº”ä¸¤ä¸ªbio_vecã€‚ä¸€ä¸ªreqå¯ä»¥åˆå¹¶å¤šä¸ªIOè¯·æ±‚å³bioï¼Œè¿™äº›bioçš„ç£ç›˜ç©ºé—´èŒƒå›´å¯ä»¥è¿žæˆä¸€ç‰‡ã€‚
 struct request {
 #ifdef __GENKSYMS__
 	union {
-	    //deadlineµ÷¶ÈËã·¨£¬Ó¦¸Ã¾ÍÊÇ¿¿Õâ¸öÌí¼Óµ½Ëã·¨µÄfifoµ÷¶È¶ÓÁÐ£¬reqÔÚ¸Ã¶ÓÁÐÖÐÏÈ½øÏÈ³ö£¬»¹ÓÐ¸ö³¬Ê±Ê±¼ä
-	    //mq¶à¶ÓÁÐÊ±´ú£¬¿¿Õâ¸öÌí¼Óµ½Ó²¼þ¶ÓÁÐµÄhctx->dispatchÅÉ·¢¶ÓÁÐ£¬¼ûblk_mq_request_bypass_insert
+	    //deadlineè°ƒåº¦ç®—æ³•ï¼Œåº”è¯¥å°±æ˜¯é è¿™ä¸ªæ·»åŠ åˆ°ç®—æ³•çš„fifoè°ƒåº¦é˜Ÿåˆ—ï¼Œreqåœ¨è¯¥é˜Ÿåˆ—ä¸­å…ˆè¿›å…ˆå‡ºï¼Œè¿˜æœ‰ä¸ªè¶…æ—¶æ—¶é—´
+	    //mqå¤šé˜Ÿåˆ—æ—¶ä»£ï¼Œé è¿™ä¸ªæ·»åŠ åˆ°ç¡¬ä»¶é˜Ÿåˆ—çš„hctx->dispatchæ´¾å‘é˜Ÿåˆ—ï¼Œè§blk_mq_request_bypass_insert
 		struct list_head queuelist;
 		struct llist_node ll_list;
 	};
@@ -115,41 +115,41 @@ struct request {
 	struct list_head queuelist;
 #endif
 	union {
-	    //deadlineµ÷¶ÈËã·¨£¬Ó¦¸Ã¼ÇÂ¼ÁËreqµÄ³¬Ê±Ê±¼ä£¬¿´deadline_merged_requests()
+	    //deadlineè°ƒåº¦ç®—æ³•ï¼Œåº”è¯¥è®°å½•äº†reqçš„è¶…æ—¶æ—¶é—´ï¼Œçœ‹deadline_merged_requests()
 		struct call_single_data csd;
 		//RH_KABI_REPLACE(struct work_struct mq_flush_work,
 		//	        unsigned long fifo_time)
 		struct work_struct mq_flush_work;
-        //req³¬Ê±Ê±¼ä£¬ÉèÖÃ¼ûdd_insert_request¡£req°´ÕÕfifo_timeÔÚfifo¶ÓÁÐÅÅ¶Ó£¬Ô½¿¿×óÔ½Ð¡(×îÐ¡ÊÇjiffies)£¬Ò²×îÏÈ±»Ñ¡ÖÐ¶øÅÉ·¢
+        //reqè¶…æ—¶æ—¶é—´ï¼Œè®¾ç½®è§dd_insert_requestã€‚reqæŒ‰ç…§fifo_timeåœ¨fifoé˜Ÿåˆ—æŽ’é˜Ÿï¼Œè¶Šé å·¦è¶Šå°(æœ€å°æ˜¯jiffies)ï¼Œä¹Ÿæœ€å…ˆè¢«é€‰ä¸­è€Œæ´¾å‘
         unsigned long fifo_time;
 	};
 
-	struct request_queue *q;//¿éÉè±¸ÔËÐÐ¶ÓÁÐ
-	struct blk_mq_ctx *mq_ctx;//reqµÄÈí¼þ¶ÓÁÐ£¬blk_mq_rq_ctx_initÖÐ¸³Öµ,reqÔÚ·ÖÅäºó¾Í»á³õÊ¼»¯Ö¸Ïòµ±Ç°CPUµÄÈí¼þ¶ÓÁÐ
-    struct blk_mq_hw_ctx *mq_hctx;//rqµÄÓ²¼þ¶ÓÁÐ
+	struct request_queue *q;//å—è®¾å¤‡è¿è¡Œé˜Ÿåˆ—
+	struct blk_mq_ctx *mq_ctx;//reqçš„è½¯ä»¶é˜Ÿåˆ—ï¼Œblk_mq_rq_ctx_initä¸­èµ‹å€¼,reqåœ¨åˆ†é…åŽå°±ä¼šåˆå§‹åŒ–æŒ‡å‘å½“å‰CPUçš„è½¯ä»¶é˜Ÿåˆ—
+    struct blk_mq_hw_ctx *mq_hctx;//rqçš„ç¡¬ä»¶é˜Ÿåˆ—
         
-	u64 cmd_flags;//__blk_mq_alloc_requestºÍblk_mq_get_driver_tag ÖÐÖÃREQ_MQ_INFLIGHT
+	u64 cmd_flags;//__blk_mq_alloc_requestå’Œblk_mq_get_driver_tag ä¸­ç½®REQ_MQ_INFLIGHT
 	
 	enum rq_cmd_type_bits cmd_type;
-    //0£¬req´«ÊäÍê³É   1:req¿ªÊ¼´«Êä×´Ì¬
+    //0ï¼Œreqä¼ è¾“å®Œæˆ   1:reqå¼€å§‹ä¼ è¾“çŠ¶æ€
 	unsigned long atomic_flags;
 
 	int cpu;
 
 	/* the following two fields are internal, NEVER access directly */
-    //req´ú±íµÄ´ÅÅÌ¿Õ¼ä´óÐ¡,blk_rq_bio_prepÖÐ¸³Öµrq->__data_len = bio->bi_size
+    //reqä»£è¡¨çš„ç£ç›˜ç©ºé—´å¤§å°,blk_rq_bio_prepä¸­èµ‹å€¼rq->__data_len = bio->bi_size
 	unsigned int __data_len;	/* total data len */
-    //req´ú±íµÄ´ÅÅÌ·¶Î§ÆðÊ¼ÉÈÇø
+    //reqä»£è¡¨çš„ç£ç›˜èŒƒå›´èµ·å§‹æ‰‡åŒº
 	sector_t __sector;		/* sector cursor */
 
-    //reqÉÏµÄµÚÒ»¸öbio°É£¬Ò»¸öreq¿ÉÄÜºÏ²¢ÁË¶à¸öbio£¬bioµÄbi_nextÁ´±í¹Ò×ÅÆäËûbio¡£Èç¹ûµÚÒ»¸öbio´«ÊäÍê£¬»áÖ¸ÏòÏÂÒ»¸öbio,
-    //¼ûblk_update_requestºÍblk_rq_bio_prep¡£blk_update_request()º¯Êý¶Ôreq¶ÔÓ¦µÄ´ÅÅÌÊý¾Ý²»ÄÜÒ»´ÎÈ«²¿´«ÊäÍê£¬·Ö¶à¸öbio´«Êä£¬×öÁËÏêÏ¸½âÊÍ¡£
-    /*req¶ÔÓ¦µÄµÚÒ»¸öbioÊÇÕâ¸öbioÖ¸ÏòµÄ£¬Ö®ºóµÄbio¾Í¿¿bio->nextÑ°µÃ*/
+    //reqä¸Šçš„ç¬¬ä¸€ä¸ªbioå§ï¼Œä¸€ä¸ªreqå¯èƒ½åˆå¹¶äº†å¤šä¸ªbioï¼Œbioçš„bi_nexté“¾è¡¨æŒ‚ç€å…¶ä»–bioã€‚å¦‚æžœç¬¬ä¸€ä¸ªbioä¼ è¾“å®Œï¼Œä¼šæŒ‡å‘ä¸‹ä¸€ä¸ªbio,
+    //è§blk_update_requestå’Œblk_rq_bio_prepã€‚blk_update_request()å‡½æ•°å¯¹reqå¯¹åº”çš„ç£ç›˜æ•°æ®ä¸èƒ½ä¸€æ¬¡å…¨éƒ¨ä¼ è¾“å®Œï¼Œåˆ†å¤šä¸ªbioä¼ è¾“ï¼Œåšäº†è¯¦ç»†è§£é‡Šã€‚
+    /*reqå¯¹åº”çš„ç¬¬ä¸€ä¸ªbioæ˜¯è¿™ä¸ªbioæŒ‡å‘çš„ï¼Œä¹‹åŽçš„bioå°±é bio->nextå¯»å¾—*/
 	struct bio *bio;
-	struct bio *biotail;//ÔÚ°ÑbioºÏ²¢µ½rqÊ±£¬Ò²ÊÇÖ´ÐÐÐÂ¼ÓÈëµÄbio£¬Ææ¹Ö£¬¿´ll_back_merge_fn()ºÍbio_attempt_back_merge()ºÍattempt_merge¡¢blk_rq_bio_prep
+	struct bio *biotail;//åœ¨æŠŠbioåˆå¹¶åˆ°rqæ—¶ï¼Œä¹Ÿæ˜¯æ‰§è¡Œæ–°åŠ å…¥çš„bioï¼Œå¥‡æ€ªï¼Œçœ‹ll_back_merge_fn()å’Œbio_attempt_back_merge()å’Œattempt_mergeã€blk_rq_bio_prep
 
 #ifdef __GENKSYMS__
-    //ÐÂµÄreq¿¿Õâ¸öhashÌí¼Óµ½IOµ÷¶ÈËã·¨µÄhashÁ´±íÀï,elv_rqhash_add(),×öhashË÷ÒýÊÇÎªÁËÔÚIOËã·¨¶ÓÁÐÀïËÑË÷¿ÉÒÔºÏ²¢µÄreqÊ±£¬Ìá¸ßËÑË÷ËÙ¶È
+    //æ–°çš„reqé è¿™ä¸ªhashæ·»åŠ åˆ°IOè°ƒåº¦ç®—æ³•çš„hashé“¾è¡¨é‡Œ,elv_rqhash_add(),åšhashç´¢å¼•æ˜¯ä¸ºäº†åœ¨IOç®—æ³•é˜Ÿåˆ—é‡Œæœç´¢å¯ä»¥åˆå¹¶çš„reqæ—¶ï¼Œæé«˜æœç´¢é€Ÿåº¦
 	struct hlist_node hash;	/* merge hash */
 #else
 	/*
@@ -171,7 +171,7 @@ struct request {
 	 * completion_data share space with the rb_node.
 	 */
 	union {
-	    //__elv_add_request->deadline_add_request->deadline_add_rq_rb->elv_rb_add ½«reqÌí¼Óµ½ºìºÚÊ÷¶ÓÁÐ£¬¶Ôreq->rb_node¸³Öµ
+	    //__elv_add_request->deadline_add_request->deadline_add_rq_rb->elv_rb_add å°†reqæ·»åŠ åˆ°çº¢é»‘æ ‘é˜Ÿåˆ—ï¼Œå¯¹req->rb_nodeèµ‹å€¼
 		struct rb_node rb_node;	/* sort/lookup */
 		void *completion_data;
 	};
@@ -195,12 +195,12 @@ struct request {
 		} flush;
 	};
 
-	struct gendisk *rq_disk;//´ú±íµÄÕû¸ö´ÅÅÌ
-	struct hd_struct *part;//´ú±í´ÅÅÌ¿éÉè±¸µÄ·ÖÇø½á¹¹Ìåstruct hd_struct£¬drive_stat_acct/blk_account_io_startÖÐ¸üÐÂ
+	struct gendisk *rq_disk;//ä»£è¡¨çš„æ•´ä¸ªç£ç›˜
+	struct hd_struct *part;//ä»£è¡¨ç£ç›˜å—è®¾å¤‡çš„åˆ†åŒºç»“æž„ä½“struct hd_structï¼Œdrive_stat_acct/blk_account_io_startä¸­æ›´æ–°
 	
-	//blk_start_request->blk_dequeue_request->set_io_start_time_ns ÉèÖÃreqÆô¶¯´«ÊäÊ±¼ä
-	//blk_account_io_doneÖÐÊ¹ÓÃjiffies - req->start_time£¬Ïà¼õ¼ÆËãÃ¿¸öreqµÄ´«ÊäºÄÊ±
-	unsigned long start_time;//blk_queue_bio->get_request->__get_request->blk_rq_init¸üÐÂÎªµ±Ç°jiffies
+	//blk_start_request->blk_dequeue_request->set_io_start_time_ns è®¾ç½®reqå¯åŠ¨ä¼ è¾“æ—¶é—´
+	//blk_account_io_doneä¸­ä½¿ç”¨jiffies - req->start_timeï¼Œç›¸å‡è®¡ç®—æ¯ä¸ªreqçš„ä¼ è¾“è€—æ—¶
+	unsigned long start_time;//blk_queue_bio->get_request->__get_request->blk_rq_initæ›´æ–°ä¸ºå½“å‰jiffies
 #ifdef CONFIG_BLK_CGROUP
 	struct request_list *rl;		/* rl this rq is alloced from */
 	unsigned long long start_time_ns;
@@ -209,21 +209,21 @@ struct request {
 	/* Number of scatter-gather DMA addr+len pairs after
 	 * physical address coalescing is performed.
 	 */
-	unsigned short nr_phys_segments;//Ó¦¸Ã¾ÍÊÇ¶ÔÓ¦µÄ´ÅÅÌÉÈÇø×Ü¸öÊý°É£¬»òÕßÄÚ´æpage¸öÊý??????????????? ll_merge_requests_fn()
+	unsigned short nr_phys_segments;//åº”è¯¥å°±æ˜¯å¯¹åº”çš„ç£ç›˜æ‰‡åŒºæ€»ä¸ªæ•°å§ï¼Œæˆ–è€…å†…å­˜pageä¸ªæ•°??????????????? ll_merge_requests_fn()
 #if defined(CONFIG_BLK_DEV_INTEGRITY)
 	unsigned short nr_integrity_segments;
 #endif
 
-	unsigned short ioprio;//ioprioÊÇcfqµ÷¶ÈËã·¨µÄ¸ÅÄî
+	unsigned short ioprio;//ioprioæ˜¯cfqè°ƒåº¦ç®—æ³•çš„æ¦‚å¿µ
 
-    //scsi_get_cmd_from_req()Ö¸Ïò·ÖÅäµÄscsiÃüÁî½á¹¹Ìå
+    //scsi_get_cmd_from_req()æŒ‡å‘åˆ†é…çš„scsiå‘½ä»¤ç»“æž„ä½“
 	void *special;		/* opaque pointer available for LLD use */
-    //¸Ãreq¶ÔÓ¦µÄbhµÄÄÚ´æpageµØÖ·,»¹¿¼ÂÇÁËÒ³ÄÚoffset£¬¿´blk_update_request()ºó°ë¶Î
+    //è¯¥reqå¯¹åº”çš„bhçš„å†…å­˜pageåœ°å€,è¿˜è€ƒè™‘äº†é¡µå†…offsetï¼Œçœ‹blk_update_request()åŽåŠæ®µ
 	char *buffer;		/* kaddr of the current segment if available */
 
-    //__blk_mq_alloc_request()ÖÐ¸³ÖµÎª¿ÕÏÐreqÔÚblk_mq_tags½á¹¹ÌåµÄstatic_rqs[]Êý×éµÄÏÂ±ê¡£»òÕßËµtag±àºÅ£¬reqÔÚblk_mq_tagsÖÐ»ñÈ¡µÄtag
-    //µÄtag±àºÅ¡£ÓÐµ÷¶ÈÆ÷Ê±£¬ÔÚ·ÖÅäµ½tagºÍreqºó£¬¾¹È»tag=-1£¬ÕâÊÇÎªÉ¶? ¼û__blk_mq_alloc_request()
-	int tag;//ÔÚ__blk_mq_put_driver_tag()ÊÍ·ÅtagÊ±Ò²ÊÇÖÃ-1.
+    //__blk_mq_alloc_request()ä¸­èµ‹å€¼ä¸ºç©ºé—²reqåœ¨blk_mq_tagsç»“æž„ä½“çš„static_rqs[]æ•°ç»„çš„ä¸‹æ ‡ã€‚æˆ–è€…è¯´tagç¼–å·ï¼Œreqåœ¨blk_mq_tagsä¸­èŽ·å–çš„tag
+    //çš„tagç¼–å·ã€‚æœ‰è°ƒåº¦å™¨æ—¶ï¼Œåœ¨åˆ†é…åˆ°tagå’ŒreqåŽï¼Œç«Ÿç„¶tag=-1ï¼Œè¿™æ˜¯ä¸ºå•¥? è§__blk_mq_alloc_request()
+	int tag;//åœ¨__blk_mq_put_driver_tag()é‡Šæ”¾tagæ—¶ä¹Ÿæ˜¯ç½®-1.
 	int errors;
 
 	/*
@@ -235,13 +235,13 @@ struct request {
 
 	unsigned int extra_len;	/* length of alignment and padding */
 	unsigned int sense_len;
-    //blk_start_request()ÖÐ¸³Öµ
+    //blk_start_request()ä¸­èµ‹å€¼
 	unsigned int resid_len;	/* residual count */
 	void *sense;
-    //blk_start_request->blk_add_timer() ÖÐ¸üÐÂ
+    //blk_start_request->blk_add_timer() ä¸­æ›´æ–°
 	unsigned long deadline;
-	struct list_head timeout_list;//blk_start_request->blk_add_timerÖÐ°ÑreqÌí¼Óµ½q->timeout_listÁ´±í
-	//blk_start_request->blk_add_timer() ÖÐ¸³Öµ
+	struct list_head timeout_list;//blk_start_request->blk_add_timerä¸­æŠŠreqæ·»åŠ åˆ°q->timeout_listé“¾è¡¨
+	//blk_start_request->blk_add_timer() ä¸­èµ‹å€¼
 	unsigned int timeout;
 	int retries;
 
@@ -252,7 +252,7 @@ struct request {
 	void *end_io_data;
 
 	/* for bidi */
-	struct request *next_rq;//´«ÊäÏÂÒ»¸öreq
+	struct request *next_rq;//ä¼ è¾“ä¸‹ä¸€ä¸ªreq
 };
 
 #define req_op(req)		(op_from_rq_bits((req)->cmd_flags))
@@ -374,23 +374,23 @@ struct queue_limits {
 	RH_KABI_USE(2, unsigned int max_dev_sectors)
 	RH_KABI_USE(3, struct queue_limits_aux *limits_aux)
 };
-//Ã²ËÆÔÚblk_alloc_queue_node()·ÖÅästruct request_queue
-//¿éÉè±¸³õÊ¼»¯Ê±Í¨¹ýblk_mq_init_queue()´´½¨request_queue²¢¶Ô´ó²¿·Ö³ÉÔ±³õÊ¼»¯£¬»¹ÓÐ·ÖÅäÈí¼þ¡¢Ó²¼þ¶ÓÁÐ¡£Ò»¸ö¿éÉè±¸Ö»ÓÐÒ»¸ö£¬²»¹ÜÓÐ¶àÉÙ¸ö
-//¿éÉè±¸·ÖÇø
+//è²Œä¼¼åœ¨blk_alloc_queue_node()åˆ†é…struct request_queue
+//å—è®¾å¤‡åˆå§‹åŒ–æ—¶é€šè¿‡blk_mq_init_queue()åˆ›å»ºrequest_queueå¹¶å¯¹å¤§éƒ¨åˆ†æˆå‘˜åˆå§‹åŒ–ï¼Œè¿˜æœ‰åˆ†é…è½¯ä»¶ã€ç¡¬ä»¶é˜Ÿåˆ—ã€‚ä¸€ä¸ªå—è®¾å¤‡åªæœ‰ä¸€ä¸ªï¼Œä¸ç®¡æœ‰å¤šå°‘ä¸ª
+//å—è®¾å¤‡åˆ†åŒº
 struct request_queue {
 	/*
 	 * Together with queue_head for cacheline sharing
 	 */
-	//__elv_add_request()ÖÐ°ÑÐÂ·ÖÅäµÄreq²åÈëµ½queue_head
-	//´óÒ¯µÄ£¬queue_head¾ÍÊÇ´æ·Å´ý·¢ËÍ¸øÇý¶¯´«ÊäµÄreqµÄ£¬¼û__elv_add_request->elv_drain_elevator->deadline_dispatch_requests->
+	//__elv_add_request()ä¸­æŠŠæ–°åˆ†é…çš„reqæ’å…¥åˆ°queue_head
+	//å¤§çˆ·çš„ï¼Œqueue_headå°±æ˜¯å­˜æ”¾å¾…å‘é€ç»™é©±åŠ¨ä¼ è¾“çš„reqçš„ï¼Œè§__elv_add_request->elv_drain_elevator->deadline_dispatch_requests->
 	//->deadline_move_request->deadline_move_to_dispatch->elv_dispatch_add_tail.
-	//´¥·¢Çý¶¯³ÌÐòÈ¡³öqueue_headÉÏ´ý´«ÊäµÄreqµÄº¯ÊýÂ·¾¶ÊÇ
+	//è§¦å‘é©±åŠ¨ç¨‹åºå–å‡ºqueue_headä¸Šå¾…ä¼ è¾“çš„reqçš„å‡½æ•°è·¯å¾„æ˜¯
 	//__blk_run_queue->__blk_run_queue_uncond->scsi_request_fn->blk_fetch_request->blk_peek_request->__elv_next_request->deadline_dispatch_requests
 	struct list_head	queue_head;
     
-    //attempt_merge->elv_merge_requestsº¯ÊýÖÐ£¬°ÑnextÕâ¸örqºÏ²¢µ½ÐÂ²úÉúµÄreq£¬È»ºó¸³Öµlast_merge=req
-	struct request		*last_merge;//ÉÏÒ»´ÎºÏ²¢¹ýµÄrq£¬¼ûelv_merge()»òelv_merge_requests()º¯Êý
-	struct elevator_queue	*elevator;//Ã¿¸öIOµ÷¶ÈËã·¨µÄ×Ü´ú±í
+    //attempt_merge->elv_merge_requestså‡½æ•°ä¸­ï¼ŒæŠŠnextè¿™ä¸ªrqåˆå¹¶åˆ°æ–°äº§ç”Ÿçš„reqï¼Œç„¶åŽèµ‹å€¼last_merge=req
+	struct request		*last_merge;//ä¸Šä¸€æ¬¡åˆå¹¶è¿‡çš„rqï¼Œè§elv_merge()æˆ–elv_merge_requests()å‡½æ•°
+	struct elevator_queue	*elevator;//æ¯ä¸ªIOè°ƒåº¦ç®—æ³•çš„æ€»ä»£è¡¨
 	int			nr_rqs[2];	/* # allocated [a]sync rqs */
 	int			nr_rqs_elvpriv;	/* # allocated rqs w/ elvpriv */
 
@@ -401,50 +401,50 @@ struct request_queue {
 	 * determined using bio_request_list().
 	 */
 	struct request_list	root_rl;
-    //mmc_init_queue()->blk_init_queue()->blk_init_queue_node()->blk_init_allocated_queue() Íê³É³õÊ¼»¯¸³Öµ
-    //blk_finish_plug->queue_unplugged->__blk_run_queue->__blk_run_queue_uncond->mmc_request_fn  Æô¶¯´ÅÅÌ»òÕßemmcÊý¾Ý´«Êä
+    //mmc_init_queue()->blk_init_queue()->blk_init_queue_node()->blk_init_allocated_queue() å®Œæˆåˆå§‹åŒ–èµ‹å€¼
+    //blk_finish_plug->queue_unplugged->__blk_run_queue->__blk_run_queue_uncond->mmc_request_fn  å¯åŠ¨ç£ç›˜æˆ–è€…emmcæ•°æ®ä¼ è¾“
 	request_fn_proc		*request_fn;//mmc_request_fn() scsi_request_fn()
-//mmc_init_queue()->blk_init_queue()->blk_init_queue_node()->blk_init_allocated_queue()->blk_queue_make_request()ÖÐ¸³ÖµÎªblk_queue_bio()
-//nvme blk_mq_init_queue->blk_mq_init_allocated_queue->blk_queue_make_request ÖÐ¸³Öµ
+//mmc_init_queue()->blk_init_queue()->blk_init_queue_node()->blk_init_allocated_queue()->blk_queue_make_request()ä¸­èµ‹å€¼ä¸ºblk_queue_bio()
+//nvme blk_mq_init_queue->blk_mq_init_allocated_queue->blk_queue_make_request ä¸­èµ‹å€¼
 	make_request_fn		*make_request_fn;
-	prep_rq_fn		*prep_rq_fn;//mmc_init_queue()ÖÐ¸³ÖµÎªmmc_prep_request;Ö´ÐÐscsi_alloc_queue->blk_queue_prep_rq¸³ÖµÎªscsi_prep_fn
+	prep_rq_fn		*prep_rq_fn;//mmc_init_queue()ä¸­èµ‹å€¼ä¸ºmmc_prep_request;æ‰§è¡Œscsi_alloc_queue->blk_queue_prep_rqèµ‹å€¼ä¸ºscsi_prep_fn
 	unprep_rq_fn		*unprep_rq_fn;
 	merge_bvec_fn		*merge_bvec_fn;
-	softirq_done_fn		*softirq_done_fn;//nvme_pci_complete_rq   blk_queue_softirq_doneÖÐÉèÖÃ
+	softirq_done_fn		*softirq_done_fn;//nvme_pci_complete_rq   blk_queue_softirq_doneä¸­è®¾ç½®
 	rq_timed_out_fn		*rq_timed_out_fn;
 	dma_drain_needed_fn	*dma_drain_needed;
 	lld_busy_fn		*lld_busy_fn;
 
-	RH_KABI_CONST struct blk_mq_ops *mq_ops;//¸úÓ²¼þÓÐ¹ØµÄ²Ù×÷º¯Êý£¬Ö¸Ïò nvme_mq_ops
-    //Õâ¸öÊý×é±£´æÁËÃ¿¸öCPU¶ÔÓ¦µÄÓ²¼þ¶ÓÁÐ±àºÅ£¬blk_mq_init_allocated_queue()±»¸³ÖµÎªstruct blk_mq_tag_set *set->mq_map
-    //¸ÃÊý×éÏÂ±êÊÇCPUµÄ±àºÅ£¬Êý×é³ÉÔ±ÊÇÓ²¼þ¶ÓÁÐµÄ±àºÅ
+	RH_KABI_CONST struct blk_mq_ops *mq_ops;//è·Ÿç¡¬ä»¶æœ‰å…³çš„æ“ä½œå‡½æ•°ï¼ŒæŒ‡å‘ nvme_mq_ops
+    //è¿™ä¸ªæ•°ç»„ä¿å­˜äº†æ¯ä¸ªCPUå¯¹åº”çš„ç¡¬ä»¶é˜Ÿåˆ—ç¼–å·ï¼Œblk_mq_init_allocated_queue()è¢«èµ‹å€¼ä¸ºstruct blk_mq_tag_set *set->mq_map
+    //è¯¥æ•°ç»„ä¸‹æ ‡æ˜¯CPUçš„ç¼–å·ï¼Œæ•°ç»„æˆå‘˜æ˜¯ç¡¬ä»¶é˜Ÿåˆ—çš„ç¼–å·
 	unsigned int		*mq_map;
 
    
 	/* sw queues */
-	//RH_KABI_REPLACE(struct blk_mq_ctx	*queue_ctx,-------------Ô­ÉúÓÐRH_KABI_REPLACE£¬Ó°Ïì´úÂëÔÄ¶Á£¬È¥³ýµô
-	//Èí¼þ¶ÓÁÐ£¬Ã¿¸öcpuÒ»¸ö£¬blk_mq_init_queueÖÐ·ÖÅäblk_mq_ctx
+	//RH_KABI_REPLACE(struct blk_mq_ctx	*queue_ctx,-------------åŽŸç”Ÿæœ‰RH_KABI_REPLACEï¼Œå½±å“ä»£ç é˜…è¯»ï¼ŒåŽ»é™¤æŽ‰
+	//è½¯ä»¶é˜Ÿåˆ—ï¼Œæ¯ä¸ªcpuä¸€ä¸ªï¼Œblk_mq_init_queueä¸­åˆ†é…blk_mq_ctx
 	struct blk_mq_ctx __percpu	*queue_ctx;
-    //¶ÓÁÐ¸öÊý£¬blk_mq_init_allocated_queue()ÖÐÉèÖÃÎªCPU¸öÊý
+    //é˜Ÿåˆ—ä¸ªæ•°ï¼Œblk_mq_init_allocated_queue()ä¸­è®¾ç½®ä¸ºCPUä¸ªæ•°
 	unsigned int		nr_queues;
 
 	/* hw dispatch queues */
-    //blk_mq_init_queue->blk_mq_init_allocated_queue->blk_mq_realloc_hw_ctxsÖÐ·ÖÅäblk_mq_hw_ctx½á¹¹²¢³õÊ¼»¯
-	struct blk_mq_hw_ctx	**queue_hw_ctx;//±£´æÃ¿Ò»¸öÓ²¼þ¶ÓÁÐÎ¨Ò»¶ÔÓ¦µÄblk_mq_hw_ctx½á¹¹ÌåÖ¸Õë
-	unsigned int		nr_hw_queues;//Ó²¼þ¶ÓÁÐÊýÁ¿£¬À´×Ôset->nr_hw_queues,blk_mq_realloc_hw_ctxs()×îºó±»ÉèÖÃÎª1£¬²»ÖªµÀÎªÉ¶???????
+    //blk_mq_init_queue->blk_mq_init_allocated_queue->blk_mq_realloc_hw_ctxsä¸­åˆ†é…blk_mq_hw_ctxç»“æž„å¹¶åˆå§‹åŒ–
+	struct blk_mq_hw_ctx	**queue_hw_ctx;//ä¿å­˜æ¯ä¸€ä¸ªç¡¬ä»¶é˜Ÿåˆ—å”¯ä¸€å¯¹åº”çš„blk_mq_hw_ctxç»“æž„ä½“æŒ‡é’ˆ
+	unsigned int		nr_hw_queues;//ç¡¬ä»¶é˜Ÿåˆ—æ•°é‡ï¼Œæ¥è‡ªset->nr_hw_queues,blk_mq_realloc_hw_ctxs()æœ€åŽè¢«è®¾ç½®ä¸º1ï¼Œä¸çŸ¥é“ä¸ºå•¥???????
 
 	/*
 	 * Dispatch queue sorting  struct backing_dev_info
 	 */
-	//elv_dispatch_add_tail  ·¢ËÍ¸øÇý¶¯µÄreqµÄ½áÊøÉÈÇøµØÖ·
+	//elv_dispatch_add_tail  å‘é€ç»™é©±åŠ¨çš„reqçš„ç»“æŸæ‰‡åŒºåœ°å€
 	sector_t		end_sector;
-    //elv_dispatch_add_tail Ö¸Ïò´ý·¢ËÍ¸øÇý¶¯µÄreq
+    //elv_dispatch_add_tail æŒ‡å‘å¾…å‘é€ç»™é©±åŠ¨çš„req
 	struct request		*boundary_rq;
 
 	/*
 	 * Delayed queue handling  
 	 */
-	struct delayed_work	delay_work;//mmcµÄÊÇworkº¯ÊýÊÇblk_delay_work£¬blk_alloc_queue_node()ÖÐ¸³Öµ
+	struct delayed_work	delay_work;//mmcçš„æ˜¯workå‡½æ•°æ˜¯blk_delay_workï¼Œblk_alloc_queue_node()ä¸­èµ‹å€¼
 
 	struct backing_dev_info	backing_dev_info;
 
@@ -452,7 +452,7 @@ struct request_queue {
 	 * The queue owner gets to use this for whatever they like.
 	 * ll_rw_blk doesn't touch it.
 	 */
-	void			*queuedata;//mmcµÄÔÚmmc_init_queue()Ö¸Ïòstruct mmc_queue
+	void			*queuedata;//mmcçš„åœ¨mmc_init_queue()æŒ‡å‘struct mmc_queue
 
 	/*
 	 * various queue flags, see QUEUE_* below
@@ -497,8 +497,8 @@ struct request_queue {
 	/*
 	 * queue settings
 	 */
-	//×î¶àµÄrqÇëÇóÊý,²»ÊÇµ±Ç°µÄrqÊý£¬Ó²¼þ¶ÓÁÐÓÐ¹ØµÄ£¬blk_mq_sched_alloc_tags()ÖÐÓÃµ½µÄ¡£blk_mq_init_allocated_queue±»ÉèÖÃÎªÓ²¼þ¶ÓÁÐÉî¶È¡£
-    //Ò»¸öÓ²¼þ¶ÓÁÐÖ§³ÖµÄ×î¶àreq¸öÊý
+	//æœ€å¤šçš„rqè¯·æ±‚æ•°,ä¸æ˜¯å½“å‰çš„rqæ•°ï¼Œç¡¬ä»¶é˜Ÿåˆ—æœ‰å…³çš„ï¼Œblk_mq_sched_alloc_tags()ä¸­ç”¨åˆ°çš„ã€‚blk_mq_init_allocated_queueè¢«è®¾ç½®ä¸ºç¡¬ä»¶é˜Ÿåˆ—æ·±åº¦ã€‚
+    //ä¸€ä¸ªç¡¬ä»¶é˜Ÿåˆ—æ”¯æŒçš„æœ€å¤šreqä¸ªæ•°
     unsigned long		nr_requests;	/* Max # of requests */
 	unsigned int		nr_congestion_on;
 	unsigned int		nr_congestion_off;
@@ -510,9 +510,9 @@ struct request_queue {
 	unsigned int		dma_alignment;
 
 	struct blk_queue_tag	*queue_tags;
-    //blk_queue_start_tag()ÖÐ°Ñreq²åÈë¸ÃÁ´±í
+    //blk_queue_start_tag()ä¸­æŠŠreqæ’å…¥è¯¥é“¾è¡¨
 	struct list_head	tag_busy_list;
-    //¶ÓÁÐ²åÈëÐÂµÄÒ»¸öreq¼Ó1£¬__elv_add_request(),elv_dispatch_add_tail()¼õ1,blk_dequeue_request()ÖÐ¼Ó1
+    //é˜Ÿåˆ—æ’å…¥æ–°çš„ä¸€ä¸ªreqåŠ 1ï¼Œ__elv_add_request(),elv_dispatch_add_tail()å‡1,blk_dequeue_request()ä¸­åŠ 1
 	unsigned int		nr_sorted;
 	unsigned int		in_flight[2];
 	/*
@@ -523,9 +523,9 @@ struct request_queue {
 	unsigned int		request_fn_active;
 
 	unsigned int		rq_timeout;
-    //blk_start_request->blk_add_timer()Æô¶¯request_queue->timeout¶¨Ê±Æ÷
-	struct timer_list	timeout;//mmcµÄ¶¨Ê±Æ÷º¯ÊýÊÇblk_rq_timed_out_timer(),blk_alloc_queue_nodeÖÐ¸³Öµ
-	//blk_start_request->blk_add_timer() ÖÐ°Ñreq²åÈë¸ÃÁ´±í
+    //blk_start_request->blk_add_timer()å¯åŠ¨request_queue->timeoutå®šæ—¶å™¨
+	struct timer_list	timeout;//mmcçš„å®šæ—¶å™¨å‡½æ•°æ˜¯blk_rq_timed_out_timer(),blk_alloc_queue_nodeä¸­èµ‹å€¼
+	//blk_start_request->blk_add_timer() ä¸­æŠŠreqæ’å…¥è¯¥é“¾è¡¨
 	struct list_head	timeout_list;
 
 	struct list_head	icq_list;
@@ -575,7 +575,7 @@ struct request_queue {
 #endif
 #ifdef CONFIG_BLK_DEV_THROTTLING
 	/* Throttle data */
-	struct throtl_data *td;//blk_throtl_initÖÐ·ÖÅä
+	struct throtl_data *td;//blk_throtl_initä¸­åˆ†é…
 #endif
 	struct rcu_head		rcu_head;
 	wait_queue_head_t	mq_freeze_wq;
@@ -583,7 +583,7 @@ struct request_queue {
 	struct list_head	all_q_node;
 
 	RH_KABI_EXTEND(unprep_rq_fn		*unprep_rq_fn)
-    //blk_mq_init_queue->blk_mq_init_allocated_queue->blk_mq_add_queue_tag_set ÉèÖÃblk_mq_tag_set
+    //blk_mq_init_queue->blk_mq_init_allocated_queue->blk_mq_add_queue_tag_set è®¾ç½®blk_mq_tag_set
 	//RH_KABI_EXTEND(struct blk_mq_tag_set	*tag_set)
 	struct blk_mq_tag_set	*tag_set;
 	RH_KABI_EXTEND(struct list_head		tag_set_list)
@@ -596,13 +596,13 @@ struct request_queue {
 	RH_KABI_EXTEND(struct blk_flush_queue   *fq)
 	RH_KABI_EXTEND(struct percpu_ref	q_usage_counter)
 	RH_KABI_EXTEND(bool			mq_sysfs_init_done)
-	//blk_mq_init_queue->blk_mq_init_allocated_queue ÖÐ·ÖÅä³õÊ¼»¯
+	//blk_mq_init_queue->blk_mq_init_allocated_queue ä¸­åˆ†é…åˆå§‹åŒ–
 	//RH_KABI_EXTEND(struct work_struct	timeout_work)
 	struct work_struct	timeout_work;
 	//RH_KABI_EXTEND(struct delayed_work	requeue_work)
-	struct delayed_work	requeue_work;//blk_mq_init_allocated_queue()ÖÐworkº¯Êý¸³ÖµÎªblk_mq_requeue_work
+	struct delayed_work	requeue_work;//blk_mq_init_allocated_queue()ä¸­workå‡½æ•°èµ‹å€¼ä¸ºblk_mq_requeue_work
 	RH_KABI_EXTEND(struct blk_queue_stats	*stats)
-	//blk_mq_init_allocated_queue()ÖÐ³õÊ¼»¯
+	//blk_mq_init_allocated_queue()ä¸­åˆå§‹åŒ–
 	//RH_KABI_EXTEND(struct blk_stat_callback	*poll_cb)
 	struct blk_stat_callback	*poll_cb;
 	RH_KABI_EXTEND(struct blk_rq_stat	poll_stat[2])
@@ -750,7 +750,7 @@ static inline void queue_flag_clear(unsigned int flag, struct request_queue *q)
 #define blk_queue_dead(q)	test_bit(QUEUE_FLAG_DEAD, &(q)->queue_flags)
 #define blk_queue_bypass(q)	test_bit(QUEUE_FLAG_BYPASS, &(q)->queue_flags)
 #define blk_queue_init_done(q)	test_bit(QUEUE_FLAG_INIT_DONE, &(q)->queue_flags)
-//blk_queue_nomergesÊÇÅÐ¶ÏÉè±¸¶ÓÁÐÊÇ·ñÖ§³ÖIOºÏ²¢£¬»òÕßËµÊÇ·ñ½ûÖ¹IOºÏ²¢
+//blk_queue_nomergesæ˜¯åˆ¤æ–­è®¾å¤‡é˜Ÿåˆ—æ˜¯å¦æ”¯æŒIOåˆå¹¶ï¼Œæˆ–è€…è¯´æ˜¯å¦ç¦æ­¢IOåˆå¹¶
 #define blk_queue_nomerges(q)	test_bit(QUEUE_FLAG_NOMERGES, &(q)->queue_flags)
 #define blk_queue_noxmerges(q)	\
 	test_bit(QUEUE_FLAG_NOXMERGES, &(q)->queue_flags)
@@ -867,7 +867,7 @@ static inline bool blk_check_merge_flags(unsigned int flags1,
 
 	return true;
 }
-//Ã²ËÆÊÇ±È½ÏÁ½¸öbio¶ÔÓ¦µÄbhµÄÊµ¼ÊÄÚ´æpageÊÇ·ñÒ»Ñù????????
+//è²Œä¼¼æ˜¯æ¯”è¾ƒä¸¤ä¸ªbioå¯¹åº”çš„bhçš„å®žé™…å†…å­˜pageæ˜¯å¦ä¸€æ ·????????
 static inline bool blk_write_same_mergeable(struct bio *a, struct bio *b)
 {
 	if (bio_data(a) == bio_data(b))
@@ -949,7 +949,7 @@ struct req_iterator {
 		for (_bio = (rq)->bio; _bio; _bio = _bio->bi_next)
 
 #define rq_for_each_segment(bvl, _rq, _iter)			\
-	__rq_for_each_bio(_iter.bio, _rq)			\ //±éÀúreqÉÏµÄÃ¿Ò»¸öbio
+	__rq_for_each_bio(_iter.bio, _rq)			\ //éåŽ†reqä¸Šçš„æ¯ä¸€ä¸ªbio
 		bio_for_each_segment(bvl, _iter.bio, _iter.i)
 
 #define rq_iter_last(rq, _iter)					\
@@ -1281,9 +1281,9 @@ static inline void blk_post_runtime_resume(struct request_queue *q, int err) {}
  */
 struct blk_plug {
 	unsigned long magic; /* detect uninitialized use-cases */
-    //µ¥¶ÓÁÐÊ±´ú£¬Ã¿¸ö½ø³Ì¶ÀÓÐµÄblk_plug£¬Ã¿¸ö½ø³ÌµÄbio¾ÍÊÇÏÈÌí¼Óµ½blk_plugÁ´±íÉÏ,blk_flush_plug_list()»á¶Ô¸ÃÁ´±íÉÏµÄreqÅÅÐò
+    //å•é˜Ÿåˆ—æ—¶ä»£ï¼Œæ¯ä¸ªè¿›ç¨‹ç‹¬æœ‰çš„blk_plugï¼Œæ¯ä¸ªè¿›ç¨‹çš„bioå°±æ˜¯å…ˆæ·»åŠ åˆ°blk_plugé“¾è¡¨ä¸Š,blk_flush_plug_list()ä¼šå¯¹è¯¥é“¾è¡¨ä¸Šçš„reqæŽ’åº
 	struct list_head list; /* requests */
-    //mq¶à¶ÓÁÐÊ±´ú£¬ÐÂ·ÖÅäµÄreqÌí¼Óµ½plug->mq_listÁ´±íÉÏ£¬¿´blk_mq_make_request()
+    //mqå¤šé˜Ÿåˆ—æ—¶ä»£ï¼Œæ–°åˆ†é…çš„reqæ·»åŠ åˆ°plug->mq_listé“¾è¡¨ä¸Šï¼Œçœ‹blk_mq_make_request()
 	struct list_head mq_list; /* blk-mq requests */
 	struct list_head cb_list; /* md requires an unplug callback */
 };
@@ -1884,7 +1884,7 @@ static inline bool blk_integrity_is_initialized(struct gendisk *g)
 }
 
 #endif /* CONFIG_BLK_DEV_INTEGRITY */
-//mmcµÄÊÇmmc_bdops
+//mmcçš„æ˜¯mmc_bdops
 struct block_device_operations {
 	int (*open) (struct block_device *, fmode_t);
 	void (*release) (struct gendisk *, fmode_t);
