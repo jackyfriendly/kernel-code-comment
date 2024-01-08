@@ -109,7 +109,7 @@ void ext4_journal_abort_handle(const char *caller, unsigned int line,
 
 	jbd2_journal_abort_handle(handle);
 }
-//°Ñbh¶ÔÓ¦µÄjhÌí¼Óµ½transactionµÄBJ_ReservedÁ´±í
+//æŠŠbhå¯¹åº”çš„jhæ·»åŠ åˆ°transactionçš„BJ_Reservedé“¾è¡¨
 int __ext4_journal_get_write_access(const char *where, unsigned int line,
 				    handle_t *handle, struct buffer_head *bh)
 {
@@ -206,7 +206,7 @@ int __ext4_journal_get_create_access(const char *where, unsigned int line,
 	}
 	return err;
 }
-//°ÑjhÌí¼Óµ½handle->h_transactionµÄBJ_MetadataÁ´±í,±ê¼ÇinodeÎïÀí¿éÔªÊı¾İ¶ÔÓ¦µÄbhÔà
+//æŠŠjhæ·»åŠ åˆ°handle->h_transactionçš„BJ_Metadataé“¾è¡¨,æ ‡è®°inodeç‰©ç†å—å…ƒæ•°æ®å¯¹åº”çš„bhè„
 int __ext4_handle_dirty_metadata(const char *where, unsigned int line,
 				 handle_t *handle, struct inode *inode,
 				 struct buffer_head *bh)
@@ -218,7 +218,7 @@ int __ext4_handle_dirty_metadata(const char *where, unsigned int line,
 	set_buffer_meta(bh);
 	set_buffer_prio(bh);
 	if (ext4_handle_valid(handle)) {
-        //°ÑjhÌí¼Óµ½handle->h_transactionµÄBJ_MetadataÁ´±í
+        //æŠŠjhæ·»åŠ åˆ°handle->h_transactionçš„BJ_Metadataé“¾è¡¨
 		err = jbd2_journal_dirty_metadata(handle, bh);
 		/* Errors can only happen if there is a bug */
 		if (WARN_ON_ONCE(err)) {
@@ -235,7 +235,7 @@ int __ext4_handle_dirty_metadata(const char *where, unsigned int line,
 					 handle->h_buffer_credits, err);
 		}
 	} else {
-		if (inode)//±ê¼ÇinodeÎïÀí¿éÔªÊı¾İ¶ÔÓ¦µÄbhÔà
+		if (inode)//æ ‡è®°inodeç‰©ç†å—å…ƒæ•°æ®å¯¹åº”çš„bhè„
 			mark_buffer_dirty_inode(bh, inode);
 		else
 			mark_buffer_dirty(bh);

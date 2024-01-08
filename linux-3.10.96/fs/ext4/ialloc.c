@@ -111,22 +111,22 @@ void ext4_end_bitmap_read(struct buffer_head *bh, int uptodate)
  *
  * Return buffer_head of bitmap on success or NULL.
  */
-//ÏÈ¸ù¾İ¿é×éºÅblock_groupµÃµ½¿é×éÃèÊö·ûext4_group_desc£¬ÔÙÓÉ¿é×éÃèÊö·ûµÃµ½±£´æ
-//inode bitmapÊı¾İµÄÎïÀí¿éºÅ£¬×îºó¶ÁÈ¡¸Ãinode bitmapÎïÀí¿éµÄÊı¾İµ½bh²¢·µ»Ø
+//å…ˆæ ¹æ®å—ç»„å·block_groupå¾—åˆ°å—ç»„æè¿°ç¬¦ext4_group_descï¼Œå†ç”±å—ç»„æè¿°ç¬¦å¾—åˆ°ä¿å­˜
+//inode bitmapæ•°æ®çš„ç‰©ç†å—å·ï¼Œæœ€åè¯»å–è¯¥inode bitmapç‰©ç†å—çš„æ•°æ®åˆ°bhå¹¶è¿”å›
 static struct buffer_head *
 ext4_read_inode_bitmap(struct super_block *sb, ext4_group_t block_group)
 {
 	struct ext4_group_desc *desc;
 	struct buffer_head *bh = NULL;
 	ext4_fsblk_t bitmap_blk;
-    //¸ù¾İ¿é×éºÅblock_groupµÃµ½Ëü¶ÔÓ¦µÄ¿é×éÃèÊö·ûext4_group_desc
+    //æ ¹æ®å—ç»„å·block_groupå¾—åˆ°å®ƒå¯¹åº”çš„å—ç»„æè¿°ç¬¦ext4_group_desc
 	desc = ext4_get_group_desc(sb, block_group, NULL);
 	if (!desc)
 		return NULL;
     
-    //¸Ãº¯ÊıÖ»ÊÇ·µ»ØÕâ¸ö¿é×éµÄinode bitmapµÄÎïÀí¿éºÅbitmap_blk£¬Õâ¸öÎïÀí¿é±£´æÁËinode bitmapµÄÊı¾İ
+    //è¯¥å‡½æ•°åªæ˜¯è¿”å›è¿™ä¸ªå—ç»„çš„inode bitmapçš„ç‰©ç†å—å·bitmap_blkï¼Œè¿™ä¸ªç‰©ç†å—ä¿å­˜äº†inode bitmapçš„æ•°æ®
 	bitmap_blk = ext4_inode_bitmap(sb, desc);
-    //¸ù¾İinode bitmapµÄÎïÀí¿éºÅµÃµ½Ó³ÉäµÄbh
+    //æ ¹æ®inode bitmapçš„ç‰©ç†å—å·å¾—åˆ°æ˜ å°„çš„bh
 	bh = sb_getblk(sb, bitmap_blk);
 	if (unlikely(!bh)) {
 		ext4_error(sb, "Cannot read inode bitmap - "
@@ -134,8 +134,8 @@ ext4_read_inode_bitmap(struct super_block *sb, ext4_group_t block_group)
 			    block_group, bitmap_blk);
 		return NULL;
 	}
-    //Èç¹ûinode bitmapÎïÀí¿éµÄÊı¾İÒÑ¾­¶ÁÈ¡µ½ÁËÓ³ÉäµÄbh£¬Ö±½Ó·µ»Øbh¡£·ñÔòÏÂ±ßÖ´ĞĞ
-    //submit_bh()¶ÁÈ¡¸ÃÎïÀí¿éÊı¾İµ½bh
+    //å¦‚æœinode bitmapç‰©ç†å—çš„æ•°æ®å·²ç»è¯»å–åˆ°äº†æ˜ å°„çš„bhï¼Œç›´æ¥è¿”å›bhã€‚å¦åˆ™ä¸‹è¾¹æ‰§è¡Œ
+    //submit_bh()è¯»å–è¯¥ç‰©ç†å—æ•°æ®åˆ°bh
 	if (bitmap_uptodate(bh))
 		goto verify;
 
@@ -340,7 +340,7 @@ struct orlov_stats {
  * for a particular block group or flex_bg.  If flex_size is 1, then g
  * is a block group number; otherwise it is flex_bg number.
  */
-//µÃµ½¿é×é»òÕßflex group¿é×éµÄ¿ÕÏĞinodeÊı¡¢¿ÕÏĞblockÊı¡¢ÒÑÊ¹ÓÃµÄÄ¿Â¼Êı
+//å¾—åˆ°å—ç»„æˆ–è€…flex groupå—ç»„çš„ç©ºé—²inodeæ•°ã€ç©ºé—²blockæ•°ã€å·²ä½¿ç”¨çš„ç›®å½•æ•°
 static void get_orlov_stats(struct super_block *sb, ext4_group_t g,
 			    int flex_size, struct orlov_stats *stats)
 {
@@ -348,16 +348,16 @@ static void get_orlov_stats(struct super_block *sb, ext4_group_t g,
 	struct flex_groups *flex_group = EXT4_SB(sb)->s_flex_groups;
 
 	if (flex_size > 1) {
-        //flex group¿é×é¿ÕÏĞinodeÊı
+        //flex groupå—ç»„ç©ºé—²inodeæ•°
 		stats->free_inodes = atomic_read(&flex_group[g].free_inodes);
-        //flex group¿é×é¿ÕÏĞµÄclusterÊı£¬ÆäÊµ¾ÍÊÇ¿ÕÏĞblockÊı£¬Ò»¸öclusterÒ»¸öblock
+        //flex groupå—ç»„ç©ºé—²çš„clusteræ•°ï¼Œå…¶å®å°±æ˜¯ç©ºé—²blockæ•°ï¼Œä¸€ä¸ªclusterä¸€ä¸ªblock
 		stats->free_clusters = atomic64_read(&flex_group[g].free_clusters);
-        //flex group¿é×éÒÑÊ¹ÓÃµÄÄ¿Â¼Êı
+        //flex groupå—ç»„å·²ä½¿ç”¨çš„ç›®å½•æ•°
 		stats->used_dirs = atomic_read(&flex_group[g].used_dirs);
 		return;
 	}
 
-    //µ½ÕâÀïËµÃ÷Ã»ÓĞÊ¹ÓÃ flex group¿é×é£¬ÔòµÃµ½g´ú±íµÄ¿é×éµÄ¿ÕÏĞinodeÊı¡¢¿ÕÏĞblockÊı¡¢ÒÑÊ¹ÓÃµÄÄ¿Â¼Ê÷
+    //åˆ°è¿™é‡Œè¯´æ˜æ²¡æœ‰ä½¿ç”¨ flex groupå—ç»„ï¼Œåˆ™å¾—åˆ°gä»£è¡¨çš„å—ç»„çš„ç©ºé—²inodeæ•°ã€ç©ºé—²blockæ•°ã€å·²ä½¿ç”¨çš„ç›®å½•æ ‘
 	desc = ext4_get_group_desc(sb, g, NULL);
 	if (desc) {
 		stats->free_inodes = ext4_free_inodes_count(sb, desc);
@@ -390,36 +390,36 @@ static void get_orlov_stats(struct super_block *sb, ext4_group_t g,
  * of the groups look good we just look for a group with more
  * free inodes than average (starting at parent's group).
  */
-//ÕÒÒ»¸ö¿ÕÏĞinodeÊı³äÔ£¡¢¿ÕÏĞblockÊı³äÔ£¡¢ÒÑÊ¹ÓÃµÄÄ¿Â¼ºÜÉÙµÄ¿é×é£¬°ÑÕÒµ½µÄ¿é×éºÅ¸³Öµ¸øgroup
-/*¾ßÌåÏ¸½ÚÊÇ
-1:Èç¹û¸¸Ä¿Â¼ÊÇ¶¥²ãÄ¿Â¼»òÕß¸ùÄ¿Â¼£¬ÔòÒÔbest_ndir¡¢avefreei¡¢avefreec ÎªãĞÖµ£¬´Ó0ºÅ¿é×é»òÕß
-flex group¿é×éÏòºóÒ»Ö±²éÕÒ£¬ÕÒµ½¿é×éÒÑÊ¹ÓÃÄ¿Â¼Êı¡¢¿é×é¿ÕÏĞinodeÊı¡¢¿é×é¿ÕÏĞblockÊı·ûºÏãĞÖµµÄ
-¿é×é¡£ÕÒµ½ºó£¬Èç¹û²»ÊÇflex group¿é×é£¬Ö±½Ó·µ»ØÕâ¸ö¿é×éºÅ¡£Èç¹ûÊÇflex group¿é×é£¬
-Ôò´Ó¸Ãflex group¿é×éÕÒÒ»¸ö¿ÕÏĞinode³ä×ãµÄ¿é×é¡£
+//æ‰¾ä¸€ä¸ªç©ºé—²inodeæ•°å……è£•ã€ç©ºé—²blockæ•°å……è£•ã€å·²ä½¿ç”¨çš„ç›®å½•å¾ˆå°‘çš„å—ç»„ï¼ŒæŠŠæ‰¾åˆ°çš„å—ç»„å·èµ‹å€¼ç»™group
+/*å…·ä½“ç»†èŠ‚æ˜¯
+1:å¦‚æœçˆ¶ç›®å½•æ˜¯é¡¶å±‚ç›®å½•æˆ–è€…æ ¹ç›®å½•ï¼Œåˆ™ä»¥best_ndirã€avefreeiã€avefreec ä¸ºé˜ˆå€¼ï¼Œä»0å·å—ç»„æˆ–è€…
+flex groupå—ç»„å‘åä¸€ç›´æŸ¥æ‰¾ï¼Œæ‰¾åˆ°å—ç»„å·²ä½¿ç”¨ç›®å½•æ•°ã€å—ç»„ç©ºé—²inodeæ•°ã€å—ç»„ç©ºé—²blockæ•°ç¬¦åˆé˜ˆå€¼çš„
+å—ç»„ã€‚æ‰¾åˆ°åï¼Œå¦‚æœä¸æ˜¯flex groupå—ç»„ï¼Œç›´æ¥è¿”å›è¿™ä¸ªå—ç»„å·ã€‚å¦‚æœæ˜¯flex groupå—ç»„ï¼Œ
+åˆ™ä»è¯¥flex groupå—ç»„æ‰¾ä¸€ä¸ªç©ºé—²inodeå……è¶³çš„å—ç»„ã€‚
 
-2:Èç¹û¸¸Ä¿Â¼²»ÊÇ¶¥²ãÄ¿Â¼»òÕß¸ùÄ¿Â¼£¬ÔòÒÔmax_dirs¡¢min_inodes¡¢min_clustersÎªãĞÖµ£¬
-´Ó0ºÅ¿é×é»òÕßflex group¿é×éÏòºóÒ»Ö±²éÕÒ£¬ÕÒµ½¿é×éÒÑÊ¹ÓÃÄ¿Â¼Êı¡¢¿é×é¿ÕÏĞinodeÊı¡¢¿é×é¿ÕÏĞ
-blockÊı·ûºÏãĞÖµµÄ¿é×é¡£ÕÒµ½ºó£¬Èç¹û²»ÊÇflex group¿é×é£¬Èç¹ûÊÇflex group¿é×é£¬
-Ôò´Ó¸Ãflex group¿é×éÕÒÒ»¸ö¿ÕÏĞinode³ä×ãµÄ¿é×é
+2:å¦‚æœçˆ¶ç›®å½•ä¸æ˜¯é¡¶å±‚ç›®å½•æˆ–è€…æ ¹ç›®å½•ï¼Œåˆ™ä»¥max_dirsã€min_inodesã€min_clustersä¸ºé˜ˆå€¼ï¼Œ
+ä»0å·å—ç»„æˆ–è€…flex groupå—ç»„å‘åä¸€ç›´æŸ¥æ‰¾ï¼Œæ‰¾åˆ°å—ç»„å·²ä½¿ç”¨ç›®å½•æ•°ã€å—ç»„ç©ºé—²inodeæ•°ã€å—ç»„ç©ºé—²
+blockæ•°ç¬¦åˆé˜ˆå€¼çš„å—ç»„ã€‚æ‰¾åˆ°åï¼Œå¦‚æœä¸æ˜¯flex groupå—ç»„ï¼Œå¦‚æœæ˜¯flex groupå—ç»„ï¼Œ
+åˆ™ä»è¯¥flex groupå—ç»„æ‰¾ä¸€ä¸ªç©ºé—²inodeå……è¶³çš„å—ç»„
 
-3:Èç¹û°´ÕÕ²½Öè1ºÍ2ÕÒ²»µ½ºÏÊÊµÄ¿é×é£¬Ôò´Ó0ºÅ¿é×é»òÕßflex group¿é×éÏòºóÒ»Ö±²éÕÒ£¬Ö»Òª¿é×é
-¿ÕÏĞinodeÊı³äÔ££¬Ö±½Ó·µ»Ø¸Ã¿é×éºÅ
+3:å¦‚æœæŒ‰ç…§æ­¥éª¤1å’Œ2æ‰¾ä¸åˆ°åˆé€‚çš„å—ç»„ï¼Œåˆ™ä»0å·å—ç»„æˆ–è€…flex groupå—ç»„å‘åä¸€ç›´æŸ¥æ‰¾ï¼Œåªè¦å—ç»„
+ç©ºé—²inodeæ•°å……è£•ï¼Œç›´æ¥è¿”å›è¯¥å—ç»„å·
 
-×Ü½á: parent_group ÊÇ¸ö¹Ø¼ü£¬ËüÊÇËÑË÷¿ÕÏĞ¿é×é(ÓĞ¿ÕÏĞinodeºÍblock)µÄ»ù×¼¿é×éºÅ
-1:ÊÇ¶¥²ãÄ¿Â¼»òÕß¸ùÄ¿Â¼Ê±£¬Ôò²ÉÓÃ·ÖÉ¢ĞÎÊ½²éÕÒ¿ÕÏĞ¿é×é£¬ÒòÎª´ËÊ±parent_group = (unsigned)grp % ngroups£¬parent_groupÊÇ¸öËæ»úÖµ
-2:Èç¹û²»ÊÇ¶¥²ãÄ¿Â¼»ò¸ùÄ¿Â¼£¬²ÅÔÚ¸¸Ä¿Â¼ËùÊô¿é×é¸½½ü²éÕÒ¿ÕÏĞ¿é×é£¬ÒòÎª´ËÊ±parent_group = EXT4_I(parent)->i_block_group£¬¾ÍÊÇ¸¸Ä¿Â¼ËùÊôµÄ¿é×é±àºÅ
-3:Èç¹û×îºóÕÒ²»µ½ºÏÊÊµÄ¿ÕÏĞ¿é×é£¬ÄÇ¾ÍÃ»ÄÇÃ´¶àÏŞÖÆÌõ¼şÁË£¬´Ó0ºÅ¿é×é¿ªÊ¼±éÀú£¬Ë­ÓĞ¿ÕÏĞinode¾ÍÑ¡ÖĞË­×÷Îª×îÖÕµÄ¿é×é
+æ€»ç»“: parent_group æ˜¯ä¸ªå…³é”®ï¼Œå®ƒæ˜¯æœç´¢ç©ºé—²å—ç»„(æœ‰ç©ºé—²inodeå’Œblock)çš„åŸºå‡†å—ç»„å·
+1:æ˜¯é¡¶å±‚ç›®å½•æˆ–è€…æ ¹ç›®å½•æ—¶ï¼Œåˆ™é‡‡ç”¨åˆ†æ•£å½¢å¼æŸ¥æ‰¾ç©ºé—²å—ç»„ï¼Œå› ä¸ºæ­¤æ—¶parent_group = (unsigned)grp % ngroupsï¼Œparent_groupæ˜¯ä¸ªéšæœºå€¼
+2:å¦‚æœä¸æ˜¯é¡¶å±‚ç›®å½•æˆ–æ ¹ç›®å½•ï¼Œæ‰åœ¨çˆ¶ç›®å½•æ‰€å±å—ç»„é™„è¿‘æŸ¥æ‰¾ç©ºé—²å—ç»„ï¼Œå› ä¸ºæ­¤æ—¶parent_group = EXT4_I(parent)->i_block_groupï¼Œå°±æ˜¯çˆ¶ç›®å½•æ‰€å±çš„å—ç»„ç¼–å·
+3:å¦‚æœæœ€åæ‰¾ä¸åˆ°åˆé€‚çš„ç©ºé—²å—ç»„ï¼Œé‚£å°±æ²¡é‚£ä¹ˆå¤šé™åˆ¶æ¡ä»¶äº†ï¼Œä»0å·å—ç»„å¼€å§‹éå†ï¼Œè°æœ‰ç©ºé—²inodeå°±é€‰ä¸­è°ä½œä¸ºæœ€ç»ˆçš„å—ç»„
 */
 static int find_group_orlov(struct super_block *sb, struct inode *parent,
 			    ext4_group_t *group, umode_t mode,
-			    const struct qstr *qstr)//qstrÊÇ´´½¨µÄÄ¿Â¼Ãû×Ö
+			    const struct qstr *qstr)//qstræ˜¯åˆ›å»ºçš„ç›®å½•åå­—
 {
-    //¸¸inodeËùÊôµÄ¿é×é±àºÅ
+    //çˆ¶inodeæ‰€å±çš„å—ç»„ç¼–å·
 	ext4_group_t parent_group = EXT4_I(parent)->i_block_group;
 	struct ext4_sb_info *sbi = EXT4_SB(sb);
-    //¿é×é¸öÊı
+    //å—ç»„ä¸ªæ•°
 	ext4_group_t real_ngroups = ext4_get_groups_count(sb);
-    //Ã¿¸ö¿é×éµÄ×î¶àµÄinodeÊı
+    //æ¯ä¸ªå—ç»„çš„æœ€å¤šçš„inodeæ•°
 	int inodes_per_group = EXT4_INODES_PER_GROUP(sb);
 	unsigned int freei, avefreei, grp_free;
 	ext4_fsblk_t freeb, avefreec;
@@ -429,7 +429,7 @@ static int find_group_orlov(struct super_block *sb, struct inode *parent,
 	ext4_group_t i, grp, g, ngroups;
 	struct ext4_group_desc *desc;
 	struct orlov_stats stats;
-    //flex group°üº¬µÄ¿é×é¸öÊı£¬16
+    //flex groupåŒ…å«çš„å—ç»„ä¸ªæ•°ï¼Œ16
 	int flex_size = ext4_flex_bg_size(sbi);
 	struct dx_hash_info hinfo;
 
@@ -439,28 +439,28 @@ static int find_group_orlov(struct super_block *sb, struct inode *parent,
 			sbi->s_log_groups_per_flex;
 		parent_group >>= sbi->s_log_groups_per_flex;
 	}
-    //¿ÕÏĞinodeÊı
+    //ç©ºé—²inodeæ•°
 	freei = percpu_counter_read_positive(&sbi->s_freeinodes_counter);
-    //Æ½¾ùÃ¿¸ö¿é×éµÄ¿ÕÏĞinodeÊı
+    //å¹³å‡æ¯ä¸ªå—ç»„çš„ç©ºé—²inodeæ•°
 	avefreei = freei / ngroups;
-    //¿ÕÏĞblockÊı
+    //ç©ºé—²blockæ•°
 	freeb = EXT4_C2B(sbi,
 		percpu_counter_read_positive(&sbi->s_freeclusters_counter));
 	avefreec = freeb;
-    //avefreec = avefreec/ngroups Æ½¾ùÃ¿¸ö¿é×é¿ÕÏĞblockÊı
+    //avefreec = avefreec/ngroups å¹³å‡æ¯ä¸ªå—ç»„ç©ºé—²blockæ•°
 	do_div(avefreec, ngroups);
 	ndirs = percpu_counter_read_positive(&sbi->s_dirs_counter);
 
-    /*Õâ¸öif³ÉÁ¢Ó¦¸ÃËµÃ÷¸¸Ä¿Â¼ÊÇ¸ùÄ¿Â¼»òÕß¶¥²ãÄ¿Â¼*/
+    /*è¿™ä¸ªifæˆç«‹åº”è¯¥è¯´æ˜çˆ¶ç›®å½•æ˜¯æ ¹ç›®å½•æˆ–è€…é¡¶å±‚ç›®å½•*/
 	if (S_ISDIR(mode) &&
-	    ((parent == sb->s_root->d_inode) ||//¸¸Ä¿Â¼ÊÇ¸ùÎÄ¼şÏµÍ³¸ùÄ¿Â¼
-	     (ext4_test_inode_flag(parent, EXT4_INODE_TOPDIR))))//¶¥²ãÄ¿Â¼
+	    ((parent == sb->s_root->d_inode) ||//çˆ¶ç›®å½•æ˜¯æ ¹æ–‡ä»¶ç³»ç»Ÿæ ¹ç›®å½•
+	     (ext4_test_inode_flag(parent, EXT4_INODE_TOPDIR))))//é¡¶å±‚ç›®å½•
     {
-	    //Ã¿¸ö¿é×é×î¶àµÄinodeÊı
+	    //æ¯ä¸ªå—ç»„æœ€å¤šçš„inodeæ•°
 		int best_ndir = inodes_per_group;
 		int ret = -1;
 
-        //ÏÂ±ßÕâÊÇ¸ù¾İ¸÷ÖÖ¹æÔò¼ÆËãÒ»¸ö³õÊ¼¿é×éºÅ¸³ÓÚgrp
+        //ä¸‹è¾¹è¿™æ˜¯æ ¹æ®å„ç§è§„åˆ™è®¡ç®—ä¸€ä¸ªåˆå§‹å—ç»„å·èµ‹äºgrp
 		if (qstr) {
 			hinfo.hash_version = DX_HASH_HALF_MD4;
 			hinfo.seed = sbi->s_hash_seed;
@@ -468,45 +468,45 @@ static int find_group_orlov(struct super_block *sb, struct inode *parent,
 			grp = hinfo.hash;
 		} else
 			get_random_bytes(&grp, sizeof(grp));
-        //parent_group¾ÍÊÇÉÏ±ßµÄ³õÊ¼¿é×éºÅgrp
+        //parent_groupå°±æ˜¯ä¸Šè¾¹çš„åˆå§‹å—ç»„å·grp
 		parent_group = (unsigned)grp % ngroups;
 
-        //´Ó0ºÅ¿é×éÒÀ´ÎÏòºó²éÕÒ£¬¿´ÄÄ¸ö¿é×éÓĞ³äÔ£µÄinodeºÍblock
-        /*ÓĞ¸öÒÉÎÊ£¬Èç¹ûÊ¹ÓÃflex group¿é×éµÄÇé¿öÏÂ£¬ngroupsÓ¦¸ÃÊÇflex group×é¸öÊı£¬
-        Ò»¸öflex group×éÓĞ16¸öÕæÕıµÄ¿é×é*/
+        //ä»0å·å—ç»„ä¾æ¬¡å‘åæŸ¥æ‰¾ï¼Œçœ‹å“ªä¸ªå—ç»„æœ‰å……è£•çš„inodeå’Œblock
+        /*æœ‰ä¸ªç–‘é—®ï¼Œå¦‚æœä½¿ç”¨flex groupå—ç»„çš„æƒ…å†µä¸‹ï¼Œngroupsåº”è¯¥æ˜¯flex groupç»„ä¸ªæ•°ï¼Œ
+        ä¸€ä¸ªflex groupç»„æœ‰16ä¸ªçœŸæ­£çš„å—ç»„*/
 		for (i = 0; i < ngroups; i++) {
 			g = (parent_group + i) % ngroups;
-            //µÃµ½¿é×é»òÕßflex group¿é×éµÄ¿ÕÏĞinodeÊı¡¢¿ÕÏĞblockÊı¡¢ÒÑÊ¹ÓÃµÄÄ¿Â¼Êı
+            //å¾—åˆ°å—ç»„æˆ–è€…flex groupå—ç»„çš„ç©ºé—²inodeæ•°ã€ç©ºé—²blockæ•°ã€å·²ä½¿ç”¨çš„ç›®å½•æ•°
 			get_orlov_stats(sb, g, flex_size, &stats);
-            //µ±Ç°¿é×é(»òÕßflex group¿é×é)£¬Ã»ÓĞ¿ÕÏĞinode£¬Ìø¹ı
+            //å½“å‰å—ç»„(æˆ–è€…flex groupå—ç»„)ï¼Œæ²¡æœ‰ç©ºé—²inodeï¼Œè·³è¿‡
 			if (!stats.free_inodes)
 				continue;
-            //Õâ¸ö³ÉÁ¢ËµÃ÷µ±Ç°¿é×é(»òÕßflex group¿é×é)ÒÑÊ¹ÓÃµÄÄ¿Â¼Ì«¶à£¬¸ßÓÚÃ¿¸ö¿é×é×î´óinodeÊı£¬Ìø¹ı
+            //è¿™ä¸ªæˆç«‹è¯´æ˜å½“å‰å—ç»„(æˆ–è€…flex groupå—ç»„)å·²ä½¿ç”¨çš„ç›®å½•å¤ªå¤šï¼Œé«˜äºæ¯ä¸ªå—ç»„æœ€å¤§inodeæ•°ï¼Œè·³è¿‡
 			if (stats.used_dirs >= best_ndir)
 				continue;
-            //Õâ¸ö³ÉÁ¢ËµÃ÷µ±Ç°¿é×é(»òÕßflex group¿é×é)¿ÕÏĞinodeÌ«ÉÙ£¬µÍÓÚÆ½¾ùÖµ£¬Ìø¹ı
+            //è¿™ä¸ªæˆç«‹è¯´æ˜å½“å‰å—ç»„(æˆ–è€…flex groupå—ç»„)ç©ºé—²inodeå¤ªå°‘ï¼Œä½äºå¹³å‡å€¼ï¼Œè·³è¿‡
 			if (stats.free_inodes < avefreei)
 				continue;
-            //Õâ¸ö³ÉÁ¢ËµÃ÷µ±Ç°¿é×é(»òÕßflex group¿é×é)¿ÕÏĞblockÌ«ÉÙ£¬µÍÓÚÆ½¾ùÖµ£¬Ìø¹ı
+            //è¿™ä¸ªæˆç«‹è¯´æ˜å½“å‰å—ç»„(æˆ–è€…flex groupå—ç»„)ç©ºé—²blockå¤ªå°‘ï¼Œä½äºå¹³å‡å€¼ï¼Œè·³è¿‡
 			if (stats.free_clusters < avefreec)
 				continue;
             
-            /*µ½ÕâÀïºÜÆæ¹Ö£¬Ã÷Ã÷ÒÑ¾­ÕÒµ½inode¡¢blockµÈ³ä×ãµÄ¿é×ég£¬µ«È´Ã»ÓĞÌø×ªforÑ­»·£¬¶øÊÇ
-            ¼ÌĞøforÑ­»·²éÕÒÏÂÒ»¸öinode³ä×ãµÄ¿é×é£¬Ö±µ½±éÀúµ½×îºóÒ»¸ö¿é×é£¬¸ã²»Çå³ş*/
+            /*åˆ°è¿™é‡Œå¾ˆå¥‡æ€ªï¼Œæ˜æ˜å·²ç»æ‰¾åˆ°inodeã€blockç­‰å……è¶³çš„å—ç»„gï¼Œä½†å´æ²¡æœ‰è·³è½¬forå¾ªç¯ï¼Œè€Œæ˜¯
+            ç»§ç»­forå¾ªç¯æŸ¥æ‰¾ä¸‹ä¸€ä¸ªinodeå……è¶³çš„å—ç»„ï¼Œç›´åˆ°éå†åˆ°æœ€åä¸€ä¸ªå—ç»„ï¼Œæä¸æ¸…æ¥š*/
 			grp = g;
 			ret = 0;
-            //ÕâÀï¸üĞÂbest_ndir!!!!!!!!!
+            //è¿™é‡Œæ›´æ–°best_ndir!!!!!!!!!
 			best_ndir = stats.used_dirs;
 		}
 
-        //Èç¹ûÉÏ±ßforÑ­»·ÕÒµ½inode³ä×ãµÈµÄ¿é×é£¬ÔòretÊÇ0¡£·ñÔòÃ»ÓĞÕÒµ½inode¡¢block³ä×ãµÈµÄ¿é×é£¬
-        //retÊÇ-1£¬Ö±½ÓÌø×ªµ½fallback·ÖÖ§
+        //å¦‚æœä¸Šè¾¹forå¾ªç¯æ‰¾åˆ°inodeå……è¶³ç­‰çš„å—ç»„ï¼Œåˆ™retæ˜¯0ã€‚å¦åˆ™æ²¡æœ‰æ‰¾åˆ°inodeã€blockå……è¶³ç­‰çš„å—ç»„ï¼Œ
+        //retæ˜¯-1ï¼Œç›´æ¥è·³è½¬åˆ°fallbackåˆ†æ”¯
 		if (ret)
 			goto fallback;
         
 	found_flex_bg:
         
-        //Ã»ÓĞÊ¹ÓÃflex group¿é×éÔòÖ±½ÓÊ¹ÓÃgrp×÷Îª±¾´ÎÕÒµ½µÄ¿é×éºÅ
+        //æ²¡æœ‰ä½¿ç”¨flex groupå—ç»„åˆ™ç›´æ¥ä½¿ç”¨grpä½œä¸ºæœ¬æ¬¡æ‰¾åˆ°çš„å—ç»„å·
 		if (flex_size == 1) {
 			*group = grp;
 			return 0;
@@ -519,14 +519,14 @@ static int find_group_orlov(struct super_block *sb, struct inode *parent,
 		 * start at 2nd block group of the flexgroup.  See
 		 * ext4_ext_find_goal() and ext4_find_near().
 		 */
-		//µ½ÕâÀïËµÃ÷grpÊÇflex group¿é×éµÄ±àºÅ
-        //Áîgrp³ËÒÔflex_size(16)£¬Ö®ºógrpÓ¦¸Ã¾ÍÊÇÕæÕıµÄ¿é×éºÅ£¬Ò»¸öflex group×éÓĞ16¸ö¿é×é
+		//åˆ°è¿™é‡Œè¯´æ˜grpæ˜¯flex groupå—ç»„çš„ç¼–å·
+        //ä»¤grpä¹˜ä»¥flex_size(16)ï¼Œä¹‹ågrpåº”è¯¥å°±æ˜¯çœŸæ­£çš„å—ç»„å·ï¼Œä¸€ä¸ªflex groupç»„æœ‰16ä¸ªå—ç»„
         grp *= flex_size;
 
-        //ÕâÀïÓ¦¸ÃÊÇÔÚÑ¡ÖĞµÄflex group×éÀïµÄ16¸ö¿é×éÀï£¬ÕÒÒ»¸ö¿ÕÏĞinode³ä×ãµÄ¿é×é£¬
-        //È»ºóÖ´ĞĞ*group = grp+i¾Íreturn£¬Õâ¾ÍÊÇ×îÖÕÑ¡ÖĞµÄ¿é×é
+        //è¿™é‡Œåº”è¯¥æ˜¯åœ¨é€‰ä¸­çš„flex groupç»„é‡Œçš„16ä¸ªå—ç»„é‡Œï¼Œæ‰¾ä¸€ä¸ªç©ºé—²inodeå……è¶³çš„å—ç»„ï¼Œ
+        //ç„¶åæ‰§è¡Œ*group = grp+iå°±returnï¼Œè¿™å°±æ˜¯æœ€ç»ˆé€‰ä¸­çš„å—ç»„
 		for (i = 0; i < flex_size; i++) {
-			if (grp+i >= real_ngroups)//real_ngroupsÊÇ×î´ó¿é×éÊ÷
+			if (grp+i >= real_ngroups)//real_ngroupsæ˜¯æœ€å¤§å—ç»„æ ‘
 				break;
 			desc = ext4_get_group_desc(sb, grp+i, NULL);
 			if (desc && ext4_free_inodes_count(sb, desc)) {
@@ -537,15 +537,15 @@ static int find_group_orlov(struct super_block *sb, struct inode *parent,
 		goto fallback;
 	}
 
-    /*µ½ÕâÀï£¬Ò»°ãÇé¿öÊÇ£¬¸¸Ä¿Â¼²»ÊÇ¶¥²ãÄ¿Â¼»òÕß¸ùÄ¿Â¼*/
+    /*åˆ°è¿™é‡Œï¼Œä¸€èˆ¬æƒ…å†µæ˜¯ï¼Œçˆ¶ç›®å½•ä¸æ˜¯é¡¶å±‚ç›®å½•æˆ–è€…æ ¹ç›®å½•*/
     
-    //¼ÆËã¿é×é×î´óÄ¿Â¼¸öÊıÉÏÏŞmax_dirs
+    //è®¡ç®—å—ç»„æœ€å¤§ç›®å½•ä¸ªæ•°ä¸Šé™max_dirs
 	max_dirs = ndirs / ngroups + inodes_per_group / 16;
-    //¼õÉÙavefreei£¬¿é×é¿ÕÏĞinodeÊıÏÂÏŞ
+    //å‡å°‘avefreeiï¼Œå—ç»„ç©ºé—²inodeæ•°ä¸‹é™
 	min_inodes = avefreei - inodes_per_group*flex_size / 4;
 	if (min_inodes < 1)
 		min_inodes = 1;
-    //¼õÉÙavefreec£¬¿é×é¿ÕÏĞblockÊıÏÂÏŞ
+    //å‡å°‘avefreecï¼Œå—ç»„ç©ºé—²blockæ•°ä¸‹é™
 	min_clusters = avefreec - EXT4_CLUSTERS_PER_GROUP(sb)*flex_size / 4;
 
 	/*
@@ -553,50 +553,50 @@ static int find_group_orlov(struct super_block *sb, struct inode *parent,
 	 * inode for this parent directory
 	 */
 	if (EXT4_I(parent)->i_last_alloc_group != ~0) {
-        //È¡³ö¸¸Ä¿Â¼ÉÏÒ»´Î·ÖÅäinodeËùÊôµÄ¿é×éºÅ¸øparent_group£¬×÷Îª±¾´Î²éÕÒ¿é×éµÄ»ù×¼Öµ
+        //å–å‡ºçˆ¶ç›®å½•ä¸Šä¸€æ¬¡åˆ†é…inodeæ‰€å±çš„å—ç»„å·ç»™parent_groupï¼Œä½œä¸ºæœ¬æ¬¡æŸ¥æ‰¾å—ç»„çš„åŸºå‡†å€¼
 		parent_group = EXT4_I(parent)->i_last_alloc_group;
 		if (flex_size > 1)
 			parent_group >>= sbi->s_log_groups_per_flex;
 	}
-    //´Ó0ºÅ¿é×éÏòºó±éÀú£¬ÕÒµ½Ò»¸öinode³ä×ãµÄ¿é×é
+    //ä»0å·å—ç»„å‘åéå†ï¼Œæ‰¾åˆ°ä¸€ä¸ªinodeå……è¶³çš„å—ç»„
 	for (i = 0; i < ngroups; i++) {
-        //ÆäÊµ¾ÍÊÇ¸¸Ä¿Â¼ËùÔÚgroup¼Ói
+        //å…¶å®å°±æ˜¯çˆ¶ç›®å½•æ‰€åœ¨groupåŠ i
 		grp = (parent_group + i) % ngroups;
-        //µÃµ½¿é×é»òÕßflex group¿é×éµÄ¿ÕÏĞinodeÊı¡¢¿ÕÏĞblockÊı¡¢ÒÑÊ¹ÓÃµÄÄ¿Â¼Êı
+        //å¾—åˆ°å—ç»„æˆ–è€…flex groupå—ç»„çš„ç©ºé—²inodeæ•°ã€ç©ºé—²blockæ•°ã€å·²ä½¿ç”¨çš„ç›®å½•æ•°
 		get_orlov_stats(sb, grp, flex_size, &stats);
-        //Õâ¸ö³ÉÁ¢ËµÃ÷µ±Ç°¿é×é(»òÕßflex group¿é×é)ÒÑÊ¹ÓÃµÄÄ¿Â¼Ì«¶à£¬¸ßÓÚÃ¿¸ö¿é×é×î´óinodeÊı£¬Ìø¹ı
+        //è¿™ä¸ªæˆç«‹è¯´æ˜å½“å‰å—ç»„(æˆ–è€…flex groupå—ç»„)å·²ä½¿ç”¨çš„ç›®å½•å¤ªå¤šï¼Œé«˜äºæ¯ä¸ªå—ç»„æœ€å¤§inodeæ•°ï¼Œè·³è¿‡
 		if (stats.used_dirs >= max_dirs)
 			continue;
-        //Õâ¸ö³ÉÁ¢ËµÃ÷µ±Ç°¿é×é(»òÕßflex group¿é×é)¿ÕÏĞinodeÌ«ÉÙ£¬µÍÓÚÆ½¾ùÖµ£¬Ìø¹ı
+        //è¿™ä¸ªæˆç«‹è¯´æ˜å½“å‰å—ç»„(æˆ–è€…flex groupå—ç»„)ç©ºé—²inodeå¤ªå°‘ï¼Œä½äºå¹³å‡å€¼ï¼Œè·³è¿‡
 		if (stats.free_inodes < min_inodes)
 			continue;
-        //Õâ¸ö³ÉÁ¢ËµÃ÷µ±Ç°¿é×é(»òÕßflex group¿é×é)¿ÕÏĞblockÌ«ÉÙ£¬µÍÓÚÆ½¾ùÖµ£¬Ìø¹ı
+        //è¿™ä¸ªæˆç«‹è¯´æ˜å½“å‰å—ç»„(æˆ–è€…flex groupå—ç»„)ç©ºé—²blockå¤ªå°‘ï¼Œä½äºå¹³å‡å€¼ï¼Œè·³è¿‡
 		if (stats.free_clusters < min_clusters)
 			continue;
 
-        //µ½ÕâÀïËµÃ÷ÕÒµ½Ò»¸ö¿ÕÏĞinode³äÔ£µÄ¿é×é(»òÕßflex group¿é×é)£¬¿é×éºÅÊÇgrp¡£
-        //ÔòÌøµ½found_flex_bg·ÖÖ§£¬Èç¹ûÊÇflex group×éÔò´Ó¸Ãflex groupÕÒÒ»¸ö¿ÕÏĞinode³äÔ£µÄ¿é×é
+        //åˆ°è¿™é‡Œè¯´æ˜æ‰¾åˆ°ä¸€ä¸ªç©ºé—²inodeå……è£•çš„å—ç»„(æˆ–è€…flex groupå—ç»„)ï¼Œå—ç»„å·æ˜¯grpã€‚
+        //åˆ™è·³åˆ°found_flex_bgåˆ†æ”¯ï¼Œå¦‚æœæ˜¯flex groupç»„åˆ™ä»è¯¥flex groupæ‰¾ä¸€ä¸ªç©ºé—²inodeå……è£•çš„å—ç»„
 		goto found_flex_bg;
 	}
 
 fallback:
 	ngroups = real_ngroups;
-    //Æ½¾ùÃ¿¸ö¿é×é¿ÕÏĞinodeÊı
+    //å¹³å‡æ¯ä¸ªå—ç»„ç©ºé—²inodeæ•°
 	avefreei = freei / ngroups;
 
-    /*µ½ÕâÀï£¬ËµÃ÷ÉÏ±ß°´ÕÕ "¿é×é»òÕßflex group¿é×éµÄ¿ÕÏĞinodeÊı¡¢¿ÕÏĞblockÊı¡¢ÒÑÊ¹ÓÃµÄ
-    Ä¿Â¼Êı" µÄ¹æÔò£¬ÕÒ²»µ½ºÏÊÊµÄ¿é×é¡£ÓÚÊÇÏÂ±ß·ÅËÉÌõ¼ş£¬ÖØĞÂÕÒÒ»¸ö¿ÕÏĞinode³äÔ£µÄ¿é×é*/
+    /*åˆ°è¿™é‡Œï¼Œè¯´æ˜ä¸Šè¾¹æŒ‰ç…§ "å—ç»„æˆ–è€…flex groupå—ç»„çš„ç©ºé—²inodeæ•°ã€ç©ºé—²blockæ•°ã€å·²ä½¿ç”¨çš„
+    ç›®å½•æ•°" çš„è§„åˆ™ï¼Œæ‰¾ä¸åˆ°åˆé€‚çš„å—ç»„ã€‚äºæ˜¯ä¸‹è¾¹æ”¾æ¾æ¡ä»¶ï¼Œé‡æ–°æ‰¾ä¸€ä¸ªç©ºé—²inodeå……è£•çš„å—ç»„*/
     
 fallback_retry:
-    //¸¸Ä¿Â¼ËùÊô¿é×éºÅ
+    //çˆ¶ç›®å½•æ‰€å±å—ç»„å·
 	parent_group = EXT4_I(parent)->i_block_group;
-    //´Ó0ºÅ¿é×é»òÕßflex group¿é×éÏòºó±éÀú£¬ÕÒµ½Ò»¸öinode³ä×ãµÄ¿é×é»òÕßflex group¿é×é
+    //ä»0å·å—ç»„æˆ–è€…flex groupå—ç»„å‘åéå†ï¼Œæ‰¾åˆ°ä¸€ä¸ªinodeå……è¶³çš„å—ç»„æˆ–è€…flex groupå—ç»„
 	for (i = 0; i < ngroups; i++) {
-        //ÆäÊµ¾ÍÊÇ¸¸Ä¿Â¼ËùÔÚ¿é×éºÅ»òÕßflex group¿é×éºÅ¼ÓiµÃµ½¿ì×éºÅgrp
+        //å…¶å®å°±æ˜¯çˆ¶ç›®å½•æ‰€åœ¨å—ç»„å·æˆ–è€…flex groupå—ç»„å·åŠ iå¾—åˆ°å¿«ç»„å·grp
 		grp = (parent_group + i) % ngroups;
 		desc = ext4_get_group_desc(sb, grp, NULL);
 		if (desc) {
-            //Èç¹ûgrpÕâ¸ö¿é×é»òÕßflex group¿é×é¿ÕÏĞinodeÊı´óÓÚavefreei(Æ½¾ùÃ¿¸ö¿é×é¿ÕÏĞinodeÊı)£¬ÄÇËü¾ÍÊÇ±¾´ÎÑ¡ÖĞµÄ¿é×é
+            //å¦‚æœgrpè¿™ä¸ªå—ç»„æˆ–è€…flex groupå—ç»„ç©ºé—²inodeæ•°å¤§äºavefreei(å¹³å‡æ¯ä¸ªå—ç»„ç©ºé—²inodeæ•°)ï¼Œé‚£å®ƒå°±æ˜¯æœ¬æ¬¡é€‰ä¸­çš„å—ç»„
 			grp_free = ext4_free_inodes_count(sb, desc);
 			if (grp_free && grp_free >= avefreei) {
 				*group = grp;
@@ -616,13 +616,13 @@ fallback_retry:
 
 	return -1;
 }
-//Ê¹ÓÃflex groupÊ±£¬ÏÈÔÚ¸¸Ä¿Â¼ËùÊôflex groupµÄ16¸ö¿é×éÀïÕÒÒ»¸öÓĞ¿ÕÏĞinodeµÄ¿é×é£¬ÕÒ²»µ½¾Í
-//Ö´ĞĞfind_group_orlov()ÕÒÒ»¸öÓĞ³äÔ£¿ÕÏĞinodeºÍblockµÄflex group¿é×é¡£²»Ê¹ÓÃflex groupÊ±£¬ÏÈ¿´¸¸Ä¿Â¼ËùÊô¿é×éÓĞÃ»ÓĞ
-//¿ÕÏĞµÄinodeºÍblock£¬ÓĞ¾Í·µ»Ø¸¸Ä¿Â¼µÄ¿é×éºÅ¡£Ã»ÓĞ¾Í±éÀúÒ»¸ö¸ö¿é×é£¬¿´ÄÄ¸ö¿é×éÓĞ¿ÕÏĞµÄinode¡£
+//ä½¿ç”¨flex groupæ—¶ï¼Œå…ˆåœ¨çˆ¶ç›®å½•æ‰€å±flex groupçš„16ä¸ªå—ç»„é‡Œæ‰¾ä¸€ä¸ªæœ‰ç©ºé—²inodeçš„å—ç»„ï¼Œæ‰¾ä¸åˆ°å°±
+//æ‰§è¡Œfind_group_orlov()æ‰¾ä¸€ä¸ªæœ‰å……è£•ç©ºé—²inodeå’Œblockçš„flex groupå—ç»„ã€‚ä¸ä½¿ç”¨flex groupæ—¶ï¼Œå…ˆçœ‹çˆ¶ç›®å½•æ‰€å±å—ç»„æœ‰æ²¡æœ‰
+//ç©ºé—²çš„inodeå’Œblockï¼Œæœ‰å°±è¿”å›çˆ¶ç›®å½•çš„å—ç»„å·ã€‚æ²¡æœ‰å°±éå†ä¸€ä¸ªä¸ªå—ç»„ï¼Œçœ‹å“ªä¸ªå—ç»„æœ‰ç©ºé—²çš„inodeã€‚
 static int find_group_other(struct super_block *sb, struct inode *parent,
 			    ext4_group_t *group, umode_t mode)
 {
-    //¸¸Ä¿Â¼ËùÔÚ¿é×é
+    //çˆ¶ç›®å½•æ‰€åœ¨å—ç»„
 	ext4_group_t parent_group = EXT4_I(parent)->i_block_group;
 	ext4_group_t i, last, ngroups = ext4_get_groups_count(sb);
 	struct ext4_group_desc *desc;
@@ -635,28 +635,28 @@ static int find_group_other(struct super_block *sb, struct inode *parent,
 	 * parent directory's inode information so that use that flex
 	 * group for future allocations.
 	 */
-	if (flex_size > 1)//Ê¹ÓÃÁËflex group¿é×é
+	if (flex_size > 1)//ä½¿ç”¨äº†flex groupå—ç»„
     {
 		int retry = 0;
 
 	try_again:
-        //parent_groupÊÇ¸¸Ä¿Â¼£¬ÕâÀï¼ÆËãµÄparent_groupÊÇ¸¸Ä¿Â¼ËùÊôflex group¿é×éÀïµÄµÚÒ»¸ö¿é×éºÅ
+        //parent_groupæ˜¯çˆ¶ç›®å½•ï¼Œè¿™é‡Œè®¡ç®—çš„parent_groupæ˜¯çˆ¶ç›®å½•æ‰€å±flex groupå—ç»„é‡Œçš„ç¬¬ä¸€ä¸ªå—ç»„å·
 		parent_group &= ~(flex_size-1);
-        //lastÊÇparent_groupËùÊôflex group¿é×éÀï×îºóÒ»¸ö¿é×éºÅ
+        //lastæ˜¯parent_groupæ‰€å±flex groupå—ç»„é‡Œæœ€åä¸€ä¸ªå—ç»„å·
 		last = parent_group + flex_size;
 		if (last > ngroups)
 			last = ngroups;
-        //´Óflex group¿é×éÀïµÚ1¸ö¿é×éËÑË÷µ½×îºó1¸ö¿é×é
+        //ä»flex groupå—ç»„é‡Œç¬¬1ä¸ªå—ç»„æœç´¢åˆ°æœ€å1ä¸ªå—ç»„
 		for  (i = parent_group; i < last; i++) {
-            //È¡³ö¸Ã¿é×éµÄÃèÊö·û
+            //å–å‡ºè¯¥å—ç»„çš„æè¿°ç¬¦
 			desc = ext4_get_group_desc(sb, i, NULL);
-            //¸Ã¿é×éÓĞ¿ÕÏĞµÄinode£¬ÄÇËü¾ÍÊÇÑ¡ÖĞµÄ¿é×é
+            //è¯¥å—ç»„æœ‰ç©ºé—²çš„inodeï¼Œé‚£å®ƒå°±æ˜¯é€‰ä¸­çš„å—ç»„
 			if (desc && ext4_free_inodes_count(sb, desc)) {
 				*group = i;
 				return 0;
 			}
 		}
-        //ÕâÀïÊÇÈ¡³ö¸¸Ä¿Â¼·ÖÅäinodeËùÊô¿é×éºÅi_last_alloc_group£¬ÔÙ³¢ÊÔÒ»´Î
+        //è¿™é‡Œæ˜¯å–å‡ºçˆ¶ç›®å½•åˆ†é…inodeæ‰€å±å—ç»„å·i_last_alloc_groupï¼Œå†å°è¯•ä¸€æ¬¡
 		if (!retry && EXT4_I(parent)->i_last_alloc_group != ~0) {
 			retry = 1;
 			parent_group = EXT4_I(parent)->i_last_alloc_group;
@@ -668,22 +668,22 @@ static int find_group_other(struct super_block *sb, struct inode *parent,
 		 * avoid the topdir algorithms.
 		 */
 		 
-		/*µ½ÕâÀïËµÃ÷ÔÚ¸¸Ä¿Â¼ËùÊôflex groupÖĞµÄËù16¸ö¿é×é£¬¶¼Ã»ÓĞ¿ÕÏĞinode£¬ÓÚÊÇÏÂ±ßÖ´ĞĞ
-        find_group_orlov()ÔÙÕÒÒ»¸öºÏÊÊµÄflex group¿é×é*/
+		/*åˆ°è¿™é‡Œè¯´æ˜åœ¨çˆ¶ç›®å½•æ‰€å±flex groupä¸­çš„æ‰€16ä¸ªå—ç»„ï¼Œéƒ½æ²¡æœ‰ç©ºé—²inodeï¼Œäºæ˜¯ä¸‹è¾¹æ‰§è¡Œ
+        find_group_orlov()å†æ‰¾ä¸€ä¸ªåˆé€‚çš„flex groupå—ç»„*/
 		*group = parent_group + flex_size;
 		if (*group > ngroups)
 			*group = 0;
         
-        //ÕÒÒ»¸ö¿ÕÏĞinodeÊı³äÔ£¡¢¿ÕÏĞblockÊı³äÔ£¡¢ÒÑÊ¹ÓÃµÄÄ¿Â¼ºÜÉÙµÄflex group¿é×é£¬°ÑÕÒµ½µÄflex group¿é×éºÅ¸³Öµ¸øgroup
+        //æ‰¾ä¸€ä¸ªç©ºé—²inodeæ•°å……è£•ã€ç©ºé—²blockæ•°å……è£•ã€å·²ä½¿ç”¨çš„ç›®å½•å¾ˆå°‘çš„flex groupå—ç»„ï¼ŒæŠŠæ‰¾åˆ°çš„flex groupå—ç»„å·èµ‹å€¼ç»™group
 		return find_group_orlov(sb, parent, group, mode, NULL);
 	}
 
-    /*Ö´ĞĞµ½ÕâÀï£¬ËµÃ÷Ã»ÓĞÊ¹ÓÃflex group*/
+    /*æ‰§è¡Œåˆ°è¿™é‡Œï¼Œè¯´æ˜æ²¡æœ‰ä½¿ç”¨flex group*/
     
 	/*
 	 * Try to place the inode in its parent directory
 	 */
-	//Èç¹û¸¸Ä¿Â¼ËùÊô¿é×éÓĞ¿ÕÏĞinodeºÍblock£¬ÄÇÕâ¸ö¿é×é¾ÍÊÇ±¾´ÎÑ¡ÖĞµÄ¿é×é
+	//å¦‚æœçˆ¶ç›®å½•æ‰€å±å—ç»„æœ‰ç©ºé—²inodeå’Œblockï¼Œé‚£è¿™ä¸ªå—ç»„å°±æ˜¯æœ¬æ¬¡é€‰ä¸­çš„å—ç»„
 	*group = parent_group;
 	desc = ext4_get_group_desc(sb, *group, NULL);
 	if (desc && ext4_free_inodes_count(sb, desc) &&
@@ -700,24 +700,24 @@ static int find_group_other(struct super_block *sb, struct inode *parent,
 	 * So add our directory's i_ino into the starting point for the hash.
 	 */
 
-    /*Ö´ĞĞµ½ÕâÀï£¬ËµÃ÷Ã»ÓĞÊ¹ÓÃflex group£¬²¢ÇÒ¸¸Ä¿Â¼ËùÊô¿é×éÃ»ÓĞ¿ÕÏĞµÄinodeºÍblock*/
+    /*æ‰§è¡Œåˆ°è¿™é‡Œï¼Œè¯´æ˜æ²¡æœ‰ä½¿ç”¨flex groupï¼Œå¹¶ä¸”çˆ¶ç›®å½•æ‰€å±å—ç»„æ²¡æœ‰ç©ºé—²çš„inodeå’Œblock*/
 
-    //ÕâÀï¼ÆËãºógroupÓ¦¸ÃÊÇ¸¸Ä¿Â¼ËùÔÚ¿é×éµÄÏÂÒ»¸ö¿é×éºÅ
+    //è¿™é‡Œè®¡ç®—ågroupåº”è¯¥æ˜¯çˆ¶ç›®å½•æ‰€åœ¨å—ç»„çš„ä¸‹ä¸€ä¸ªå—ç»„å·
 	*group = (*group + parent->i_ino) % ngroups;
 
 	/*
 	 * Use a quadratic hash to find a group with a free inode and some free
 	 * blocks.
 	 */
-	//´Ógroup¶ÔÓ¦µÄ¿é×éÒ»Ö±ÏòºóËÑË÷
-	for (i = 1; i < ngroups; i <<= 1) {//¸ã²»Çå³şi <<= 1 ÊÇÊ²Ã´ÒâË¼???????
-	    //group¿é×éºÅÃ¿´ÎÔö¼Ó1¡¢2¡¢4¡¢8¡¢16.......
+	//ä»groupå¯¹åº”çš„å—ç»„ä¸€ç›´å‘åæœç´¢
+	for (i = 1; i < ngroups; i <<= 1) {//æä¸æ¸…æ¥ši <<= 1 æ˜¯ä»€ä¹ˆæ„æ€???????
+	    //groupå—ç»„å·æ¯æ¬¡å¢åŠ 1ã€2ã€4ã€8ã€16.......
 		*group += i;
 		if (*group >= ngroups)
 			*group -= ngroups;
 
 		desc = ext4_get_group_desc(sb, *group, NULL);
-        //ĞÂÕÒµ½µÄ¿é×égroupÓĞ¿ÕÏĞµÄinodeºÍblock£¬ÄÇËü¾ÍÊÇÒªÕÒµ½µÄ¿é×é
+        //æ–°æ‰¾åˆ°çš„å—ç»„groupæœ‰ç©ºé—²çš„inodeå’Œblockï¼Œé‚£å®ƒå°±æ˜¯è¦æ‰¾åˆ°çš„å—ç»„
 		if (desc && ext4_free_inodes_count(sb, desc) &&
 		    ext4_free_group_clusters(sb, desc))
 			return 0;
@@ -728,15 +728,15 @@ static int find_group_other(struct super_block *sb, struct inode *parent,
 	 * has no free blocks.
 	 */
 
-    /*Ö´ĞĞµ½ÕâÀï£¬»¹Ã»ÕÒµ½ºÏÊÊµÄ¿é×é£¬ÓÚÊÇÏÂ±ß·Å¿í²éÕÒ¿é×éµÄÏŞÖÆÌõ¼ş*/
+    /*æ‰§è¡Œåˆ°è¿™é‡Œï¼Œè¿˜æ²¡æ‰¾åˆ°åˆé€‚çš„å—ç»„ï¼Œäºæ˜¯ä¸‹è¾¹æ”¾å®½æŸ¥æ‰¾å—ç»„çš„é™åˆ¶æ¡ä»¶*/
 	*group = parent_group;
 
 	for (i = 0; i < ngroups; i++) {
-        //group¿é×éºÅÃ¿´ÎÖ»Ôö¼Ó1
+        //groupå—ç»„å·æ¯æ¬¡åªå¢åŠ 1
 		if (++*group >= ngroups)
 			*group = 0;
 		desc = ext4_get_group_desc(sb, *group, NULL);
-        //ĞÂÕÒµ½µÄ¿é×égroupÓĞ¿ÕÏĞµÄinode£¬ÄÇËü¾ÍÊÇÒªÕÒµ½µÄ¿é×é£¬ÕâÀï²»ÔÙ¿´ÊÇ·ñÓĞ¿ÕÏĞblockÏŞÖÆ
+        //æ–°æ‰¾åˆ°çš„å—ç»„groupæœ‰ç©ºé—²çš„inodeï¼Œé‚£å®ƒå°±æ˜¯è¦æ‰¾åˆ°çš„å—ç»„ï¼Œè¿™é‡Œä¸å†çœ‹æ˜¯å¦æœ‰ç©ºé—²blocké™åˆ¶
 		if (desc && ext4_free_inodes_count(sb, desc))
 			return 0;
 	}
@@ -754,10 +754,10 @@ static int find_group_other(struct super_block *sb, struct inode *parent,
  * For other inodes, search forward from the parent directory's block
  * group to find a free inode.
  */
-//ÕÒµ½Ò»¸öºÏÊÊµÄ¿é×é£¬´ÓÕâ¸ö¿é×é·ÖÅäÒ»¸ö¿ÕÏĞinode
+//æ‰¾åˆ°ä¸€ä¸ªåˆé€‚çš„å—ç»„ï¼Œä»è¿™ä¸ªå—ç»„åˆ†é…ä¸€ä¸ªç©ºé—²inode
 struct inode *__ext4_new_inode(handle_t *handle, struct inode *dir,
-			       umode_t mode, const struct qstr *qstr,//qstrÊÇ´ı´´½¨µÄÄ¿Â¼»òÎÄ¼şÃû×Ö
-			       __u32 goal, uid_t *owner, int handle_type,//´´½¨Ä¿Â¼ºÍÎÄ¼şÊ±goal¶¼ÊÇ0
+			       umode_t mode, const struct qstr *qstr,//qstræ˜¯å¾…åˆ›å»ºçš„ç›®å½•æˆ–æ–‡ä»¶åå­—
+			       __u32 goal, uid_t *owner, int handle_type,//åˆ›å»ºç›®å½•å’Œæ–‡ä»¶æ—¶goaléƒ½æ˜¯0
 			       unsigned int line_no, int nblocks)
 {
 	struct super_block *sb;
@@ -779,16 +779,16 @@ struct inode *__ext4_new_inode(handle_t *handle, struct inode *dir,
 		return ERR_PTR(-EPERM);
 
 	sb = dir->i_sb;
-    //×Ü¿é×é¸öÊı
+    //æ€»å—ç»„ä¸ªæ•°
 	ngroups = ext4_get_groups_count(sb);
 	trace_ext4_request_inode(dir, mode);
-    //·ÖÅäext4_inode_info½á¹¹²¢·µ»ØËüµÄ³ÉÔ±struct inode vfs_inodeµÄµØÖ·
+    //åˆ†é…ext4_inode_infoç»“æ„å¹¶è¿”å›å®ƒçš„æˆå‘˜struct inode vfs_inodeçš„åœ°å€
 	inode = new_inode(sb);
 	if (!inode)
 		return ERR_PTR(-ENOMEM);
-    //ÓÉinodeµÃµ½ext4_inode_info
+    //ç”±inodeå¾—åˆ°ext4_inode_info
 	ei = EXT4_I(inode);
-    //ÓÉsbµÃµ½ext4_sb_info
+    //ç”±sbå¾—åˆ°ext4_sb_info
 	sbi = EXT4_SB(sb);
 
 	/*
@@ -808,25 +808,25 @@ struct inode *__ext4_new_inode(handle_t *handle, struct inode *dir,
 		inode_init_owner(inode, dir, mode);
 	dquot_initialize(inode);
 
-	if (!goal)//´´½¨Ä¿Â¼ºÍÎÄ¼şÊ±goal¶¼ÊÇ0
-		goal = sbi->s_inode_goal;//sbi->s_inode_goalÊÇ0
+	if (!goal)//åˆ›å»ºç›®å½•å’Œæ–‡ä»¶æ—¶goaléƒ½æ˜¯0
+		goal = sbi->s_inode_goal;//sbi->s_inode_goalæ˜¯0
 
-	if (goal && goal <= le32_to_cpu(sbi->s_es->s_inodes_count)) {//if²»³ÉÁ¢
+	if (goal && goal <= le32_to_cpu(sbi->s_es->s_inodes_count)) {//ifä¸æˆç«‹
 		group = (goal - 1) / EXT4_INODES_PER_GROUP(sb);
 		ino = (goal - 1) % EXT4_INODES_PER_GROUP(sb);
 		ret2 = 0;
 		goto got_group;
 	}
 
-    /*ÏÂ±ßÎªĞÂ´´½¨µÄÎÄ¼ş»òÄ¿Â¼ÏÈÕÒµ½Ò»¸öÓĞ¿ÕÏĞinodeºÍ¿ÕÏĞblockµÄ¿é×é£¬ÓÅÏÈ²éÕÒ¸¸Ä¿Â¼ËùÊô¿é×é¡£²éÕÒÊ§°ÜÔò±éÀúËùÓĞ¿é×é£¬
-       ¿´ÄÄ¸öÓĞ¿ÕÏĞinodeºÍblock¡£ÕÒµ½ºÏÊÊ¿é×é°Ñ¿é×éºÅ¸³Öµ¸øgroup£¬½Ó×Å»áÔÚ¸Ã¿é×é·ÖÅäÒ»¸ö¿ÕÏĞµÄinode±àºÅ*/
-	if (S_ISDIR(mode))//´´½¨µÄÊÇÎÄ¼şinode
+    /*ä¸‹è¾¹ä¸ºæ–°åˆ›å»ºçš„æ–‡ä»¶æˆ–ç›®å½•å…ˆæ‰¾åˆ°ä¸€ä¸ªæœ‰ç©ºé—²inodeå’Œç©ºé—²blockçš„å—ç»„ï¼Œä¼˜å…ˆæŸ¥æ‰¾çˆ¶ç›®å½•æ‰€å±å—ç»„ã€‚æŸ¥æ‰¾å¤±è´¥åˆ™éå†æ‰€æœ‰å—ç»„ï¼Œ
+       çœ‹å“ªä¸ªæœ‰ç©ºé—²inodeå’Œblockã€‚æ‰¾åˆ°åˆé€‚å—ç»„æŠŠå—ç»„å·èµ‹å€¼ç»™groupï¼Œæ¥ç€ä¼šåœ¨è¯¥å—ç»„åˆ†é…ä¸€ä¸ªç©ºé—²çš„inodeç¼–å·*/
+	if (S_ISDIR(mode))//åˆ›å»ºçš„æ˜¯æ–‡ä»¶inode
 		ret2 = find_group_orlov(sb, dir, &group, mode, qstr);
-	else//´´½¨µÄÊÇÎÄ¼şinode
+	else//åˆ›å»ºçš„æ˜¯æ–‡ä»¶inode
 		ret2 = find_group_other(sb, dir, &group, mode);
 
 got_group:
-    //¼ÇÂ¼×î½üÒ»´Î·ÖÅäµÄinodeËùÊôµÄ¿é×é¡£µ½ÕâÀïgroup¾ÍÊÇ±¾´ÎÒª·ÖÅäµÄinodeËùÊôµÄ¿é×é±àºÅ
+    //è®°å½•æœ€è¿‘ä¸€æ¬¡åˆ†é…çš„inodeæ‰€å±çš„å—ç»„ã€‚åˆ°è¿™é‡Œgroupå°±æ˜¯æœ¬æ¬¡è¦åˆ†é…çš„inodeæ‰€å±çš„å—ç»„ç¼–å·
 	EXT4_I(dir)->i_last_alloc_group = group;
 	err = -ENOSPC;
 	if (ret2 == -1)
@@ -837,10 +837,10 @@ got_group:
 	 * unless we get unlucky and it turns out the group we selected
 	 * had its last inode grabbed by someone else.
 	 */
-	for (i = 0; i < ngroups; i++, ino = 0) {//ngroupsÊÇext4ÎÄ¼şÏµÍ³×ÜµÄ¿é×éÊı
+	for (i = 0; i < ngroups; i++, ino = 0) {//ngroupsæ˜¯ext4æ–‡ä»¶ç³»ç»Ÿæ€»çš„å—ç»„æ•°
 		err = -EIO;
-        //ÓÉ¿é×é±àºÅgroupµÃµ½¿é×éÃèÊö·û½á¹¹ext4_group_desc£¬²¢ÇÒÁîgroup_desc_bhÖ¸Ïò±£´æ
-        //¿é×éÃèÊö·ûÊı¾İµÄÎïÀí¿éÓ³ÉäµÄbh
+        //ç”±å—ç»„ç¼–å·groupå¾—åˆ°å—ç»„æè¿°ç¬¦ç»“æ„ext4_group_descï¼Œå¹¶ä¸”ä»¤group_desc_bhæŒ‡å‘ä¿å­˜
+        //å—ç»„æè¿°ç¬¦æ•°æ®çš„ç‰©ç†å—æ˜ å°„çš„bh
 		gdp = ext4_get_group_desc(sb, group, &group_desc_bh);
 		if (!gdp)
 			goto out;
@@ -848,8 +848,8 @@ got_group:
 		/*
 		 * Check free inodes count before loading bitmap.
 		 */
-		//¿é×éÒªÊÇ¿ÕÏĞinode²»¹»ÁË£¬group¼Ó1Ö¸ÏòÏÂÒ»¸ö¿é×é£¬Èç¹ûgroupÊÇ×îºóÒ»¸ö¿é×éÔò´Ó
-		//µÚÒ»¸ö¿é×é¿ªÊ¼
+		//å—ç»„è¦æ˜¯ç©ºé—²inodeä¸å¤Ÿäº†ï¼ŒgroupåŠ 1æŒ‡å‘ä¸‹ä¸€ä¸ªå—ç»„ï¼Œå¦‚æœgroupæ˜¯æœ€åä¸€ä¸ªå—ç»„åˆ™ä»
+		//ç¬¬ä¸€ä¸ªå—ç»„å¼€å§‹
 		if (ext4_free_inodes_count(sb, gdp) == 0) {
 			if (++group == ngroups)
 				group = 0;
@@ -857,27 +857,27 @@ got_group:
 		}
 
 		brelse(inode_bitmap_bh);
-        //ÏÈ¸ù¾İ¿é×éºÅgroupµÃµ½¿é×éÃèÊö·ûext4_group_desc£¬ÔÙÓÉ¿é×éÃèÊö·ûµÃµ½±£´æ
-        //inode bitmapÊı¾İµÄÎïÀí¿éºÅ£¬×îºó¶ÁÈ¡¸Ãinode bitmapÎïÀí¿éµÄ4KÊı¾İµ½inode_bitmap_bh
-        //²¢·µ»Ø¡£×¢Òâ£¬Ã¿¸ö¿é×éµÄinode bitmapÓ¦¸ÃÖ»Õ¼Ò»¸öÎïÀí¿é£¬×î´óÊı¾İÁ¿ÊÇ4K
+        //å…ˆæ ¹æ®å—ç»„å·groupå¾—åˆ°å—ç»„æè¿°ç¬¦ext4_group_descï¼Œå†ç”±å—ç»„æè¿°ç¬¦å¾—åˆ°ä¿å­˜
+        //inode bitmapæ•°æ®çš„ç‰©ç†å—å·ï¼Œæœ€åè¯»å–è¯¥inode bitmapç‰©ç†å—çš„4Kæ•°æ®åˆ°inode_bitmap_bh
+        //å¹¶è¿”å›ã€‚æ³¨æ„ï¼Œæ¯ä¸ªå—ç»„çš„inode bitmapåº”è¯¥åªå ä¸€ä¸ªç‰©ç†å—ï¼Œæœ€å¤§æ•°æ®é‡æ˜¯4K
 		inode_bitmap_bh = ext4_read_inode_bitmap(sb, group);
 		if (!inode_bitmap_bh)
 			goto out;
 
 repeat_in_this_group:
-        /*Ò»¸ö¿é×éÄÚ£¬inode bitmapÕ¼Ò»¸öÎïÀí¿é£¬4K´óĞ¡£¬×Ü¼ÆÓĞ4k*8¸öbit¡£Òò´Ë£¬ÀíÂÛÉÏ
-        Ò»¸ö¿é×éÄÚ×î¶à¿ÉÒÔÈİÄÉ4k*8¸öinode£¬µ«Êµ¼ÊÉÏÖ»ÓĞEXT4_INODES_PER_GROUP(sb)¸ö£¬¼´
-        8192¸ö£¬Õâ¸öÓ¦¸ÃÊÇ×ÛºÏ¿¼ÂÇµÄ½á¹û£¬Ò»¸ö¿é×éÊµ¼ÊÈİÄÉ²»ÁË4k*8¸öinode¡£*/
-        //ÔÚinode bitmap¶ÔÓ¦µÄinode_bitmap_bh->b_data[]Õâ4KÊı¾İÖĞ£¬ÕÒÒ»¸ö¿ÕÏĞµÄinodeºÅ¡£
-        //Ã¿ÔÚinode bitmapÕÒÒ»¸ö¿ÕÏĞinodeºÅ£¬ÔÚ¶ÔÓ¦µÄinode bitmapµÄbitÎ»ÖÃ1¡£±ÈÈç
-        //inode bitmapµÄbuf¼´inode_bitmap_bh->b_data[]µÄµÚ1¸ö×Ö½ÚµÄµÚ1¸öbitÊÇ0£¬Ôò
-        //¸ø±¾´ÎµÄinode·ÖÅäµÄinode±àºÅ¾ÍÊÇ0£¬È»ºóÏÂ±ß°ÑÕâ¸öbitÎ»ÖÃ1¡£ÏÂ´Î·ÖÅäĞÂµÄinode£¬
-        //ÕÒµ½inode_bitmap_bh->b_data[]µÄµÚ1¸ö×Ö½ÚµÄµÚ2¸öbit£¬ÔòÎª¸ÃĞÂinode·ÖÅäµÄ±àºÅÊÇ1.
-        //inode_bitmap_bh->b_data[]Ä³¸öbitÎ»ÊÇ1±íÊ¾¶ÔÓ¦±àºÅinode·ÖÅäÁË£¬Îª0±íÊ¾¸ÃbitÎ»¶ÔÓ¦µÄinode¿ÕÏĞ
+        /*ä¸€ä¸ªå—ç»„å†…ï¼Œinode bitmapå ä¸€ä¸ªç‰©ç†å—ï¼Œ4Kå¤§å°ï¼Œæ€»è®¡æœ‰4k*8ä¸ªbitã€‚å› æ­¤ï¼Œç†è®ºä¸Š
+        ä¸€ä¸ªå—ç»„å†…æœ€å¤šå¯ä»¥å®¹çº³4k*8ä¸ªinodeï¼Œä½†å®é™…ä¸Šåªæœ‰EXT4_INODES_PER_GROUP(sb)ä¸ªï¼Œå³
+        8192ä¸ªï¼Œè¿™ä¸ªåº”è¯¥æ˜¯ç»¼åˆè€ƒè™‘çš„ç»“æœï¼Œä¸€ä¸ªå—ç»„å®é™…å®¹çº³ä¸äº†4k*8ä¸ªinodeã€‚*/
+        //åœ¨inode bitmapå¯¹åº”çš„inode_bitmap_bh->b_data[]è¿™4Kæ•°æ®ä¸­ï¼Œæ‰¾ä¸€ä¸ªç©ºé—²çš„inodeå·ã€‚
+        //æ¯åœ¨inode bitmapæ‰¾ä¸€ä¸ªç©ºé—²inodeå·ï¼Œåœ¨å¯¹åº”çš„inode bitmapçš„bitä½ç½®1ã€‚æ¯”å¦‚
+        //inode bitmapçš„bufå³inode_bitmap_bh->b_data[]çš„ç¬¬1ä¸ªå­—èŠ‚çš„ç¬¬1ä¸ªbitæ˜¯0ï¼Œåˆ™
+        //ç»™æœ¬æ¬¡çš„inodeåˆ†é…çš„inodeç¼–å·å°±æ˜¯0ï¼Œç„¶åä¸‹è¾¹æŠŠè¿™ä¸ªbitä½ç½®1ã€‚ä¸‹æ¬¡åˆ†é…æ–°çš„inodeï¼Œ
+        //æ‰¾åˆ°inode_bitmap_bh->b_data[]çš„ç¬¬1ä¸ªå­—èŠ‚çš„ç¬¬2ä¸ªbitï¼Œåˆ™ä¸ºè¯¥æ–°inodeåˆ†é…çš„ç¼–å·æ˜¯1.
+        //inode_bitmap_bh->b_data[]æŸä¸ªbitä½æ˜¯1è¡¨ç¤ºå¯¹åº”ç¼–å·inodeåˆ†é…äº†ï¼Œä¸º0è¡¨ç¤ºè¯¥bitä½å¯¹åº”çš„inodeç©ºé—²
 		ino = ext4_find_next_zero_bit((unsigned long *)
 					      inode_bitmap_bh->b_data,
 					      EXT4_INODES_PER_GROUP(sb), ino);
-        //ĞÂ·ÖÅäµÄinode±àºÅ´óÓÚ×î´óÖµ£¬ÔòËµÃ÷µ±Ç°¿é×éinodeÓÃÍêÁË£¬ÔòÈ¥ÏÂÒ»¸ö¿é×é·ÖÅäinode
+        //æ–°åˆ†é…çš„inodeç¼–å·å¤§äºæœ€å¤§å€¼ï¼Œåˆ™è¯´æ˜å½“å‰å—ç»„inodeç”¨å®Œäº†ï¼Œåˆ™å»ä¸‹ä¸€ä¸ªå—ç»„åˆ†é…inode
 		if (ino >= EXT4_INODES_PER_GROUP(sb))
 			goto next_group;
 		if (group == 0 && (ino+1) < EXT4_FIRST_INO(sb)) {
@@ -902,21 +902,21 @@ repeat_in_this_group:
 			goto out;
 		}
 		ext4_lock_group(sb, group);
-        //°Ñinode bitmapµÄbuf¼´inode_bitmap_bh->b_data[]Êı×éµÄino¶ÔÓ¦µÄbitÎ»ÖÃ1£¬±íÊ¾¸Ã
-        //bitÎ»¶ÔÓ¦µÄinodeÒÑ¾­·ÖÅäÁË£¬ÏÂ´ÎÔÙ·ÖÅäinode¾ÍÌø¹ı¸ÃbitÎ»£¬ÕÒÒ»¸öĞÂµÄÊÇ0µÄbitÎ»¡£
+        //æŠŠinode bitmapçš„bufå³inode_bitmap_bh->b_data[]æ•°ç»„çš„inoå¯¹åº”çš„bitä½ç½®1ï¼Œè¡¨ç¤ºè¯¥
+        //bitä½å¯¹åº”çš„inodeå·²ç»åˆ†é…äº†ï¼Œä¸‹æ¬¡å†åˆ†é…inodeå°±è·³è¿‡è¯¥bitä½ï¼Œæ‰¾ä¸€ä¸ªæ–°çš„æ˜¯0çš„bitä½ã€‚
 		ret2 = ext4_test_and_set_bit(ino, inode_bitmap_bh->b_data);
 		ext4_unlock_group(sb, group);
-        //¸ã²»Çå³şÎªÊ²Ã´ÕâÀïÒª¼Ó1?ÎÒ²Â²âÓ¦¸ÃÊÇÒÔ1Îª×îĞ¡inode±àºÅ£¬ÒÔ1Îªbase
+        //æä¸æ¸…æ¥šä¸ºä»€ä¹ˆè¿™é‡Œè¦åŠ 1?æˆ‘çŒœæµ‹åº”è¯¥æ˜¯ä»¥1ä¸ºæœ€å°inodeç¼–å·ï¼Œä»¥1ä¸ºbase
 		ino++;		/* the inode bitmap is zero-based */
-		if (!ret2)//ÔÚgroup¿é×é³É¹¦·ÖÅäÒ»¸öinode±àºÅÊÇinoµÄinode(¿ÕÏĞµÄinode)£¬Ìø³öÑ­»·
+		if (!ret2)//åœ¨groupå—ç»„æˆåŠŸåˆ†é…ä¸€ä¸ªinodeç¼–å·æ˜¯inoçš„inode(ç©ºé—²çš„inode)ï¼Œè·³å‡ºå¾ªç¯
 			goto got; /* we grabbed the inode! */
 
-        //Ö´ĞĞµ½ÕâÀï£¬ËµÃ÷Ã»ÓĞÕÒÒ»¸ö¿ÕÏĞµÄinode±àºÅ£¬ÔòÌøµ½repeat_in_this_group·ÖÖ§ÖØĞÂÔÚ
-        //inode bitmapµÄbuf¼´inode_bitmap_bh->b_data[]Êı×éÖØĞÂÕÒÒ»¸ö¿ÕÏĞµÄinode±àºÅ
+        //æ‰§è¡Œåˆ°è¿™é‡Œï¼Œè¯´æ˜æ²¡æœ‰æ‰¾ä¸€ä¸ªç©ºé—²çš„inodeç¼–å·ï¼Œåˆ™è·³åˆ°repeat_in_this_groupåˆ†æ”¯é‡æ–°åœ¨
+        //inode bitmapçš„bufå³inode_bitmap_bh->b_data[]æ•°ç»„é‡æ–°æ‰¾ä¸€ä¸ªç©ºé—²çš„inodeç¼–å·
 		if (ino < EXT4_INODES_PER_GROUP(sb))
 			goto repeat_in_this_group;
 next_group:
-        //µ½ÕâÀïËµÃ÷ÒÑ¾­±éÀúµ½×îºóÒ»¸ö¿é×é£¬»¹ÊÇÃ»ÕÒµ½ÓĞ¿ÕÏĞinodeµÄ¿é×é£¬ÄÇ¾Í´ÓµÚÒ»¸ö¿é×éÖĞÕÒÒ»¸ö¿ÕÏĞµÄinode
+        //åˆ°è¿™é‡Œè¯´æ˜å·²ç»éå†åˆ°æœ€åä¸€ä¸ªå—ç»„ï¼Œè¿˜æ˜¯æ²¡æ‰¾åˆ°æœ‰ç©ºé—²inodeçš„å—ç»„ï¼Œé‚£å°±ä»ç¬¬ä¸€ä¸ªå—ç»„ä¸­æ‰¾ä¸€ä¸ªç©ºé—²çš„inode
 		if (++group == ngroups)
 			group = 0;
 	}
@@ -925,8 +925,8 @@ next_group:
 
 got:
 	BUFFER_TRACE(inode_bitmap_bh, "call ext4_handle_dirty_metadata");
-    //inode bitmapµÄbuf¼´inode_bitmap_bh->b_data[]Êı×éµÄÊı¾İÔàÁË£¬ÒòÎªÉÏ±ß·ÖÅäÒ»¸ö¿ÕÏĞµÄ
-    //inode£¬°Ñ¸ÃbufÀïinode±àºÅ¶ÔÓ¦µÄbitÎ»ÖÃ1
+    //inode bitmapçš„bufå³inode_bitmap_bh->b_data[]æ•°ç»„çš„æ•°æ®è„äº†ï¼Œå› ä¸ºä¸Šè¾¹åˆ†é…ä¸€ä¸ªç©ºé—²çš„
+    //inodeï¼ŒæŠŠè¯¥bufé‡Œinodeç¼–å·å¯¹åº”çš„bitä½ç½®1
 	err = ext4_handle_dirty_metadata(handle, NULL, inode_bitmap_bh);
 	if (err) {
 		ext4_std_error(sb, err);
@@ -1005,10 +1005,10 @@ got:
 	} else {
 		ext4_lock_group(sb, group);
 	}
-    //Áîgdp¶ÔÓ¦µÄ¿é×é¿ÕÏĞµÄinodeÊı¼õ1
+    //ä»¤gdpå¯¹åº”çš„å—ç»„ç©ºé—²çš„inodeæ•°å‡1
 	ext4_free_inodes_set(sb, gdp, ext4_free_inodes_count(sb, gdp) - 1);
 	if (S_ISDIR(mode)) {
-        //ÉèÖÃ¿é×éµÄÒÑ·ÖÅäµÄÄ¿Â¼inode¸öÊı¼Ó1
+        //è®¾ç½®å—ç»„çš„å·²åˆ†é…çš„ç›®å½•inodeä¸ªæ•°åŠ 1
 		ext4_used_dirs_set(sb, gdp, ext4_used_dirs_count(sb, gdp) + 1);
 		if (sbi->s_log_groups_per_flex) {
 			ext4_group_t f = ext4_flex_group(sbi, group);
@@ -1024,29 +1024,29 @@ got:
 	ext4_unlock_group(sb, group);
 
 	BUFFER_TRACE(group_desc_bh, "call ext4_handle_dirty_metadata");
-    //Ç°±ßĞŞ¸ÄÁË¿é×éÃèÊö·ûµÄÊı¾İ£¬±ÈÈç¿é×é¿ÕÏĞinodeÊı£¬ÏÖÔÚÊ¹¿é×éÃèÊö·ûµÄbuffer_head±ê¼ÇÔà
+    //å‰è¾¹ä¿®æ”¹äº†å—ç»„æè¿°ç¬¦çš„æ•°æ®ï¼Œæ¯”å¦‚å—ç»„ç©ºé—²inodeæ•°ï¼Œç°åœ¨ä½¿å—ç»„æè¿°ç¬¦çš„buffer_headæ ‡è®°è„
 	err = ext4_handle_dirty_metadata(handle, NULL, group_desc_bh);
 	if (err) {
 		ext4_std_error(sb, err);
 		goto out;
 	}
-    //¿ÕÏĞinodeÊı¼õ1
+    //ç©ºé—²inodeæ•°å‡1
 	percpu_counter_dec(&sbi->s_freeinodes_counter);
 	if (S_ISDIR(mode))
-		percpu_counter_inc(&sbi->s_dirs_counter);//µ±Ç°Òª´´½¨µÄÊÇÄ¿Â¼Ê±¼õ1
+		percpu_counter_inc(&sbi->s_dirs_counter);//å½“å‰è¦åˆ›å»ºçš„æ˜¯ç›®å½•æ—¶å‡1
 
 	if (sbi->s_log_groups_per_flex) {// 4
 		flex_group = ext4_flex_group(sbi, group);
 		atomic_dec(&sbi->s_flex_groups[flex_group].free_inodes);
 	}
-    //¸ù¾İÎªinode·ÖÅäµÄ¿é×é±àºÅgroupºÍÔÚ¿é×éÄÚÕÒµ½µÄÒ»¸ö¿ÕÏĞinodeºÅ£¬¼ÆËã×îÖÕµÄinode±àºÅ
+    //æ ¹æ®ä¸ºinodeåˆ†é…çš„å—ç»„ç¼–å·groupå’Œåœ¨å—ç»„å†…æ‰¾åˆ°çš„ä¸€ä¸ªç©ºé—²inodeå·ï¼Œè®¡ç®—æœ€ç»ˆçš„inodeç¼–å·
 	inode->i_ino = ino + group * EXT4_INODES_PER_GROUP(sb);
 	/* This is the optimal IO size (for stat), not the fs block size */
 	inode->i_blocks = 0;
-    //¼ÆËãµ±Ç°inodeµÄ´´½¨ºÍĞŞ¸ÄÊ±¼ä
+    //è®¡ç®—å½“å‰inodeçš„åˆ›å»ºå’Œä¿®æ”¹æ—¶é—´
 	inode->i_mtime = inode->i_atime = inode->i_ctime = ei->i_crtime =
 						       ext4_current_time(inode);
-    //¶Ôstruct ext4_inode_info *ei¸³Öµ
+    //å¯¹struct ext4_inode_info *eièµ‹å€¼
 	memset(ei->i_data, 0, sizeof(ei->i_data));
 	ei->i_dir_start_lookup = 0;
 	ei->i_disksize = 0;

@@ -86,7 +86,7 @@ typedef enum {
 #define ext4_read_dirblock(inode, block, type) \
 	__ext4_read_dirblock((inode), (block), (type), __LINE__)
 
-static struct buffer_head *__ext4_read_dirblock(struct inode *inode,//inodeÊÇ¸¸Ä¿Â¼µÄ
+static struct buffer_head *__ext4_read_dirblock(struct inode *inode,//inodeæ˜¯çˆ¶ç›®å½•çš„
 					      ext4_lblk_t block,
 					      dirblock_type_t type,
 					      unsigned int line)
@@ -94,7 +94,7 @@ static struct buffer_head *__ext4_read_dirblock(struct inode *inode,//inodeÊÇ¸¸Ä
 	struct buffer_head *bh;
 	struct ext4_dir_entry *dirent;
 	int err = 0, is_dx_block = 0;
-    //¸ù¾İ´«ÈëµÄÄ¿Â¼inodeµÄÂß¼­µØÖ·block´Óext4ÎÄ¼şÏµÍ³µÄdata blockÇø·ÖÅä1¸öÎïÀí¿é£¬²¢ÓëÂß¼­µØÖ·block¹¹³ÉÓ³Éä£¬×îºó·µ»ØÕâÎïÀí¿éµÄbh
+    //æ ¹æ®ä¼ å…¥çš„ç›®å½•inodeçš„é€»è¾‘åœ°å€blockä»ext4æ–‡ä»¶ç³»ç»Ÿçš„data blockåŒºåˆ†é…1ä¸ªç‰©ç†å—ï¼Œå¹¶ä¸é€»è¾‘åœ°å€blockæ„æˆæ˜ å°„ï¼Œæœ€åè¿”å›è¿™ç‰©ç†å—çš„bh
 	bh = ext4_bread(NULL, inode, block, 0, &err);
 	if (!bh) {
 		if (err == 0) {
@@ -1047,8 +1047,8 @@ static inline int search_dirblock(struct buffer_head *bh,
 				  unsigned int offset,
 				  struct ext4_dir_entry_2 **res_dir)
 {
-    //bhÓ³Éä¸¸Ä¿Â¼dirµÄÎïÀí¿é£¬d_nameÊÇµ±Ç°Òª²éÕÒµÄÎÄ¼ş»òÕßÄ¿Â¼Ãû×Ö£¬bh->b_dataÔòÊÇ¸ÃÎïÀí¿éµÄÊı¾İ£¬
-    //ÕâĞ©Êı¾İ¾ÍÊÇÒ»¸ö¸ö¸Ã¸¸Ä¿Â¼ÏÂµÄ×ÓÎÄ¼ş»ò×ÓÄ¿Â¼µÄext4_dir_entry_2½á¹¹
+    //bhæ˜ å°„çˆ¶ç›®å½•dirçš„ç‰©ç†å—ï¼Œd_nameæ˜¯å½“å‰è¦æŸ¥æ‰¾çš„æ–‡ä»¶æˆ–è€…ç›®å½•åå­—ï¼Œbh->b_dataåˆ™æ˜¯è¯¥ç‰©ç†å—çš„æ•°æ®ï¼Œ
+    //è¿™äº›æ•°æ®å°±æ˜¯ä¸€ä¸ªä¸ªè¯¥çˆ¶ç›®å½•ä¸‹çš„å­æ–‡ä»¶æˆ–å­ç›®å½•çš„ext4_dir_entry_2ç»“æ„
 	return search_dir(bh, bh->b_data, dir->i_sb->s_blocksize, dir,
 			  d_name, offset, res_dir);
 }
@@ -1145,13 +1145,13 @@ static inline int ext4_match (int len, const char * const name,
 /*
  * Returns 0 if not found, -1 on failure, and 1 on success
  */
-//ÔÚbhÒ³»º´æ(¾ÍÊÇ±£´ædir¸¸Ä¿Â¼Êı¾İµÄÎïÀí¿éÓ³ÉäµÄbh£¬Ò»¸ö¸öext4_dir_entry_2½á¹¹)²éÕÒÊÇ·ñÓĞÃû×ÖÊÇd_nameÊÇµÄ×ÓÄ¿Â¼»ò×ÓÎÄ¼ş£¬
-//ÕÒµ½·µ»Ø1£¬²¢ÇÒres_dirÖ¸ÏòÕâ¸öÎÄ¼ş»òÄ¿Â¼µÄext4_dir_entry_2
+//åœ¨bhé¡µç¼“å­˜(å°±æ˜¯ä¿å­˜dirçˆ¶ç›®å½•æ•°æ®çš„ç‰©ç†å—æ˜ å°„çš„bhï¼Œä¸€ä¸ªä¸ªext4_dir_entry_2ç»“æ„)æŸ¥æ‰¾æ˜¯å¦æœ‰åå­—æ˜¯d_nameæ˜¯çš„å­ç›®å½•æˆ–å­æ–‡ä»¶ï¼Œ
+//æ‰¾åˆ°è¿”å›1ï¼Œå¹¶ä¸”res_diræŒ‡å‘è¿™ä¸ªæ–‡ä»¶æˆ–ç›®å½•çš„ext4_dir_entry_2
 int search_dir(struct buffer_head *bh,
-	       char *search_buf,//search_buf¾ÍÊÇbh->b_data£¬Àï±ßµÄÊı¾İ¾ÍÊÇdir¸¸Ä¿Â¼ÏÂÒ»¸ö¸ö×ÓÎÄ¼ş»ò×ÓÄ¿Â¼µÄext4_dir_entry_2½á¹¹
+	       char *search_buf,//search_bufå°±æ˜¯bh->b_dataï¼Œé‡Œè¾¹çš„æ•°æ®å°±æ˜¯dirçˆ¶ç›®å½•ä¸‹ä¸€ä¸ªä¸ªå­æ–‡ä»¶æˆ–å­ç›®å½•çš„ext4_dir_entry_2ç»“æ„
 	       int buf_size,
 	       struct inode *dir,
-	       const struct qstr *d_name,//d_nameÊÇµ±Ç°ÒªËÑË÷µÄ×ÓÎÄ¼ş»ò×ÓÄ¿Â¼Ãû×Ö
+	       const struct qstr *d_name,//d_nameæ˜¯å½“å‰è¦æœç´¢çš„å­æ–‡ä»¶æˆ–å­ç›®å½•åå­—
 	       unsigned int offset,
 	       struct ext4_dir_entry_2 **res_dir)
 {
@@ -1161,35 +1161,35 @@ int search_dir(struct buffer_head *bh,
 	const char *name = d_name->name;
 	int namelen = d_name->len;
     
-    //search_bufµÄÊı¾İ¾ÍÊÇÒ»¸ö¸ö¸Ã¸¸Ä¿Â¼ÏÂµÄ×ÓÎÄ¼ş»ò×ÓÄ¿Â¼µÄext4_dir_entry_2½á¹¹£¬deÖ¸ÏòËüÊ×µØÖ·
+    //search_bufçš„æ•°æ®å°±æ˜¯ä¸€ä¸ªä¸ªè¯¥çˆ¶ç›®å½•ä¸‹çš„å­æ–‡ä»¶æˆ–å­ç›®å½•çš„ext4_dir_entry_2ç»“æ„ï¼ŒdeæŒ‡å‘å®ƒé¦–åœ°å€
 	de = (struct ext4_dir_entry_2 *)search_buf;
 	dlimit = search_buf + buf_size;
-    //deÖ¸Ïò¸¸Ä¿Â¼Êı¾İµÄÒ»¸ö¸öext4_dir_entry_2½á¹¹(ext4_dir_entry_2°üº¬ÁË¸¸Ä¿Â¼µÄ×ÓÎÄ¼ş»òÕß×ÓÄ¿Â¼Ãû×ÖµÈĞÅÏ¢)£¬Óë´ı²éÕÒµÄÎÄ¼ş»òÄ¿Â¼
-    //Ãû×Öd_name½øĞĞÆ¥Åä£¬ÕÒµ½Ôò·µ»Ø1
+    //deæŒ‡å‘çˆ¶ç›®å½•æ•°æ®çš„ä¸€ä¸ªä¸ªext4_dir_entry_2ç»“æ„(ext4_dir_entry_2åŒ…å«äº†çˆ¶ç›®å½•çš„å­æ–‡ä»¶æˆ–è€…å­ç›®å½•åå­—ç­‰ä¿¡æ¯)ï¼Œä¸å¾…æŸ¥æ‰¾çš„æ–‡ä»¶æˆ–ç›®å½•
+    //åå­—d_nameè¿›è¡ŒåŒ¹é…ï¼Œæ‰¾åˆ°åˆ™è¿”å›1
 	while ((char *) de < dlimit) {
 		/* this code is executed quadratically often */
 		/* do minimal checking `by hand' */
-        //ext4_match (namelen, name, de)ÊÇÄÃ×Å±¾´ÎÒª²éÕÒµÄÎÄ¼ş»òÕßÄ¿Â¼Ãû×ÖnameÓë¸¸Ä¿Â¼µÄdeÖ¸ÏòµÄ×ÓÄ¿Â¼»ò×ÓÎÄ¼şµÄµÄÃû×Ö
-        //(ext4_dir_entry_2µÄname³ÉÔ±)±È½Ï£¬Ò»ÖÂÔòÔÚ¸¸Ä¿Â¼dirÖĞÕÒµ½ÁËÒª²éÕÒµÄÎÄ¼ş»òÄ¿Â¼
+        //ext4_match (namelen, name, de)æ˜¯æ‹¿ç€æœ¬æ¬¡è¦æŸ¥æ‰¾çš„æ–‡ä»¶æˆ–è€…ç›®å½•åå­—nameä¸çˆ¶ç›®å½•çš„deæŒ‡å‘çš„å­ç›®å½•æˆ–å­æ–‡ä»¶çš„çš„åå­—
+        //(ext4_dir_entry_2çš„nameæˆå‘˜)æ¯”è¾ƒï¼Œä¸€è‡´åˆ™åœ¨çˆ¶ç›®å½•dirä¸­æ‰¾åˆ°äº†è¦æŸ¥æ‰¾çš„æ–‡ä»¶æˆ–ç›®å½•
 		if ((char *) de + namelen <= dlimit &&
 		    ext4_match (namelen, name, de)) {
 			/* found a match - just to be sure, do a full check */
 			if (ext4_check_dir_entry(dir, NULL, de, bh, bh->b_data,
 						 bh->b_size, offset))
 				return -1;
-            //ÔÚ¸¸Ä¿Â¼ÕÒµ½ÁËÃû×ÖÊÇd_nameµÄÎÄ¼ş»òÄ¿Â¼£¬ÖÕÓÚÕÒµ½ÁË£¬*res_dir = deÖ¸ÏòÕâ¸öÕÒµ½µÄÎÄ¼ş»òÄ¿Â¼ext4_dir_entry_2½á¹¹
+            //åœ¨çˆ¶ç›®å½•æ‰¾åˆ°äº†åå­—æ˜¯d_nameçš„æ–‡ä»¶æˆ–ç›®å½•ï¼Œç»ˆäºæ‰¾åˆ°äº†ï¼Œ*res_dir = deæŒ‡å‘è¿™ä¸ªæ‰¾åˆ°çš„æ–‡ä»¶æˆ–ç›®å½•ext4_dir_entry_2ç»“æ„
 			*res_dir = de;
 			return 1;
 		}
 		/* prevent looping on a bad block */
-        //¾ÍÊÇde_len=de->rec_len£¬ÕâÓ¦¸ÃÊÇÒ»¸öext4_dir_entry_2½á¹¹µÄ´óĞ¡
+        //å°±æ˜¯de_len=de->rec_lenï¼Œè¿™åº”è¯¥æ˜¯ä¸€ä¸ªext4_dir_entry_2ç»“æ„çš„å¤§å°
 		de_len = ext4_rec_len_from_disk(de->rec_len,
 						dir->i_sb->s_blocksize);
 		if (de_len <= 0)
 			return -1;
 
 		offset += de_len;
-        //deÔö¼Óde_len´óĞ¡ºóÖ¸Ïò¸¸Ä¿Â¼µÄÏÂÒ»¸öext4_dir_entry_2½á¹¹
+        //deå¢åŠ de_lenå¤§å°åæŒ‡å‘çˆ¶ç›®å½•çš„ä¸‹ä¸€ä¸ªext4_dir_entry_2ç»“æ„
 		de = (struct ext4_dir_entry_2 *) ((char *) de + de_len);
 	}
 	return 0;
@@ -1222,10 +1222,10 @@ static int is_dx_internal_node(struct inode *dir, ext4_lblk_t block,
  * The returned buffer_head has ->b_count elevated.  The caller is expected
  * to brelse() it when appropriate.
  */
-//ÔÚ¸¸Ä¿Â¼µÄÎïÀí¿éÖĞ(Êı¾İÊÇÒ»¸ö¸öext4_dir_entry_2½á¹¹)²éÕÒÊÇ·ñÓĞÃû×ÖÊÇd_nameµÄ×ÓÄ¿Â¼»ò×ÓÎÄ¼ş£¬ÕÒµ½Ôò·µ»Ø±£´æÕâ¸ö×ÓÎÄ¼ş»ò×ÓÄ¿Â¼
-//ext4_dir_entry_2½á¹¹µÄÎïÀí¿éÓ³ÉäµÄbh£¬deÖ¸ÏòÕâ¸öext4_dir_entry_2½á¹¹
-static struct buffer_head * ext4_find_entry (struct inode *dir,//dirÊÇµ±Ç°ÒªËÑË÷µÄ×ÓÎÄ¼ş»ò×ÓÄ¿Â¼µÄ¸¸Ä¿Â¼dir
-					const struct qstr *d_name,//d_nameÊÇµ±Ç°ÒªËÑË÷µÄ×ÓÎÄ¼ş»ò×ÓÄ¿Â¼Ãû×Ö
+//åœ¨çˆ¶ç›®å½•çš„ç‰©ç†å—ä¸­(æ•°æ®æ˜¯ä¸€ä¸ªä¸ªext4_dir_entry_2ç»“æ„)æŸ¥æ‰¾æ˜¯å¦æœ‰åå­—æ˜¯d_nameçš„å­ç›®å½•æˆ–å­æ–‡ä»¶ï¼Œæ‰¾åˆ°åˆ™è¿”å›ä¿å­˜è¿™ä¸ªå­æ–‡ä»¶æˆ–å­ç›®å½•
+//ext4_dir_entry_2ç»“æ„çš„ç‰©ç†å—æ˜ å°„çš„bhï¼ŒdeæŒ‡å‘è¿™ä¸ªext4_dir_entry_2ç»“æ„
+static struct buffer_head * ext4_find_entry (struct inode *dir,//diræ˜¯å½“å‰è¦æœç´¢çš„å­æ–‡ä»¶æˆ–å­ç›®å½•çš„çˆ¶ç›®å½•dir
+					const struct qstr *d_name,//d_nameæ˜¯å½“å‰è¦æœç´¢çš„å­æ–‡ä»¶æˆ–å­ç›®å½•åå­—
 					struct ext4_dir_entry_2 **res_dir,
 					int *inlined)
 {
@@ -1234,10 +1234,10 @@ static struct buffer_head * ext4_find_entry (struct inode *dir,//dirÊÇµ±Ç°ÒªËÑË÷
 	struct buffer_head *bh, *ret = NULL;
 	ext4_lblk_t start, block, b;
 	const u8 *name = d_name->name;
-    //×î´óÔ¤¶ÁµÄ±£´æ¸¸Ä¿Â¼Êı¾İµÄÎïÀí¿é¸öÊı
+    //æœ€å¤§é¢„è¯»çš„ä¿å­˜çˆ¶ç›®å½•æ•°æ®çš„ç‰©ç†å—ä¸ªæ•°
 	int ra_max = 0;		/* Number of bh's in the readahead
 				   buffer, bh_use[] */
-    //µ±Ç°Ê¹ÓÃµÄÔ¤¶ÁµÄ±£´æ¸¸Ä¿Â¼Êı¾İµÄÎïÀí¿é¶ÔÓ¦µÄÂß¼­¿éºÅ
+    //å½“å‰ä½¿ç”¨çš„é¢„è¯»çš„ä¿å­˜çˆ¶ç›®å½•æ•°æ®çš„ç‰©ç†å—å¯¹åº”çš„é€»è¾‘å—å·
 	int ra_ptr = 0;		/* Current index into readahead
 				   buffer */
 	int num = 0;
@@ -1251,7 +1251,7 @@ static struct buffer_head * ext4_find_entry (struct inode *dir,//dirÊÇµ±Ç°ÒªËÑË÷
 	if (namelen > EXT4_NAME_LEN)
 		return NULL;
 
-	if (ext4_has_inline_data(dir)) {//²»³ÉÁ¢
+	if (ext4_has_inline_data(dir)) {//ä¸æˆç«‹
 		int has_inline_data = 1;
 		ret = ext4_find_inline_entry(dir, d_name, res_dir,
 					     &has_inline_data);
@@ -1272,7 +1272,7 @@ static struct buffer_head * ext4_find_entry (struct inode *dir,//dirÊÇµ±Ç°ÒªËÑË÷
 		nblocks = 1;
 		goto restart;
 	}
-	if (is_dx(dir)) {//Ò»°ã²»³ÉÁ¢£¬µ«Å¼¶û»á×¥µ½Ö´ĞĞÕâÀï
+	if (is_dx(dir)) {//ä¸€èˆ¬ä¸æˆç«‹ï¼Œä½†å¶å°”ä¼šæŠ“åˆ°æ‰§è¡Œè¿™é‡Œ
 		bh = ext4_dx_find_entry(dir, d_name, res_dir, &err);
 		/*
 		 * On success, or if the error was file not found,
@@ -1284,63 +1284,63 @@ static struct buffer_head * ext4_find_entry (struct inode *dir,//dirÊÇµ±Ç°ÒªËÑË÷
 		dxtrace(printk(KERN_DEBUG "ext4_find_entry: dx failed, "
 			       "falling back\n"));
 	}
-    //±£´ædir¸¸Ä¿Â¼Êı¾İµÄÎïÀí¿é¸öÊı
+    //ä¿å­˜dirçˆ¶ç›®å½•æ•°æ®çš„ç‰©ç†å—ä¸ªæ•°
 	nblocks = dir->i_size >> EXT4_BLOCK_SIZE_BITS(sb);
-    //i_dir_start_lookup±£´æÁËÉÏÒ»´ÎÔÚdir¸¸Ä¿Â¼ÕÒµ½µÄ×ÓÄ¿Â¼»ò×ÓÎÄ¼şµÄÎïÀí¿é¶ÔÓ¦µÄÂß¼­¿éºÅ£¬±¾´Î¿ÉÄÜÔÚÕâ¸öÎïÀí¿éÒ²»áÕÒµ½Ãû×ÖÊÇd_nameµÄ×ÓÄ¿Â¼»ò×ÓÎÄ¼ş
+    //i_dir_start_lookupä¿å­˜äº†ä¸Šä¸€æ¬¡åœ¨dirçˆ¶ç›®å½•æ‰¾åˆ°çš„å­ç›®å½•æˆ–å­æ–‡ä»¶çš„ç‰©ç†å—å¯¹åº”çš„é€»è¾‘å—å·ï¼Œæœ¬æ¬¡å¯èƒ½åœ¨è¿™ä¸ªç‰©ç†å—ä¹Ÿä¼šæ‰¾åˆ°åå­—æ˜¯d_nameçš„å­ç›®å½•æˆ–å­æ–‡ä»¶
 	start = EXT4_I(dir)->i_dir_start_lookup;
 	if (start >= nblocks)
 		start = 0;
-    //±¾´ÎÔÚdir¸¸Ä¿Â¼²éÕÒÃû×ÖÊÇd_nameµÄ×ÓÎÄ¼ş»òÄ¿Â¼µÄµÚÒ»¸öÎïÀí¿éµÄÂß¼­¿éºÅ£¬×¢ÒâblockÕâÀïÊÇdir¸¸Ä¿Â¼µÄÂß¼­¿éºÅ!!!!!!!!!!!!
+    //æœ¬æ¬¡åœ¨dirçˆ¶ç›®å½•æŸ¥æ‰¾åå­—æ˜¯d_nameçš„å­æ–‡ä»¶æˆ–ç›®å½•çš„ç¬¬ä¸€ä¸ªç‰©ç†å—çš„é€»è¾‘å—å·ï¼Œæ³¨æ„blockè¿™é‡Œæ˜¯dirçˆ¶ç›®å½•çš„é€»è¾‘å—å·!!!!!!!!!!!!
 	block = start;
 restart:
 	do {
 		/*
 		 * We deal with the read-ahead logic here.
 		 */
-		/*Õâ¸öÔ¤¶ÁºÜÉñÆæ£¬¼òµ¥ËµÃ÷Ò»ÏÂ¡£forÑ­»·ÀïµÚ1´ÎÔ¤¶ÁµÄdir¸¸Ä¿Â¼Âß¼­¿éblockÊÇi_dir_start_lookup£¬ÊÇÉÏÒ»´ÎÔÚdir¸¸Ä¿Â¼ÕÒµ½µÄ
-        Ãû×ÖÆ¥Åä×ÓÄ¿Â¼»ò×ÓÎÄ¼şµÄµÄÂß¼­¿éºÅ£¬±ÈÈçÊÇ3¡£ÔÙ¼ÙÉè¸¸Ä¿Â¼ÓĞ7¸öÎïÀí¿é£¬¼´nblocksÊÇ7¡£Ôò¸ÃforÑ­»·Ô¤¶Ádir¸¸Ä¿Â¼µÄÂß¼­¿éblock
-        ÊÇ3¡¢4¡¢5¡¢6¶ÔÓ¦µÄÎïÀí¿éÊı¾İ£¬²¢°ÑÕâĞ©ÎïÀí¿éµÄbh±£´æµ½bh_use[ra_max]£¬forÑ­»·½áÊøÊ±ra_maxÊÇ4¡£È»ºó¿ªÊ¼Ñ­»·Ö´ĞĞ´ówhileÑ­»·Àï
-        µÄsearch_dirblock()£¬¿´¸¸Ä¿Â¼Âß¼­¿éÊÇ3¡¢4¡¢5¡¢6 Ó³ÉäµÄÎïÀí¿éÖĞ£¬ÊÇ·ñÓĞÃû×ÖÊÇd_nameµÄ×ÓÄ¿Â¼»ò×ÓÎÄ¼ş¡£Ã¿²éÕÒÒ»¸öÂß¼­¿é
-        Ôòra_ptrºÍblock¼Ó1¡£Èç¹ûÕâ4¸öÎïÀí¿é¶¼Ã»ÕÒµ½Ãû×ÖÊÇd_nameµÄ×ÓÄ¿Â¼»ò×ÓÎÄ¼ş£¬ÔòwhileÑ­»·×îºóif (++block >= nblocks)³ÉÁ¢£¬Áîblock¸³Öµ0£¬
-        ²¢ÇÒra_ptrÊÇ4¡£ÔÙµ½´ówhileÑ­»·¿ªÍ·Ê± if (ra_ptr >= ra_max)³ÉÁ¢£¬ÔÙ´Î´¥·¢Ô¤¶Á£¬Ô¤¶ÁdirÄ¿Â¼Âß¼­¿é0¡¢1¡¢2Ó³ÉäÎïÀí¿é
-        Êı¾İ£¬È»ºóÔÙ²éÕÒÂß¼­¿é0¡¢1¡¢2Ó³ÉäµÄÎïÀí¿é£¬ÊÇ·ñÓĞÃû×ÖÊÇd_nameµÄ×ÓÄ¿Â¼»ò×ÓÎÄ¼ş£¬Ã¿ÕÒÒ»¸öblock¼Ó1¡£Èç¹û¶¼Ã»ÓĞÕÒµ½£¬ÔòblockÊÇ3£¬
-        Ôò×îºóµÄwhile(block != start)³ÉÁ¢£¬Ìø³öwhileÑ­»·¡£ÕâËµÃ÷Ã»ÓĞÔÚdirÄ¿Â¼ÕÒµ½Ãû×ÖÊÇd_nameµÄ×ÓÄ¿Â¼»ò×ÓÎÄ¼ş¡£
+		/*è¿™ä¸ªé¢„è¯»å¾ˆç¥å¥‡ï¼Œç®€å•è¯´æ˜ä¸€ä¸‹ã€‚forå¾ªç¯é‡Œç¬¬1æ¬¡é¢„è¯»çš„dirçˆ¶ç›®å½•é€»è¾‘å—blockæ˜¯i_dir_start_lookupï¼Œæ˜¯ä¸Šä¸€æ¬¡åœ¨dirçˆ¶ç›®å½•æ‰¾åˆ°çš„
+        åå­—åŒ¹é…å­ç›®å½•æˆ–å­æ–‡ä»¶çš„çš„é€»è¾‘å—å·ï¼Œæ¯”å¦‚æ˜¯3ã€‚å†å‡è®¾çˆ¶ç›®å½•æœ‰7ä¸ªç‰©ç†å—ï¼Œå³nblocksæ˜¯7ã€‚åˆ™è¯¥forå¾ªç¯é¢„è¯»dirçˆ¶ç›®å½•çš„é€»è¾‘å—block
+        æ˜¯3ã€4ã€5ã€6å¯¹åº”çš„ç‰©ç†å—æ•°æ®ï¼Œå¹¶æŠŠè¿™äº›ç‰©ç†å—çš„bhä¿å­˜åˆ°bh_use[ra_max]ï¼Œforå¾ªç¯ç»“æŸæ—¶ra_maxæ˜¯4ã€‚ç„¶åå¼€å§‹å¾ªç¯æ‰§è¡Œå¤§whileå¾ªç¯é‡Œ
+        çš„search_dirblock()ï¼Œçœ‹çˆ¶ç›®å½•é€»è¾‘å—æ˜¯3ã€4ã€5ã€6 æ˜ å°„çš„ç‰©ç†å—ä¸­ï¼Œæ˜¯å¦æœ‰åå­—æ˜¯d_nameçš„å­ç›®å½•æˆ–å­æ–‡ä»¶ã€‚æ¯æŸ¥æ‰¾ä¸€ä¸ªé€»è¾‘å—
+        åˆ™ra_ptrå’ŒblockåŠ 1ã€‚å¦‚æœè¿™4ä¸ªç‰©ç†å—éƒ½æ²¡æ‰¾åˆ°åå­—æ˜¯d_nameçš„å­ç›®å½•æˆ–å­æ–‡ä»¶ï¼Œåˆ™whileå¾ªç¯æœ€åif (++block >= nblocks)æˆç«‹ï¼Œä»¤blockèµ‹å€¼0ï¼Œ
+        å¹¶ä¸”ra_ptræ˜¯4ã€‚å†åˆ°å¤§whileå¾ªç¯å¼€å¤´æ—¶ if (ra_ptr >= ra_max)æˆç«‹ï¼Œå†æ¬¡è§¦å‘é¢„è¯»ï¼Œé¢„è¯»dirç›®å½•é€»è¾‘å—0ã€1ã€2æ˜ å°„ç‰©ç†å—
+        æ•°æ®ï¼Œç„¶åå†æŸ¥æ‰¾é€»è¾‘å—0ã€1ã€2æ˜ å°„çš„ç‰©ç†å—ï¼Œæ˜¯å¦æœ‰åå­—æ˜¯d_nameçš„å­ç›®å½•æˆ–å­æ–‡ä»¶ï¼Œæ¯æ‰¾ä¸€ä¸ªblockåŠ 1ã€‚å¦‚æœéƒ½æ²¡æœ‰æ‰¾åˆ°ï¼Œåˆ™blockæ˜¯3ï¼Œ
+        åˆ™æœ€åçš„while(block != start)æˆç«‹ï¼Œè·³å‡ºwhileå¾ªç¯ã€‚è¿™è¯´æ˜æ²¡æœ‰åœ¨dirç›®å½•æ‰¾åˆ°åå­—æ˜¯d_nameçš„å­ç›®å½•æˆ–å­æ–‡ä»¶ã€‚
 
-        Òò´Ë£¬Õâ¸ödirÄ¿Â¼Êı¾İÔ¤¶Á»úÖÆ£¬Ëµµ½µ×¾ÍÊÇÒÔ¸¸Ä¿Â¼dirµÄi_dir_start_lookupÂß¼­¿éºÅÎª»ù×¼£¬Ò»Ö±Ô¤¶Áµ½dir¸¸Ä¿Â¼×îºóÒ»¸öÂß¼­¿é¡£
-        Èç¹ûÔÚÕâĞ©Âß¼­¿éÓ³ÉäµÄÎïÀí¿éÃ»ÕÒµ½Ãû×ÖÊÇd_nameµÄ×ÓÄ¿Â¼»ò×ÓÎÄ¼şµÄ»°£¬¾Í´Ódir¸¸Ä¿Â¼¿ªÍ·(Âß¼­¿éºÅÊÇ0)ÔÙ´ÎÔ¤¶ÁÎïÀí¿éÊı¾İ£¬
-        Ò»Ö±Ô¤¶Áµ½dir¸¸Ä¿Â¼i_dir_start_lookupÕâ¸öÂß¼­¿é£¬È»ºóÔÚÕâĞ©Âß¼­¿éÓ³ÉäµÄÎïÀí¿éÖĞ²éÕÒÃû×ÖÊÇd_nameµÄ×ÓÄ¿Â¼»ò×ÓÎÄ¼ş*/
-        //ÕâÀïÊÇÔ¤¶Á£¬×î¶àÔ¤¶Á8¸ö±£´æ¸¸Ä¿Â¼Êı¾İµÄÎïÀí¿é£¬²¢°ÑÕâĞ©ÎïÀí¿ébh±£´æµ½bh_use[]¡£Èç¹ûÔ¤¶Á¹ı³ÌÅöµ½¸¸Ä¿Â¼
-	    //×îºóÒ»¸öÎïÀí¿é(¼´if (b >= nblocks)£¬Ôò½áÊøÔ¤¶Á
+        å› æ­¤ï¼Œè¿™ä¸ªdirç›®å½•æ•°æ®é¢„è¯»æœºåˆ¶ï¼Œè¯´åˆ°åº•å°±æ˜¯ä»¥çˆ¶ç›®å½•dirçš„i_dir_start_lookupé€»è¾‘å—å·ä¸ºåŸºå‡†ï¼Œä¸€ç›´é¢„è¯»åˆ°dirçˆ¶ç›®å½•æœ€åä¸€ä¸ªé€»è¾‘å—ã€‚
+        å¦‚æœåœ¨è¿™äº›é€»è¾‘å—æ˜ å°„çš„ç‰©ç†å—æ²¡æ‰¾åˆ°åå­—æ˜¯d_nameçš„å­ç›®å½•æˆ–å­æ–‡ä»¶çš„è¯ï¼Œå°±ä»dirçˆ¶ç›®å½•å¼€å¤´(é€»è¾‘å—å·æ˜¯0)å†æ¬¡é¢„è¯»ç‰©ç†å—æ•°æ®ï¼Œ
+        ä¸€ç›´é¢„è¯»åˆ°dirçˆ¶ç›®å½•i_dir_start_lookupè¿™ä¸ªé€»è¾‘å—ï¼Œç„¶ååœ¨è¿™äº›é€»è¾‘å—æ˜ å°„çš„ç‰©ç†å—ä¸­æŸ¥æ‰¾åå­—æ˜¯d_nameçš„å­ç›®å½•æˆ–å­æ–‡ä»¶*/
+        //è¿™é‡Œæ˜¯é¢„è¯»ï¼Œæœ€å¤šé¢„è¯»8ä¸ªä¿å­˜çˆ¶ç›®å½•æ•°æ®çš„ç‰©ç†å—ï¼Œå¹¶æŠŠè¿™äº›ç‰©ç†å—bhä¿å­˜åˆ°bh_use[]ã€‚å¦‚æœé¢„è¯»è¿‡ç¨‹ç¢°åˆ°çˆ¶ç›®å½•
+	    //æœ€åä¸€ä¸ªç‰©ç†å—(å³if (b >= nblocks)ï¼Œåˆ™ç»“æŸé¢„è¯»
 		if (ra_ptr >= ra_max) {
 			/* Refill the readahead buffer */
 			ra_ptr = 0;
 			b = block;
-			for (ra_max = 0; ra_max < NAMEI_RA_SIZE; ra_max++) {//NAMEI_RA_SIZEÊÇ8
+			for (ra_max = 0; ra_max < NAMEI_RA_SIZE; ra_max++) {//NAMEI_RA_SIZEæ˜¯8
 				/*
 				 * Terminate if we reach the end of the
 				 * directory and must wrap, or if our
 				 * search has finished at this block.
 				 */
-				//b >= nblocksËµÃ÷ÒÑ¾­¶ÁÈ¡ÍêÁË¸¸Ä¿Â¼µÄ×îºóÒ»¸öÂß¼­¿é¶ÔÓ¦µÄÎïÀí¿éÊı¾İµ½bhÒ³»º´æ£¬ÄÇ¾Íbreak£¬Ã»±ØÒªÔÙ¶ÁÁË
-				//(num && block == start)ËµÃ÷µÚ¶ş´ÎÔ¤¶Á£¬¶Áµ½ÁË×î³õµÄÆğÊ¼Ô¤¶ÁÂß¼­¿éstart£¬ÄÇ¾Íbreak£¬Ã»±ØÒªÔÙ¶ÁÁË
+				//b >= nblocksè¯´æ˜å·²ç»è¯»å–å®Œäº†çˆ¶ç›®å½•çš„æœ€åä¸€ä¸ªé€»è¾‘å—å¯¹åº”çš„ç‰©ç†å—æ•°æ®åˆ°bhé¡µç¼“å­˜ï¼Œé‚£å°±breakï¼Œæ²¡å¿…è¦å†è¯»äº†
+				//(num && block == start)è¯´æ˜ç¬¬äºŒæ¬¡é¢„è¯»ï¼Œè¯»åˆ°äº†æœ€åˆçš„èµ·å§‹é¢„è¯»é€»è¾‘å—startï¼Œé‚£å°±breakï¼Œæ²¡å¿…è¦å†è¯»äº†
 				if (b >= nblocks || (num && block == start)) {
 					bh_use[ra_max] = NULL;
 					break;
 				}
 				num++;
-                //ÕâÀïbÊÇ¸¸Ä¿Â¼Âß¼­¿éºÅ£¬ÕâÀïÊÇ¸ù¾İÂß¼­¿éºÅbÓ³ÉäµÃµ½¶ÔÓ¦µÄÎïÀí¿ébh£¬Õâ¸öÎïÀí¿é±£´æÁË¸¸Ä¿Â¼dirµÄ×ÓÄ¿Â¼»ò×ÓÎÄ¼şÊı¾İ£¬
-                //ÊÇÒ»¸ö¸ö×ÓÎÄ¼ş»ò×ÓÄ¿Â¼µÄext4_dir_entry_2½á¹¹
+                //è¿™é‡Œbæ˜¯çˆ¶ç›®å½•é€»è¾‘å—å·ï¼Œè¿™é‡Œæ˜¯æ ¹æ®é€»è¾‘å—å·bæ˜ å°„å¾—åˆ°å¯¹åº”çš„ç‰©ç†å—bhï¼Œè¿™ä¸ªç‰©ç†å—ä¿å­˜äº†çˆ¶ç›®å½•dirçš„å­ç›®å½•æˆ–å­æ–‡ä»¶æ•°æ®ï¼Œ
+                //æ˜¯ä¸€ä¸ªä¸ªå­æ–‡ä»¶æˆ–å­ç›®å½•çš„ext4_dir_entry_2ç»“æ„
 				bh = ext4_getblk(NULL, dir, b++, 0, &err);
 				bh_use[ra_max] = bh;
-				if (bh)//°Ñ¸ÃÎïÀí¿éÊı¾İ¶ÁÈ¡µ½bhÒ³»º´æ
+				if (bh)//æŠŠè¯¥ç‰©ç†å—æ•°æ®è¯»å–åˆ°bhé¡µç¼“å­˜
 					ll_rw_block(READ | REQ_META | REQ_PRIO,
 						    1, &bh);
 			}
 		}
-        //µ±bh_use[ra_ptr++]ÊÇNULLËµÃ÷Ç°±ßÔ¤¶ÁµÄ¼¸¸öÎïÀí¿é¶¼ËÑË÷¹ıÁË£¬ÄÇ¾ÍÔÙ´ÎÔ¤¶Á
+        //å½“bh_use[ra_ptr++]æ˜¯NULLè¯´æ˜å‰è¾¹é¢„è¯»çš„å‡ ä¸ªç‰©ç†å—éƒ½æœç´¢è¿‡äº†ï¼Œé‚£å°±å†æ¬¡é¢„è¯»
 		if ((bh = bh_use[ra_ptr++]) == NULL)
 			goto next;
-        //È·±£bhµÄÎïÀí¿éÒÑ¾­¶ÁÈ¡µ½bhÒ³»º´æ
+        //ç¡®ä¿bhçš„ç‰©ç†å—å·²ç»è¯»å–åˆ°bhé¡µç¼“å­˜
 		wait_on_buffer(bh);
 		if (!buffer_uptodate(bh)) {
 			/* read error, skip block & hope for the best */
@@ -1361,34 +1361,34 @@ restart:
 		}
 		set_buffer_verified(bh);
 
-        //ÔÚbhÒ³»º´æ(¾ÍÊÇ±£´ædir¸¸Ä¿Â¼Êı¾İµÄÎïÀí¿éÓ³ÉäµÄbh£¬Ò»¸ö¸öext4_dir_entry_2½á¹¹)²éÕÒÊÇ·ñÓĞÃû×ÖÊÇd_nameÊÇµÄ×ÓÄ¿Â¼»ò×ÓÎÄ¼ş£¬
-        //ÕÒµ½·µ»Ø1£¬²¢ÇÒres_dirÖ¸ÏòÕâ¸öÎÄ¼ş»òÄ¿Â¼µÄext4_dir_entry_2¡£ÕÒ²»µ½·µ»Ø0
+        //åœ¨bhé¡µç¼“å­˜(å°±æ˜¯ä¿å­˜dirçˆ¶ç›®å½•æ•°æ®çš„ç‰©ç†å—æ˜ å°„çš„bhï¼Œä¸€ä¸ªä¸ªext4_dir_entry_2ç»“æ„)æŸ¥æ‰¾æ˜¯å¦æœ‰åå­—æ˜¯d_nameæ˜¯çš„å­ç›®å½•æˆ–å­æ–‡ä»¶ï¼Œ
+        //æ‰¾åˆ°è¿”å›1ï¼Œå¹¶ä¸”res_diræŒ‡å‘è¿™ä¸ªæ–‡ä»¶æˆ–ç›®å½•çš„ext4_dir_entry_2ã€‚æ‰¾ä¸åˆ°è¿”å›0
 		i = search_dirblock(bh, dir, d_name,
 			    block << EXT4_BLOCK_SIZE_BITS(sb), res_dir);
 
-        //iÊÇ1ËµÃ÷ÔÚdir¸¸Ä¿Â¼bhÒ³»º´æ¶ÔÓ¦µÄÎïÀí¿éÕÒµ½Ãû×ÖÊÇd_nameµÄ×ÓÄ¿Â¼»òÕß×ÓÎÄ¼ş
+        //iæ˜¯1è¯´æ˜åœ¨dirçˆ¶ç›®å½•bhé¡µç¼“å­˜å¯¹åº”çš„ç‰©ç†å—æ‰¾åˆ°åå­—æ˜¯d_nameçš„å­ç›®å½•æˆ–è€…å­æ–‡ä»¶
 		if (i == 1) {
-            //i_dir_start_lookup±£´æ×î½üÒ»´ÎÔÚdirÄ¿Â¼µÄÎïÀí¿éÖĞËÑË÷×ÓÄ¿Â¼»ò×ÓÎÄ¼şµÄÎïÀí¿é¶ÔÓ¦µÄÂß¼­¿éºÅ
+            //i_dir_start_lookupä¿å­˜æœ€è¿‘ä¸€æ¬¡åœ¨dirç›®å½•çš„ç‰©ç†å—ä¸­æœç´¢å­ç›®å½•æˆ–å­æ–‡ä»¶çš„ç‰©ç†å—å¯¹åº”çš„é€»è¾‘å—å·
 			EXT4_I(dir)->i_dir_start_lookup = block;
-            //retÖ¸Ïòbh
+            //retæŒ‡å‘bh
 			ret = bh;
 			goto cleanup_and_exit;
 		} else {
 			brelse(bh);
-			if (i < 0)//i<0 ËµÃ÷Óöµ½IO´íÎó
+			if (i < 0)//i<0 è¯´æ˜é‡åˆ°IOé”™è¯¯
 				goto cleanup_and_exit;
 		}
 	next:
-        //ÔÚblockÕâ¸öÎïÀí¿éÃ»ÓĞÕÒµ½Ãû×ÖÊÇd_nameµÄ×ÓÄ¿Â¼»òÕß×ÓÎÄ¼ş£¬¼Ó1È¥ÏÂÒ»¸öÎïÀí¿é²éÕÒ
+        //åœ¨blockè¿™ä¸ªç‰©ç†å—æ²¡æœ‰æ‰¾åˆ°åå­—æ˜¯d_nameçš„å­ç›®å½•æˆ–è€…å­æ–‡ä»¶ï¼ŒåŠ 1å»ä¸‹ä¸€ä¸ªç‰©ç†å—æŸ¥æ‰¾
 		if (++block >= nblocks)
 			block = 0;
-	} while (block != start);//µ±blockµÈÓÚstart£¬ËµÃ÷¸¸Ä¿Â¼µÄÎïÀí¿éÈ«ËÑË÷ÁËÒ»±é£¬¶¼Ã»ÓĞÕÒµ½Ãû×ÖÆ¥Åäd_nameµÄ×ÓÄ¿Â¼»òÕß×ÓÎÄ¼ş
+	} while (block != start);//å½“blockç­‰äºstartï¼Œè¯´æ˜çˆ¶ç›®å½•çš„ç‰©ç†å—å…¨æœç´¢äº†ä¸€éï¼Œéƒ½æ²¡æœ‰æ‰¾åˆ°åå­—åŒ¹é…d_nameçš„å­ç›®å½•æˆ–è€…å­æ–‡ä»¶
 
 	/*
 	 * If the directory has grown while we were searching, then
 	 * search the last part of the directory before giving up.
 	 */
-	//Ç°±ßËÑË÷Ê±¸¸Ä¿Â¼ÓĞÁËĞÂµÄÎïÀí¿é£¬ÓÚÊÇÖØĞÂËÑË÷£¬¿ÉÄÜĞÔºÜµÍ°É
+	//å‰è¾¹æœç´¢æ—¶çˆ¶ç›®å½•æœ‰äº†æ–°çš„ç‰©ç†å—ï¼Œäºæ˜¯é‡æ–°æœç´¢ï¼Œå¯èƒ½æ€§å¾ˆä½å§
 	block = nblocks;
 	nblocks = dir->i_size >> EXT4_BLOCK_SIZE_BITS(sb);
 	if (block < nblocks) {
@@ -1400,7 +1400,7 @@ cleanup_and_exit:
 	/* Clean up the read-ahead blocks */
 	for (; ra_ptr < ra_max; ra_ptr++)
 		brelse(bh_use[ra_ptr]);
-    //Èç¹ûÔÚ±£´ædir¸¸Ä¿Â¼Êı¾İµÄÎïÀí¿éËÑË÷µ½ÁËÃû×ÖÊÇd_nameµÄ×ÓÄ¿Â¼»òÕß×ÓÎÄ¼şÔò·µ»ØÕâ¸öÎïÀí¿éµÄbh£¬·ñÔò·µ»ØNULL
+    //å¦‚æœåœ¨ä¿å­˜dirçˆ¶ç›®å½•æ•°æ®çš„ç‰©ç†å—æœç´¢åˆ°äº†åå­—æ˜¯d_nameçš„å­ç›®å½•æˆ–è€…å­æ–‡ä»¶åˆ™è¿”å›è¿™ä¸ªç‰©ç†å—çš„bhï¼Œå¦åˆ™è¿”å›NULL
 	return ret;
 }
 
@@ -1464,12 +1464,12 @@ static struct dentry *ext4_lookup(struct inode *dir, struct dentry *dentry, unsi
 	if (dentry->d_name.len > EXT4_NAME_LEN)
 		return ERR_PTR(-ENAMETOOLONG);
 
-    //ÔÚ¸¸Ä¿Â¼µÄÎïÀí¿éÖĞ(Êı¾İÊÇÒ»¸ö¸öext4_dir_entry_2½á¹¹)²éÕÒÊÇ·ñÓĞÃû×ÖÊÇd_nameµÄ×ÓÄ¿Â¼»ò×ÓÎÄ¼ş£¬ÕÒµ½Ôò·µ»Ø±£´æÕâ¸ö×ÓÎÄ¼ş»ò×ÓÄ¿Â¼
-    //ext4_dir_entry_2½á¹¹µÄÎïÀí¿éÓ³ÉäµÄbh£¬deÖ¸ÏòÕâ¸öext4_dir_entry_2½á¹¹
+    //åœ¨çˆ¶ç›®å½•çš„ç‰©ç†å—ä¸­(æ•°æ®æ˜¯ä¸€ä¸ªä¸ªext4_dir_entry_2ç»“æ„)æŸ¥æ‰¾æ˜¯å¦æœ‰åå­—æ˜¯d_nameçš„å­ç›®å½•æˆ–å­æ–‡ä»¶ï¼Œæ‰¾åˆ°åˆ™è¿”å›ä¿å­˜è¿™ä¸ªå­æ–‡ä»¶æˆ–å­ç›®å½•
+    //ext4_dir_entry_2ç»“æ„çš„ç‰©ç†å—æ˜ å°„çš„bhï¼ŒdeæŒ‡å‘è¿™ä¸ªext4_dir_entry_2ç»“æ„
 	bh = ext4_find_entry(dir, &dentry->d_name, &de, NULL);
 	inode = NULL;
 	if (bh) {
-        //´ø²éÕÒÎÄ¼şµÄinode±àºÅ
+        //å¸¦æŸ¥æ‰¾æ–‡ä»¶çš„inodeç¼–å·
 		__u32 ino = le32_to_cpu(de->inode);
 		brelse(bh);
 		if (!ext4_valid_inum(dir->i_sb, ino)) {
@@ -1482,7 +1482,7 @@ static struct dentry *ext4_lookup(struct inode *dir, struct dentry *dentry, unsi
 					 dentry->d_name.name);
 			return ERR_PTR(-EIO);
 		}
-        //ÓÉinodeºÅµÃµ½inode½á¹¹
+        //ç”±inodeå·å¾—åˆ°inodeç»“æ„
 		inode = ext4_iget_normal(dir->i_sb, ino);
 		if (inode == ERR_PTR(-ESTALE)) {
 			EXT4_ERROR_INODE(dir,
@@ -1491,7 +1491,7 @@ static struct dentry *ext4_lookup(struct inode *dir, struct dentry *dentry, unsi
 			return ERR_PTR(-EIO);
 		}
 	}
-    //inodeºÍdentry¶¼ÊÇ´ø²éÕÒÎÄ¼şµÄ£¬ÕâÊÇ½¨Á¢¶şÕßÁªÏµ£¬Ìí¼Óµ½¸÷×ÔµÄÁ´±í
+    //inodeå’Œdentryéƒ½æ˜¯å¸¦æŸ¥æ‰¾æ–‡ä»¶çš„ï¼Œè¿™æ˜¯å»ºç«‹äºŒè€…è”ç³»ï¼Œæ·»åŠ åˆ°å„è‡ªçš„é“¾è¡¨
 	return d_splice_alias(inode, dentry);
 }
 
@@ -1682,56 +1682,56 @@ journal_error:
 	*error = err;
 	return NULL;
 }
-//ÔÚ¸¸Ä¿Â¼µÄÊı¾İ(¾ÍÊÇÒ»¸ö¸öext4_dir_entry_2½á¹¹)ÖĞ£¬²éÕÒÒ»¸ö¿ÕÏĞµÄext4_dir_entry_2£¬ÓÃÓÚ
-//±£´æ±¾´ÎÃû×ÖÊÇnameµÄ×ÓÄ¿Â¼»òÕß×ÓÎÄ¼ş
-int ext4_find_dest_de(struct inode *dir, struct inode *inode,//inode¶¼ÊÇ´ı´´½¨µÄÄ¿Â¼»òÎÄ¼şµÄ
-		      struct buffer_head *bh,//bhÊÇ±£´æ¸¸Ä¿Â¼µÄÊı¾İÎïÀí¿éÓ³ÉäµÄbh
-		      void *buf, int buf_size,//bufÊÇbh->b_data£¬buf_sizeÊÇbh->b_dataÕâÆ¬buf´óĞ¡£¬ÊÇ4k-csum_size
-		      const char *name, int namelen,//nameºÍnamelenÊÇ´ı´´½¨ÎÄ¼ş»òÄ¿Â¼µÄÃû×ÖºÍ³¤¶È
+//åœ¨çˆ¶ç›®å½•çš„æ•°æ®(å°±æ˜¯ä¸€ä¸ªä¸ªext4_dir_entry_2ç»“æ„)ä¸­ï¼ŒæŸ¥æ‰¾ä¸€ä¸ªç©ºé—²çš„ext4_dir_entry_2ï¼Œç”¨äº
+//ä¿å­˜æœ¬æ¬¡åå­—æ˜¯nameçš„å­ç›®å½•æˆ–è€…å­æ–‡ä»¶
+int ext4_find_dest_de(struct inode *dir, struct inode *inode,//inodeéƒ½æ˜¯å¾…åˆ›å»ºçš„ç›®å½•æˆ–æ–‡ä»¶çš„
+		      struct buffer_head *bh,//bhæ˜¯ä¿å­˜çˆ¶ç›®å½•çš„æ•°æ®ç‰©ç†å—æ˜ å°„çš„bh
+		      void *buf, int buf_size,//bufæ˜¯bh->b_dataï¼Œbuf_sizeæ˜¯bh->b_dataè¿™ç‰‡bufå¤§å°ï¼Œæ˜¯4k-csum_size
+		      const char *name, int namelen,//nameå’Œnamelenæ˜¯å¾…åˆ›å»ºæ–‡ä»¶æˆ–ç›®å½•çš„åå­—å’Œé•¿åº¦
 		      struct ext4_dir_entry_2 **dest_de)
 {
 	struct ext4_dir_entry_2 *de;
-    //reclen ±È namelen ÉÔ´ó£¬ÈİÄÉÒ»Ğ©ÈßÓàĞÅÏ¢°É
+    //reclen æ¯” namelen ç¨å¤§ï¼Œå®¹çº³ä¸€äº›å†—ä½™ä¿¡æ¯å§
 	unsigned short reclen = EXT4_DIR_REC_LEN(namelen);
 	int nlen, rlen;
 	unsigned int offset = 0;
 	char *top;
-    //bufÊÇ±£´æ¸¸Ä¿Â¼µÄÊı¾İÎïÀí¿éÓ³ÉäµÄbhµÄbuf£¬deÖ¸ÏòÕâÆ¬ÄÚ´æÊ×µØÖ·
+    //bufæ˜¯ä¿å­˜çˆ¶ç›®å½•çš„æ•°æ®ç‰©ç†å—æ˜ å°„çš„bhçš„bufï¼ŒdeæŒ‡å‘è¿™ç‰‡å†…å­˜é¦–åœ°å€
 	de = (struct ext4_dir_entry_2 *)buf;
-    //topÖ¸ÏòÕâÆ¬bufµÄ¶¥¶Ë
+    //topæŒ‡å‘è¿™ç‰‡bufçš„é¡¶ç«¯
 	top = buf + buf_size - reclen;
     
-    //¸¸Ä¿Â¼µÄÊı¾İÊÇÒ»¸ö¸öext4_dir_entry_2½á¹¹£¬±£´æÁË×ÓÎÄ¼ş»òÕß×ÓÄ¿Â¼µÄÃû×ÖµÈ¹Ø¼üĞÅÏ¢¡£
-    //Õâ¸öwhileÑ­»·ÊÇ´Ó±£´æ¸¸Ä¿Â¼µÄÊı¾İµÄbufÍ·¿ªÊ¼£¬±éÀúÒ»¸ö¸öext4_dir_entry_2½á¹¹
+    //çˆ¶ç›®å½•çš„æ•°æ®æ˜¯ä¸€ä¸ªä¸ªext4_dir_entry_2ç»“æ„ï¼Œä¿å­˜äº†å­æ–‡ä»¶æˆ–è€…å­ç›®å½•çš„åå­—ç­‰å…³é”®ä¿¡æ¯ã€‚
+    //è¿™ä¸ªwhileå¾ªç¯æ˜¯ä»ä¿å­˜çˆ¶ç›®å½•çš„æ•°æ®çš„bufå¤´å¼€å§‹ï¼Œéå†ä¸€ä¸ªä¸ªext4_dir_entry_2ç»“æ„
 	while ((char *) de <= top) {
 		if (ext4_check_dir_entry(dir, NULL, de, bh,
 					 buf, buf_size, offset))
 			return -EIO;
-        //Èç¹û¸¸Ä¿Â¼ÒÑ¾­ÓĞÁËÃû×ÖÊÇnameµÄÎÄ¼ş»òÄ¿Â¼£¬·µ»ØEEXIST£¬²»ÄÜÖØÃû
+        //å¦‚æœçˆ¶ç›®å½•å·²ç»æœ‰äº†åå­—æ˜¯nameçš„æ–‡ä»¶æˆ–ç›®å½•ï¼Œè¿”å›EEXISTï¼Œä¸èƒ½é‡å
 		if (ext4_match(namelen, name, de))
 			return -EEXIST;
-        //nlen±Ède->name_len´ó¼¸¸ö×Ö½Ú
+        //nlenæ¯”de->name_lenå¤§å‡ ä¸ªå­—èŠ‚
 		nlen = EXT4_DIR_REC_LEN(de->name_len);
         //rlen = de->rec_len
 		rlen = ext4_rec_len_from_disk(de->rec_len, buf_size);
-        /*Èç¹ûµ±Ç°µÄdeÃ»±»Ê¹ÓÃ£¬de->inodeÓ¦¸ÃÊÇ0£¬´ËÊ±Ö»Òªrlen>=reclen£¬Ôòµ±Ç°µÄde¾ÍÊÇ
-        Ñ¡ÖĞµÄext4_dir_entry_2¡£rlenÊÇdeµÄ¿Õ¼ä´óĞ¡£¬reclenÊÇ±¾´Î´´½¨µÄ×ÓÄ¿Â¼»òÕß×ÓÎÄ¼ş
-        µÄÃû×ÖµÄ³¤¶È£¬rlen>=reclen ËµÃ÷de¿ÉÒÔÈİÄÉÏÂ±¾´Î´´½¨µÄ×ÓÄ¿Â¼»òÕß×ÓÎÄ¼ş*/
+        /*å¦‚æœå½“å‰çš„deæ²¡è¢«ä½¿ç”¨ï¼Œde->inodeåº”è¯¥æ˜¯0ï¼Œæ­¤æ—¶åªè¦rlen>=reclenï¼Œåˆ™å½“å‰çš„deå°±æ˜¯
+        é€‰ä¸­çš„ext4_dir_entry_2ã€‚rlenæ˜¯deçš„ç©ºé—´å¤§å°ï¼Œreclenæ˜¯æœ¬æ¬¡åˆ›å»ºçš„å­ç›®å½•æˆ–è€…å­æ–‡ä»¶
+        çš„åå­—çš„é•¿åº¦ï¼Œrlen>=reclen è¯´æ˜deå¯ä»¥å®¹çº³ä¸‹æœ¬æ¬¡åˆ›å»ºçš„å­ç›®å½•æˆ–è€…å­æ–‡ä»¶*/
 		if ((de->inode ? rlen - nlen : rlen) >= reclen)
 			break;
-        //deÖ¸ÏòÏÂÒ»¸öext4_dir_entry_2½á¹¹
+        //deæŒ‡å‘ä¸‹ä¸€ä¸ªext4_dir_entry_2ç»“æ„
 		de = (struct ext4_dir_entry_2 *)((char *)de + rlen);
 		offset += rlen;
 	}
-    //de³¬¹ı±£´æ¸¸Ä¿Â¼µÄÊı¾İÎïÀí¿éÓ³ÉäbhµÄbufÎ²²¿£¬ËµÃ÷¿Õ¼ä²»¹»ÁË
+    //deè¶…è¿‡ä¿å­˜çˆ¶ç›®å½•çš„æ•°æ®ç‰©ç†å—æ˜ å°„bhçš„bufå°¾éƒ¨ï¼Œè¯´æ˜ç©ºé—´ä¸å¤Ÿäº†
 	if ((char *) de > top)
 		return -ENOSPC;
     
-    //de¾ÍÊÇÎª±¾´ÎµÄ×ÓÎÄ¼ş»ò×ÓÄ¿Â¼ÕÒµ½µÄext4_dir_entry_2½á¹¹
+    //deå°±æ˜¯ä¸ºæœ¬æ¬¡çš„å­æ–‡ä»¶æˆ–å­ç›®å½•æ‰¾åˆ°çš„ext4_dir_entry_2ç»“æ„
 	*dest_de = de;
 	return 0;
 }
-//¶ÔdeÕâ¸öext4_dir_entry_2¸³Öµ´ıÌí¼ÓµÄÎÄ¼ş»òÄ¿Â¼Ãû×Ö¡¢inode±àºÅ¡¢ÎÄ¼ş³¤¶ÈµÈµÈ
+//å¯¹deè¿™ä¸ªext4_dir_entry_2èµ‹å€¼å¾…æ·»åŠ çš„æ–‡ä»¶æˆ–ç›®å½•åå­—ã€inodeç¼–å·ã€æ–‡ä»¶é•¿åº¦ç­‰ç­‰
 void ext4_insert_dentry(struct inode *inode,
 			struct ext4_dir_entry_2 *de,
 			int buf_size,
@@ -1749,7 +1749,7 @@ void ext4_insert_dentry(struct inode *inode,
 		de->rec_len = ext4_rec_len_to_disk(nlen, buf_size);
 		de = de1;
 	}
-    //¶ÔdeÕâ¸öext4_dir_entry_2¸³Öµ´ıÌí¼ÓµÄÎÄ¼ş»òÄ¿Â¼Ãû×Ö¡¢inode±àºÅ¡¢ÎÄ¼ş³¤¶ÈµÈµÈ
+    //å¯¹deè¿™ä¸ªext4_dir_entry_2èµ‹å€¼å¾…æ·»åŠ çš„æ–‡ä»¶æˆ–ç›®å½•åå­—ã€inodeç¼–å·ã€æ–‡ä»¶é•¿åº¦ç­‰ç­‰
 	de->file_type = EXT4_FT_UNKNOWN;
 	de->inode = cpu_to_le32(inode->i_ino);
 	ext4_set_de_type(inode->i_sb, de, inode->i_mode);
@@ -1764,16 +1764,16 @@ void ext4_insert_dentry(struct inode *inode,
  * space.  It will return -ENOSPC if no space is available, and -EIO
  * and -EEXIST if directory entry already exists.
  */
-//ÔÚ¸¸Ä¿Â¼µÄÊı¾İÖĞ²éÕÒÒ»¸ö¿ÕÏĞµÄext4_dir_entry_2¸³Öµ¸øde£¬È»ºó¶ÔdeÕâ¸öext4_dir_entry_2¸³Öµ´ıÌí¼ÓµÄÎÄ¼ş»òÄ¿Â¼Ãû×Ö¡¢inode±àºÅ¡¢ÎÄ¼ş³¤¶ÈµÈµÈ
+//åœ¨çˆ¶ç›®å½•çš„æ•°æ®ä¸­æŸ¥æ‰¾ä¸€ä¸ªç©ºé—²çš„ext4_dir_entry_2èµ‹å€¼ç»™deï¼Œç„¶åå¯¹deè¿™ä¸ªext4_dir_entry_2èµ‹å€¼å¾…æ·»åŠ çš„æ–‡ä»¶æˆ–ç›®å½•åå­—ã€inodeç¼–å·ã€æ–‡ä»¶é•¿åº¦ç­‰ç­‰
 static int add_dirent_to_buf(handle_t *handle, struct dentry *dentry,
-			     struct inode *inode, struct ext4_dir_entry_2 *de,//dentryºÍinode¶¼ÊÇ´ı´´½¨µÄÄ¿Â¼»òÎÄ¼şµÄ
-			     struct buffer_head *bh)//bhÊÇ±£´æ¸¸Ä¿Â¼µÄÊı¾İÎïÀí¿éÓ³ÉäµÄbh
+			     struct inode *inode, struct ext4_dir_entry_2 *de,//dentryå’Œinodeéƒ½æ˜¯å¾…åˆ›å»ºçš„ç›®å½•æˆ–æ–‡ä»¶çš„
+			     struct buffer_head *bh)//bhæ˜¯ä¿å­˜çˆ¶ç›®å½•çš„æ•°æ®ç‰©ç†å—æ˜ å°„çš„bh
 {
-    //¸¸Ä¿Â¼
+    //çˆ¶ç›®å½•
 	struct inode	*dir = dentry->d_parent->d_inode;
-    //±¾´Î´´½¨µÄĞÂÎÄ¼ş»òÄ¿Â¼µÄÃû×Ö
+    //æœ¬æ¬¡åˆ›å»ºçš„æ–°æ–‡ä»¶æˆ–ç›®å½•çš„åå­—
 	const char	*name = dentry->d_name.name;
-    //±¾´Î´´½¨µÄĞÂÎÄ¼ş»òÄ¿Â¼µÄÃû×Ö³¤¶È
+    //æœ¬æ¬¡åˆ›å»ºçš„æ–°æ–‡ä»¶æˆ–ç›®å½•çš„åå­—é•¿åº¦
 	int		namelen = dentry->d_name.len;
 	unsigned int	blocksize = dir->i_sb->s_blocksize;
 	int		csum_size = 0;
@@ -1783,8 +1783,8 @@ static int add_dirent_to_buf(handle_t *handle, struct dentry *dentry,
 				       EXT4_FEATURE_RO_COMPAT_METADATA_CSUM))
 		csum_size = sizeof(struct ext4_dir_entry_tail);
 
-	if (!de) {//Ò»°ãdeÊÇNULL
-        //ÔÚ¸¸Ä¿Â¼µÄÊı¾İÖĞ²éÕÒÒ»¸ö¿ÕÏĞµÄext4_dir_entry_2
+	if (!de) {//ä¸€èˆ¬deæ˜¯NULL
+        //åœ¨çˆ¶ç›®å½•çš„æ•°æ®ä¸­æŸ¥æ‰¾ä¸€ä¸ªç©ºé—²çš„ext4_dir_entry_2
 		err = ext4_find_dest_de(dir, inode,
 					bh, bh->b_data, blocksize - csum_size,
 					name, namelen, &de);
@@ -1799,7 +1799,7 @@ static int add_dirent_to_buf(handle_t *handle, struct dentry *dentry,
 	}
 
 	/* By now the buffer is marked for journaling */
-    //¶ÔdeÕâ¸öext4_dir_entry_2¸³Öµ´ıÌí¼ÓµÄÎÄ¼ş»òÄ¿Â¼Ãû×Ö¡¢inode±àºÅ¡¢ÎÄ¼ş³¤¶ÈµÈµÈ
+    //å¯¹deè¿™ä¸ªext4_dir_entry_2èµ‹å€¼å¾…æ·»åŠ çš„æ–‡ä»¶æˆ–ç›®å½•åå­—ã€inodeç¼–å·ã€æ–‡ä»¶é•¿åº¦ç­‰ç­‰
 	ext4_insert_dentry(inode, de, blocksize, name, namelen);
 
 	/*
@@ -1813,7 +1813,7 @@ static int add_dirent_to_buf(handle_t *handle, struct dentry *dentry,
 	 * happen is that the times are slightly out of date
 	 * and/or different from the directory change time.
 	 */
-	//¸üĞÂ¸¸Ä¿Â¼ĞŞ¸ÄÊ±¼ä
+	//æ›´æ–°çˆ¶ç›®å½•ä¿®æ”¹æ—¶é—´
 	dir->i_mtime = dir->i_ctime = ext4_current_time(dir);
 	ext4_update_dx_flag(dir);
 	dir->i_version++;
@@ -1953,11 +1953,11 @@ static int make_indexed_dir(handle_t *handle, struct dentry *dentry,
  * may not sleep between calling this and putting something into
  * the entry, as someone else might have used it while you slept.
  */
-//°ÑdentryºÍinode¶ÔÓ¦µÄÎÄ¼şÌí¼Óµ½Ëü¸¸Ä¿Â¼ext4_dir_entry_2Êı¾İÀï
+//æŠŠdentryå’Œinodeå¯¹åº”çš„æ–‡ä»¶æ·»åŠ åˆ°å®ƒçˆ¶ç›®å½•ext4_dir_entry_2æ•°æ®é‡Œ
 static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
-			  struct inode *inode)//dentryºÍinode¶¼ÊÇ´ı´´½¨µÄÄ¿Â¼»òÎÄ¼şµÄ
+			  struct inode *inode)//dentryå’Œinodeéƒ½æ˜¯å¾…åˆ›å»ºçš„ç›®å½•æˆ–æ–‡ä»¶çš„
 {
-    //¸¸Ä¿Â¼inode
+    //çˆ¶ç›®å½•inode
 	struct inode *dir = dentry->d_parent->d_inode;
 	struct buffer_head *bh = NULL;
 	struct ext4_dir_entry_2 *de;
@@ -1974,11 +1974,11 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
 		csum_size = sizeof(struct ext4_dir_entry_tail);
 
 	sb = dir->i_sb;
-	blocksize = sb->s_blocksize;//ext4ÎÄ¼şÏµÍ³Ò»¸öÎïÀí¿é4K´ó
+	blocksize = sb->s_blocksize;//ext4æ–‡ä»¶ç³»ç»Ÿä¸€ä¸ªç‰©ç†å—4Kå¤§
 	if (!dentry->d_name.len)
 		return -EINVAL;
 
-	if (ext4_has_inline_data(dir)) {//²»³ÉÁ¢
+	if (ext4_has_inline_data(dir)) {//ä¸æˆç«‹
 		retval = ext4_try_add_inline_entry(handle, dentry, inode);
 		if (retval < 0)
 			return retval;
@@ -1988,7 +1988,7 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
 		}
 	}
 
-	if (is_dx(dir)) {//´ó²¿·ÖÇé¿ö²»³ÉÁ¢
+	if (is_dx(dir)) {//å¤§éƒ¨åˆ†æƒ…å†µä¸æˆç«‹
 		retval = ext4_dx_add_entry(handle, dentry, inode);
 		if (!retval || (retval != ERR_BAD_DX_DIR))
 			goto out;
@@ -1996,18 +1996,18 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
 		dx_fallback++;
 		ext4_mark_inode_dirty(handle, dir);
 	}
-    //dir->i_sizeÊÇ¸¸Ä¿Â¼µÄÊı¾İÁ¿´óĞ¡£¬blocksÊÇ¸¸Ä¿Â¼Êı¾İÕ¼µÄblock¸öÊı
+    //dir->i_sizeæ˜¯çˆ¶ç›®å½•çš„æ•°æ®é‡å¤§å°ï¼Œblocksæ˜¯çˆ¶ç›®å½•æ•°æ®å çš„blockä¸ªæ•°
 	blocks = dir->i_size >> sb->s_blocksize_bits;
-    /*Õâ¸öforÑ­»·ÊÇ¸ù¾İ¸¸Ä¿Â¼Âß¼­¿éµØÖ·0~blocks£¬ÒÀ´Î¶ÁÈ¡ÕâĞ©Âß¼­¿éÓ³ÉäµÄÎïÀí¿éµÄÊı¾İ£¬È»ºóÔÚÕâĞ©ÎïÀí¿éÊı¾İÖĞ²éÕÒÒ»¸ö¿ÕÏĞµÄ
-      ext4_dir_entry_2½á¹¹£¬×îºó°Ñ±¾´ÎÌí¼ÓµÄÎÄ¼ş×ÓÎÄ¼ş»ò×ÓÄ¿Â¼µÄÃû×ÖµÈĞÅÏ¢¸³Öµ¸øext4_dir_entry_2¡£Õâ¾ÍÏàµ±ÓÚ°Ñ¸Ã×ÓÄ¿Â¼»ò×ÓÎÄ¼şÌí¼Óµ½ÁË¸¸Ä¿Â¼*/
+    /*è¿™ä¸ªforå¾ªç¯æ˜¯æ ¹æ®çˆ¶ç›®å½•é€»è¾‘å—åœ°å€0~blocksï¼Œä¾æ¬¡è¯»å–è¿™äº›é€»è¾‘å—æ˜ å°„çš„ç‰©ç†å—çš„æ•°æ®ï¼Œç„¶ååœ¨è¿™äº›ç‰©ç†å—æ•°æ®ä¸­æŸ¥æ‰¾ä¸€ä¸ªç©ºé—²çš„
+      ext4_dir_entry_2ç»“æ„ï¼Œæœ€åæŠŠæœ¬æ¬¡æ·»åŠ çš„æ–‡ä»¶å­æ–‡ä»¶æˆ–å­ç›®å½•çš„åå­—ç­‰ä¿¡æ¯èµ‹å€¼ç»™ext4_dir_entry_2ã€‚è¿™å°±ç›¸å½“äºæŠŠè¯¥å­ç›®å½•æˆ–å­æ–‡ä»¶æ·»åŠ åˆ°äº†çˆ¶ç›®å½•*/
 	for (block = 0; block < blocks; block++) {
-        //¸ù¾İ¸¸Ä¿Â¼µÄÂß¼­µØÖ·block´Óext4ÎÄ¼şÏµÍ³µÄdata blockÇø·ÖÅä1¸öÎïÀí¿é£¬²¢ÓëÂß¼­µØÖ·block¹¹³ÉÓ³Éä£¬×îºó·µ»Ø
-        //ÕâÎïÀí¿éµÄbh¡£×¢Òâ£¬bh->b_data¾Í±£´æÁË¸Ã¸¸Ä¿Â¼µÄÒ»¸öÎïÀí¿éÊı¾İ£¬ÊÇÒ»¸ö¸ö°üº¬×ÓÄ¿Â¼»òÕß×ÓÎÄ¼şÃû×ÖµÈĞÅÏ¢µÄext4_dir_entry_2½á¹¹
+        //æ ¹æ®çˆ¶ç›®å½•çš„é€»è¾‘åœ°å€blockä»ext4æ–‡ä»¶ç³»ç»Ÿçš„data blockåŒºåˆ†é…1ä¸ªç‰©ç†å—ï¼Œå¹¶ä¸é€»è¾‘åœ°å€blockæ„æˆæ˜ å°„ï¼Œæœ€åè¿”å›
+        //è¿™ç‰©ç†å—çš„bhã€‚æ³¨æ„ï¼Œbh->b_dataå°±ä¿å­˜äº†è¯¥çˆ¶ç›®å½•çš„ä¸€ä¸ªç‰©ç†å—æ•°æ®ï¼Œæ˜¯ä¸€ä¸ªä¸ªåŒ…å«å­ç›®å½•æˆ–è€…å­æ–‡ä»¶åå­—ç­‰ä¿¡æ¯çš„ext4_dir_entry_2ç»“æ„
 		bh = ext4_read_dirblock(dir, block, DIRENT);
 		if (IS_ERR(bh))
 			return PTR_ERR(bh);
-        //ÔÚ¸¸Ä¿Â¼µÄblock¿éÊı¾İÖĞ²éÕÒÒ»¸ö¿ÕÏĞµÄext4_dir_entry_2½á¹¹²¢¸³Öµ¸øde£¬È»ºó¶ÔdeÕâ¸öext4_dir_entry_2½á¹¹¸³Öµ´ıÌí¼ÓµÄÎÄ¼ş»òÄ¿Â¼Ãû×Ö¡¢
-        //inode±àºÅ¡¢ÎÄ¼ş³¤¶ÈµÈĞÅÏ¢¡£ÕâÀï¾ÍÏàµ±ÓÚ°ÑĞÂµÄÎÄ¼ş»òÄ¿Â¼Ìí¼Óµ½ÁË¸¸Ä¿Â¼
+        //åœ¨çˆ¶ç›®å½•çš„blockå—æ•°æ®ä¸­æŸ¥æ‰¾ä¸€ä¸ªç©ºé—²çš„ext4_dir_entry_2ç»“æ„å¹¶èµ‹å€¼ç»™deï¼Œç„¶åå¯¹deè¿™ä¸ªext4_dir_entry_2ç»“æ„èµ‹å€¼å¾…æ·»åŠ çš„æ–‡ä»¶æˆ–ç›®å½•åå­—ã€
+        //inodeç¼–å·ã€æ–‡ä»¶é•¿åº¦ç­‰ä¿¡æ¯ã€‚è¿™é‡Œå°±ç›¸å½“äºæŠŠæ–°çš„æ–‡ä»¶æˆ–ç›®å½•æ·»åŠ åˆ°äº†çˆ¶ç›®å½•
 		retval = add_dirent_to_buf(handle, dentry, inode, NULL, bh);
 		if (retval != -ENOSPC)
 			goto out;
@@ -2020,7 +2020,7 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
 		}
 		brelse(bh);
 	}
-    //Ö´ĞĞµ½ÕâÀï£¬Ó¦¸ÃÊÇËµ£¬dir¸¸Ä¿Â¼Êı¾İ¿é±»Õ¼ÂúÁË£¬ÔòĞèÒªÔö¼ÓÒ»¸öÎïÀí¿é£¬²¢·µ»ØËüµÄbh£¬×îºó°Ñ±¾´ÎµÄ×ÓÄ¿Â¼»ò×ÓÎÄ¼şÌí¼Óµ½Õâ¸ö¸¸Ä¿Â¼ĞÂµÄÎïÀí¿é
+    //æ‰§è¡Œåˆ°è¿™é‡Œï¼Œåº”è¯¥æ˜¯è¯´ï¼Œdirçˆ¶ç›®å½•æ•°æ®å—è¢«å æ»¡äº†ï¼Œåˆ™éœ€è¦å¢åŠ ä¸€ä¸ªç‰©ç†å—ï¼Œå¹¶è¿”å›å®ƒçš„bhï¼Œæœ€åæŠŠæœ¬æ¬¡çš„å­ç›®å½•æˆ–å­æ–‡ä»¶æ·»åŠ åˆ°è¿™ä¸ªçˆ¶ç›®å½•æ–°çš„ç‰©ç†å—
 	bh = ext4_append(handle, dir, &block);
 	if (IS_ERR(bh))
 		return PTR_ERR(bh);
@@ -2299,13 +2299,13 @@ static void ext4_dec_count(handle_t *handle, struct inode *inode)
 static int ext4_add_nondir(handle_t *handle,
 		struct dentry *dentry, struct inode *inode)
 {
-    //°ÑdentryºÍinode¶ÔÓ¦µÄÎÄ¼ş»òÄ¿Â¼Ìí¼Óµ½Ëü¸¸Ä¿Â¼
+    //æŠŠdentryå’Œinodeå¯¹åº”çš„æ–‡ä»¶æˆ–ç›®å½•æ·»åŠ åˆ°å®ƒçˆ¶ç›®å½•
 	int err = ext4_add_entry(handle, dentry, inode);
 	if (!err) {
-        //±ê¼ÇinodeÔà£¬ÖØµãÊÇ ¸ù¾İinode±àºÅµÃµ½ËüÔÚ ËùÊôµÄ¿é×éµÄinode tableµÄÎïÀí¿éºÅ
+        //æ ‡è®°inodeè„ï¼Œé‡ç‚¹æ˜¯ æ ¹æ®inodeç¼–å·å¾—åˆ°å®ƒåœ¨ æ‰€å±çš„å—ç»„çš„inode tableçš„ç‰©ç†å—å·
 		ext4_mark_inode_dirty(handle, inode);
 		unlock_new_inode(inode);
-        //½¨Á¢dentryºÍinodeÁªÏµ
+        //å»ºç«‹dentryå’Œinodeè”ç³»
 		d_instantiate(dentry, inode);
 		return 0;
 	}
@@ -2324,7 +2324,7 @@ static int ext4_add_nondir(handle_t *handle,
  * with d_instantiate().
  */
 static int ext4_create(struct inode *dir, struct dentry *dentry, umode_t mode,
-		       bool excl)//dentryÊÇ´ı´´½¨ÎÄ¼şdentry
+		       bool excl)//dentryæ˜¯å¾…åˆ›å»ºæ–‡ä»¶dentry
 {
 	handle_t *handle;
 	struct inode *inode;
@@ -2335,18 +2335,18 @@ static int ext4_create(struct inode *dir, struct dentry *dentry, umode_t mode,
 	credits = (EXT4_DATA_TRANS_BLOCKS(dir->i_sb) +
 		   EXT4_INDEX_EXTRA_TRANS_BLOCKS + 3);
 retry:
-    //ÎªĞÂ´´½¨µÄÎÄ¼ş·ÖÅäÒ»¸öinode½á¹¹£¬½Ó×ÅÎª¸ÃÎÄ¼şÕÒÒ»¸öÓĞ¿ÕÏĞinodeºÍ¿ÕÏĞblockµÄ¿é×égroup£¬È»ºó
-    //ÔÚ¸Ã¿é×éµÄinode bitmapÕÒÒ»¸ö¿ÕÏĞinode±àºÅ£¬×îºó°Ñ¸Ãinode±àºÅ¸³Öµ¸øinode->i_ino
+    //ä¸ºæ–°åˆ›å»ºçš„æ–‡ä»¶åˆ†é…ä¸€ä¸ªinodeç»“æ„ï¼Œæ¥ç€ä¸ºè¯¥æ–‡ä»¶æ‰¾ä¸€ä¸ªæœ‰ç©ºé—²inodeå’Œç©ºé—²blockçš„å—ç»„groupï¼Œç„¶å
+    //åœ¨è¯¥å—ç»„çš„inode bitmapæ‰¾ä¸€ä¸ªç©ºé—²inodeç¼–å·ï¼Œæœ€åæŠŠè¯¥inodeç¼–å·èµ‹å€¼ç»™inode->i_ino
 	inode = ext4_new_inode_start_handle(dir, mode, &dentry->d_name, 0,
 					    NULL, EXT4_HT_DIR, credits);
 	handle = ext4_journal_current_handle();
 	err = PTR_ERR(inode);
-	if (!IS_ERR(inode)) {//ÎªÎÄ¼ş·ÖÅäinode³É¹¦
-        //Îªinode¸öi_opºÍi_fop¸³Öµ
+	if (!IS_ERR(inode)) {//ä¸ºæ–‡ä»¶åˆ†é…inodeæˆåŠŸ
+        //ä¸ºinodeä¸ªi_opå’Œi_fopèµ‹å€¼
 		inode->i_op = &ext4_file_inode_operations;
 		inode->i_fop = &ext4_file_operations;
 		ext4_set_aops(inode);
-        //°ÑdentryºÍinode¶ÔÓ¦µÄÎÄ¼ş»òÄ¿Â¼Ìí¼Óµ½Ëü¸¸Ä¿Â¼µÄext4_dir_entry_2Àï
+        //æŠŠdentryå’Œinodeå¯¹åº”çš„æ–‡ä»¶æˆ–ç›®å½•æ·»åŠ åˆ°å®ƒçˆ¶ç›®å½•çš„ext4_dir_entry_2é‡Œ
 		err = ext4_add_nondir(handle, dentry, inode);
 		if (!err && IS_DIRSYNC(dir))
 			ext4_handle_sync(handle);
@@ -2482,7 +2482,7 @@ static int ext4_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
 	credits = (EXT4_DATA_TRANS_BLOCKS(dir->i_sb) +
 		   EXT4_INDEX_EXTRA_TRANS_BLOCKS + 3);
 retry:
-    //Îªµ±Ç°µÄÄ¿Â¼·ÖÅäÒ»¸öinode
+    //ä¸ºå½“å‰çš„ç›®å½•åˆ†é…ä¸€ä¸ªinode
 	inode = ext4_new_inode_start_handle(dir, S_IFDIR | mode,
 					    &dentry->d_name,
 					    0, NULL, EXT4_HT_DIR, credits);
@@ -2490,16 +2490,16 @@ retry:
 	err = PTR_ERR(inode);
 	if (IS_ERR(inode))
 		goto out_stop;
-    //inode->i_opºÍinode->i_fop¸³Öµ
+    //inode->i_opå’Œinode->i_fopèµ‹å€¼
 	inode->i_op = &ext4_dir_inode_operations;
 	inode->i_fop = &ext4_dir_operations;
-    //³õÊ¼»¯Ä¿Â¼inode
+    //åˆå§‹åŒ–ç›®å½•inode
 	err = ext4_init_new_dir(handle, dir, inode);
 	if (err)
 		goto out_clear_inode;
 	err = ext4_mark_inode_dirty(handle, inode);
 	if (!err)
-        //°ÑdentryºÍinode¶ÔÓ¦µÄÎÄ¼ş»òÄ¿Â¼Ìí¼Óµ½Ëü¸¸Ä¿Â¼
+        //æŠŠdentryå’Œinodeå¯¹åº”çš„æ–‡ä»¶æˆ–ç›®å½•æ·»åŠ åˆ°å®ƒçˆ¶ç›®å½•
 		err = ext4_add_entry(handle, dentry, inode);
 	if (err) {
 out_clear_inode:
@@ -3259,12 +3259,12 @@ end_rename:
  * directories can handle most operations...
  */
 const struct inode_operations ext4_dir_inode_operations = {
-	.create		= ext4_create,//ext4ÎÄ¼şÏµÍ³´´½¨ÎÄ¼ş
-	.lookup		= ext4_lookup,//ÔÚext4ÎÄ¼şÏµÍ³±éÀúÎÄ¼ş»òÄ¿Â¼
+	.create		= ext4_create,//ext4æ–‡ä»¶ç³»ç»Ÿåˆ›å»ºæ–‡ä»¶
+	.lookup		= ext4_lookup,//åœ¨ext4æ–‡ä»¶ç³»ç»Ÿéå†æ–‡ä»¶æˆ–ç›®å½•
 	.link		= ext4_link,
 	.unlink		= ext4_unlink,
 	.symlink	= ext4_symlink,
-	.mkdir		= ext4_mkdir,//ext4ÎÄ¼şÏµÍ³´´½¨Ä¿Â¼
+	.mkdir		= ext4_mkdir,//ext4æ–‡ä»¶ç³»ç»Ÿåˆ›å»ºç›®å½•
 	.rmdir		= ext4_rmdir,
 	.mknod		= ext4_mknod,
 	.rename		= ext4_rename,

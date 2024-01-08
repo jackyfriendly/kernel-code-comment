@@ -72,14 +72,14 @@ struct ext4_extent_tail {
  * This is the extent on-disk structure.
  * It's used at the bottom of the tree.
  */
-//ext4 extent B+Ê÷Ò¶×Ó½ÚµãµÄext4_extent£¬ÕæÕı°üº¬Âß¼­¿éµØÖ·ºÍÎïÀí¿éµØÖ·µÄÓ³Éä¹ØÏµ
-//ext4 extent B+Ê÷Ò¶×Ó½ÚµãÉÏµÄext4_extentÊÇ°´ÕÕÆäÆğÊ¼Âß¼­¿éµØÖ·´ÓĞ¡µ½´ó¡¢´Ó×óµ½ÓÒË³ĞòÅÅÁĞµÄ
+//ext4 extent B+æ ‘å¶å­èŠ‚ç‚¹çš„ext4_extentï¼ŒçœŸæ­£åŒ…å«é€»è¾‘å—åœ°å€å’Œç‰©ç†å—åœ°å€çš„æ˜ å°„å…³ç³»
+//ext4 extent B+æ ‘å¶å­èŠ‚ç‚¹ä¸Šçš„ext4_extentæ˜¯æŒ‰ç…§å…¶èµ·å§‹é€»è¾‘å—åœ°å€ä»å°åˆ°å¤§ã€ä»å·¦åˆ°å³é¡ºåºæ’åˆ—çš„
 struct ext4_extent {
-    //ÆğÊ¼Âß¼­¿éµØÖ·
+    //èµ·å§‹é€»è¾‘å—åœ°å€
 	__le32	ee_block;	/* first logical block extent covers */
-    //Ó³ÉäµÄblock¸öÊı
+    //æ˜ å°„çš„blockä¸ªæ•°
 	__le16	ee_len;		/* number of blocks covered by extent */
-    //ÓÉee_start_hiºÍee_start_loÒ»Æğ¼ÆËã³öÆğÊ¼Âß¼­¿éµØÖ·Ó³ÉäµÄÆğÊ¼ÎïÀí¿éµØÖ·
+    //ç”±ee_start_hiå’Œee_start_loä¸€èµ·è®¡ç®—å‡ºèµ·å§‹é€»è¾‘å—åœ°å€æ˜ å°„çš„èµ·å§‹ç‰©ç†å—åœ°å€
 	__le16	ee_start_hi;	/* high 16 bits of physical block */
 	__le32	ee_start_lo;	/* low 32 bits of physical block */
 };
@@ -88,14 +88,14 @@ struct ext4_extent {
  * This is index on-disk structure.
  * It's used at all the levels except the bottom.
  */
-//ext4 extent B+Ê÷µÄË÷Òı½Úµã
-/*ÖØµã£¬ext4_extent_idxÃ»ÓĞÀàËÆext4_extent½á¹¹µÄ³ÉÔ±ee_len£¬ext4_extent_idxÖ»ÓĞÆğÊ¼Âß¼­¿éºÅÑ½*/
+//ext4 extent B+æ ‘çš„ç´¢å¼•èŠ‚ç‚¹
+/*é‡ç‚¹ï¼Œext4_extent_idxæ²¡æœ‰ç±»ä¼¼ext4_extentç»“æ„çš„æˆå‘˜ee_lenï¼Œext4_extent_idxåªæœ‰èµ·å§‹é€»è¾‘å—å·å‘€*/
 struct ext4_extent_idx {
-    //ÆğÊ¼Âß¼­¿éµØÖ·
+    //èµ·å§‹é€»è¾‘å—åœ°å€
 	__le32	ei_block;	/* index covers logical blocks from 'block' */
-    //ÓÉei_leaf_loºÍei_leaf_hiÒ»Æğ¼ÆËã³öÎïÀí¿éºÅ£¬Õâ¸öÎïÀí¿é±£´æÏÂ²ãÒ¶×Ó½Úµã»òÕßË÷Òı½Úµã4KÊı¾İ¡£Ã»´í£¬Ë÷Òı½Úµãext4_extent_idx½á¹¹
-    //µÄei_leaf_loºÍei_leaf_hi±£´æÁËÏÂ²ãË÷Òı½Úµã»òÕßÒ¶×Ó½ÚµãµÄÎïÀí¿éºÅ£¬Ë÷Òı½ÚµãµÄext4_extent_idxÍ¨¹ıÆäei_leaf_loºÍei_leaf_hi³ÉÔ±
-    //Ö¸ÏòÏÂ²ãµÄË÷Òı½Úµã»òÕßÒ¶×Ó½Úµã¡£Õâµã·Ç³£ÖØÒª
+    //ç”±ei_leaf_loå’Œei_leaf_hiä¸€èµ·è®¡ç®—å‡ºç‰©ç†å—å·ï¼Œè¿™ä¸ªç‰©ç†å—ä¿å­˜ä¸‹å±‚å¶å­èŠ‚ç‚¹æˆ–è€…ç´¢å¼•èŠ‚ç‚¹4Kæ•°æ®ã€‚æ²¡é”™ï¼Œç´¢å¼•èŠ‚ç‚¹ext4_extent_idxç»“æ„
+    //çš„ei_leaf_loå’Œei_leaf_hiä¿å­˜äº†ä¸‹å±‚ç´¢å¼•èŠ‚ç‚¹æˆ–è€…å¶å­èŠ‚ç‚¹çš„ç‰©ç†å—å·ï¼Œç´¢å¼•èŠ‚ç‚¹çš„ext4_extent_idxé€šè¿‡å…¶ei_leaf_loå’Œei_leaf_hiæˆå‘˜
+    //æŒ‡å‘ä¸‹å±‚çš„ç´¢å¼•èŠ‚ç‚¹æˆ–è€…å¶å­èŠ‚ç‚¹ã€‚è¿™ç‚¹éå¸¸é‡è¦
 	__le32	ei_leaf_lo;	/* pointer to the physical block of the next *
 				 * level. leaf or next index could be there */
 	__le16	ei_leaf_hi;	/* high 16 bits of physical block */
@@ -105,13 +105,13 @@ struct ext4_extent_idx {
 /*
  * Each block (leaves and indexes), even inode-stored has header.
  */
-//ext4 extentË÷Òı½Úµã»òÒ¶×Ó½ÚµãÍ·½á¹¹ÌåĞÅÏ¢
+//ext4 extentç´¢å¼•èŠ‚ç‚¹æˆ–å¶å­èŠ‚ç‚¹å¤´ç»“æ„ä½“ä¿¡æ¯
 struct ext4_extent_header {
 	__le16	eh_magic;	/* probably will support different formats */
 	__le16	eh_entries;	/* number of valid entries */
 	__le16	eh_max;		/* capacity of store in entries */
-    //µ±Ç°Ò¶×Ó½áµã»òÕßË÷Òı½ÚµãËù´¦ext4 extent B+Ê÷²ãÊı¡£B+Ê÷µÄ¸ù½ÚµãµÄeh_depthÊÇB+Ê÷µÄÕæÕıÉî¶È£¬Ò¶×Ó½áµãµÄeh_depthÊÇ0£¬
-    //B+Ê÷¸ù½ÚµãÏÂ·½µÄË÷Òı½ÚµãµÄeh_depthÊÇ1£¬ÆäËûÀàÍÆ¡£ext4_ext_grow_indepth()ÖĞ¼Ó1¡£
+    //å½“å‰å¶å­ç»“ç‚¹æˆ–è€…ç´¢å¼•èŠ‚ç‚¹æ‰€å¤„ext4 extent B+æ ‘å±‚æ•°ã€‚B+æ ‘çš„æ ¹èŠ‚ç‚¹çš„eh_depthæ˜¯B+æ ‘çš„çœŸæ­£æ·±åº¦ï¼Œå¶å­ç»“ç‚¹çš„eh_depthæ˜¯0ï¼Œ
+    //B+æ ‘æ ¹èŠ‚ç‚¹ä¸‹æ–¹çš„ç´¢å¼•èŠ‚ç‚¹çš„eh_depthæ˜¯1ï¼Œå…¶ä»–ç±»æ¨ã€‚ext4_ext_grow_indepth()ä¸­åŠ 1ã€‚
 	__le16	eh_depth;	/* has tree real underlying blocks? */
 	__le32	eh_generation;	/* generation of the tree */
 };
@@ -134,24 +134,24 @@ find_ext4_extent_tail(struct ext4_extent_header *eh)
  * Creation/lookup routines use it for traversal/splitting/etc.
  * Truncate uses it to simulate recursive walking.
  */
-//¸ù¾İÒ»¸öÂß¼­¿éµØÖ·ÕÒµ½ËüËùÊôÓÚµÄext4 ext4_extent B+Ê÷Ë÷Òı½ÚµãºÍÒ¶×Ó½ÚµãĞÅÏ¢£¬
-//±£´æµ½ext4_ext_path
+//æ ¹æ®ä¸€ä¸ªé€»è¾‘å—åœ°å€æ‰¾åˆ°å®ƒæ‰€å±äºçš„ext4 ext4_extent B+æ ‘ç´¢å¼•èŠ‚ç‚¹å’Œå¶å­èŠ‚ç‚¹ä¿¡æ¯ï¼Œ
+//ä¿å­˜åˆ°ext4_ext_path
 struct ext4_ext_path {
-    //ext4_ext_find_extent()ÖĞ¸³Öµ£¬ÊÇË÷Òı½ÚµãÊ±£¬ÊÇÓÉext4_extent_idx½á¹¹µÄei_leaf_loºÍei_leaf_hi³ÉÔ±¼ÆËã³öµÄÎïÀí¿éºÅ£¬Õâ¸öÎïÀí¿é±£´æ
-    //ÁËÏÂ²ãÒ¶×Ó½Úµã»òÕßË÷Òı½Úµã4KÊı¾İ¡£ÊÇÒ¶×Ó½ÚµãÊ±£¬ÊÇÓÉext4_extent½á¹¹µÄee_start_hiºÍee_start_lo³ÉÔ±¼ÆËã³öµÄÎïÀí¿éºÅ£¬
-    //Õâ¸öÎïÀí¿éºÅÊÇext4_extentµÄÂß¼­¿éµØÖ·Ó³ÉäµÄµÄÆğÊ¼ÎïÀí¿éºÅ
+    //ext4_ext_find_extent()ä¸­èµ‹å€¼ï¼Œæ˜¯ç´¢å¼•èŠ‚ç‚¹æ—¶ï¼Œæ˜¯ç”±ext4_extent_idxç»“æ„çš„ei_leaf_loå’Œei_leaf_hiæˆå‘˜è®¡ç®—å‡ºçš„ç‰©ç†å—å·ï¼Œè¿™ä¸ªç‰©ç†å—ä¿å­˜
+    //äº†ä¸‹å±‚å¶å­èŠ‚ç‚¹æˆ–è€…ç´¢å¼•èŠ‚ç‚¹4Kæ•°æ®ã€‚æ˜¯å¶å­èŠ‚ç‚¹æ—¶ï¼Œæ˜¯ç”±ext4_extentç»“æ„çš„ee_start_hiå’Œee_start_loæˆå‘˜è®¡ç®—å‡ºçš„ç‰©ç†å—å·ï¼Œ
+    //è¿™ä¸ªç‰©ç†å—å·æ˜¯ext4_extentçš„é€»è¾‘å—åœ°å€æ˜ å°„çš„çš„èµ·å§‹ç‰©ç†å—å·
 	ext4_fsblk_t			p_block;
-	//µ±Ç°Ë÷Òı½Úµã»òÕßÒ¶×Ó½Úµã´¦ÓÚext4 extent B+Ê÷µÚ¼¸²ã¡£ext4 extent B+Ê÷Ã»ÓĞË÷Òı½Úµã»òÕßÒ¶×Ó½ÚµãÊ±£¬²ãÊıÊÇ0£¬ÓĞÒ»²ãÒ¶×Ó½ÚµãÊ±²ãÊıÊÇ1
-	//ÔÙ¼ÓÒ»²ãË÷Òı½ÚµãÊ±²ãÊıÊÇ2
+	//å½“å‰ç´¢å¼•èŠ‚ç‚¹æˆ–è€…å¶å­èŠ‚ç‚¹å¤„äºext4 extent B+æ ‘ç¬¬å‡ å±‚ã€‚ext4 extent B+æ ‘æ²¡æœ‰ç´¢å¼•èŠ‚ç‚¹æˆ–è€…å¶å­èŠ‚ç‚¹æ—¶ï¼Œå±‚æ•°æ˜¯0ï¼Œæœ‰ä¸€å±‚å¶å­èŠ‚ç‚¹æ—¶å±‚æ•°æ˜¯1
+	//å†åŠ ä¸€å±‚ç´¢å¼•èŠ‚ç‚¹æ—¶å±‚æ•°æ˜¯2
 	__u16				p_depth;
-	//ext4_ext_binsearch()ÖĞ¸³Öµ£¬Ö¸ÏòÆğÊ¼Âß¼­¿éµØÖ·×î½Ó½ü´«ÈëµÄÆğÊ¼Âß¼­¿éµØÖ·map->m_lblkµÄext4_extent
+	//ext4_ext_binsearch()ä¸­èµ‹å€¼ï¼ŒæŒ‡å‘èµ·å§‹é€»è¾‘å—åœ°å€æœ€æ¥è¿‘ä¼ å…¥çš„èµ·å§‹é€»è¾‘å—åœ°å€map->m_lblkçš„ext4_extent
 	struct ext4_extent		*p_ext;
-    //ext4_ext_binsearch_idx()ÖĞ¸³Öµ£¬Ö¸ÏòÆğÊ¼Âß¼­¿éµØÖ·×î½Ó½ü´«ÈëµÄÆğÊ¼Âß¼­¿éµØÖ·map->m_lblkµÄext4_extent_idx
+    //ext4_ext_binsearch_idx()ä¸­èµ‹å€¼ï¼ŒæŒ‡å‘èµ·å§‹é€»è¾‘å—åœ°å€æœ€æ¥è¿‘ä¼ å…¥çš„èµ·å§‹é€»è¾‘å—åœ°å€map->m_lblkçš„ext4_extent_idx
 	struct ext4_extent_idx		*p_idx;
-    //Ö¸Ïòext4 extent B+Ë÷Òı½ÚµãºÍÒ¶×Ó½ÚµãµÄÍ·½áµã½á¹¹Ìå,ext4_ext_find_extent()ÖĞ¸³Öµ
+    //æŒ‡å‘ext4 extent B+ç´¢å¼•èŠ‚ç‚¹å’Œå¶å­èŠ‚ç‚¹çš„å¤´ç»“ç‚¹ç»“æ„ä½“,ext4_ext_find_extent()ä¸­èµ‹å€¼
 	struct ext4_extent_header	*p_hdr;
-    //ext4 extent B+Ë÷Òı½Úµã»òÕßÒ¶×Ó½ÚµãµÄN¸öext4_extent_idx»òN¸öext4_extent½á¹¹ÊÇ±£´æÔÚÎïÀí¿éµÄ£¬ÎïÀí¿éºÅ¾ÍÊÇp_block
-    //p_bh¾ÍÖ¸ÏòÕâ¸öÎïÀí¿éÓ³ÉäµÄbuffer_head£¬Í¨¹ıp_bh¾Í¿ÉÒÔ·ÃÎÊµ½ext4 extent B+Ë÷Òı½Úµã»òÕßÒ¶×Ó½ÚµãµÄext4_extent_idx»òext4_extent½á¹¹
+    //ext4 extent B+ç´¢å¼•èŠ‚ç‚¹æˆ–è€…å¶å­èŠ‚ç‚¹çš„Nä¸ªext4_extent_idxæˆ–Nä¸ªext4_extentç»“æ„æ˜¯ä¿å­˜åœ¨ç‰©ç†å—çš„ï¼Œç‰©ç†å—å·å°±æ˜¯p_block
+    //p_bhå°±æŒ‡å‘è¿™ä¸ªç‰©ç†å—æ˜ å°„çš„buffer_headï¼Œé€šè¿‡p_bhå°±å¯ä»¥è®¿é—®åˆ°ext4 extent B+ç´¢å¼•èŠ‚ç‚¹æˆ–è€…å¶å­èŠ‚ç‚¹çš„ext4_extent_idxæˆ–ext4_extentç»“æ„
 	struct buffer_head		*p_bh;
 };
 
@@ -185,27 +185,27 @@ struct ext4_ext_path {
 #define EXT_INIT_MAX_LEN	(1UL << 15)
 #define EXT_UNINIT_MAX_LEN	(EXT_INIT_MAX_LEN - 1)
 
-//ext4 extent B+Ê÷Ò¶×Ó½ÚµãµÚÒ»¸öext4_extent½á¹¹ÄÚ´æµØÖ·£¬²»Ò»¶¨ÓĞext4_extent½á¹¹
+//ext4 extent B+æ ‘å¶å­èŠ‚ç‚¹ç¬¬ä¸€ä¸ªext4_extentç»“æ„å†…å­˜åœ°å€ï¼Œä¸ä¸€å®šæœ‰ext4_extentç»“æ„
 #define EXT_FIRST_EXTENT(__hdr__) \
 	((struct ext4_extent *) (((char *) (__hdr__)) +		\
 				 sizeof(struct ext4_extent_header)))
 #define EXT_FIRST_INDEX(__hdr__) \
 	((struct ext4_extent_idx *) (((char *) (__hdr__)) +	\
 				     sizeof(struct ext4_extent_header)))
-//ext4 extent B+Ê÷Ë÷Òı½Úµã»òÕßÒ¶×Ó½ÚµãµÄext4_extent_idx»òext4_extent¸öÊıĞ¡ÓÚeh_max·µ»Ø1
+//ext4 extent B+æ ‘ç´¢å¼•èŠ‚ç‚¹æˆ–è€…å¶å­èŠ‚ç‚¹çš„ext4_extent_idxæˆ–ext4_extentä¸ªæ•°å°äºeh_maxè¿”å›1
 #define EXT_HAS_FREE_INDEX(__path__) \
 	(le16_to_cpu((__path__)->p_hdr->eh_entries) \
 				     < le16_to_cpu((__path__)->p_hdr->eh_max))
-//ext4 extent B+Ê÷Ò¶×Ó½ÚµãÓĞĞ§µÄ×îºóÒ»¸öext4_extent½á¹¹ÄÚ´æµØÖ·£¬×¢ÒâÊÇÓĞĞ§µÄ£¬²»Ò»¶¨ÊÇÒ¶×Ó½Úµã×îºóÒ»¸öext4_extent
+//ext4 extent B+æ ‘å¶å­èŠ‚ç‚¹æœ‰æ•ˆçš„æœ€åä¸€ä¸ªext4_extentç»“æ„å†…å­˜åœ°å€ï¼Œæ³¨æ„æ˜¯æœ‰æ•ˆçš„ï¼Œä¸ä¸€å®šæ˜¯å¶å­èŠ‚ç‚¹æœ€åä¸€ä¸ªext4_extent
 #define EXT_LAST_EXTENT(__hdr__) \
 	(EXT_FIRST_EXTENT((__hdr__)) + le16_to_cpu((__hdr__)->eh_entries) - 1)
-//ext4 extent B+Ê÷Ë÷Òı½ÚµãÓĞĞ§µÄ×îºóÒ»¸öext4_extent_idx½á¹¹ÄÚ´æµØÖ·£¬×¢ÒâÊÇÓĞĞ§µÄ£¬²»Ò»¶¨ÊÇË÷Òı½Úµã×îºóÒ»¸öext4_extent_idx
+//ext4 extent B+æ ‘ç´¢å¼•èŠ‚ç‚¹æœ‰æ•ˆçš„æœ€åä¸€ä¸ªext4_extent_idxç»“æ„å†…å­˜åœ°å€ï¼Œæ³¨æ„æ˜¯æœ‰æ•ˆçš„ï¼Œä¸ä¸€å®šæ˜¯ç´¢å¼•èŠ‚ç‚¹æœ€åä¸€ä¸ªext4_extent_idx
 #define EXT_LAST_INDEX(__hdr__) \
 	(EXT_FIRST_INDEX((__hdr__)) + le16_to_cpu((__hdr__)->eh_entries) - 1)
-//ext4 extent B+Ê÷×î´ó×î¿¿ºóµÄext4_extent½á¹¹£¬eh_max´óÓÚeh_entries
+//ext4 extent B+æ ‘æœ€å¤§æœ€é åçš„ext4_extentç»“æ„ï¼Œeh_maxå¤§äºeh_entries
 #define EXT_MAX_EXTENT(__hdr__) \
 	(EXT_FIRST_EXTENT((__hdr__)) + le16_to_cpu((__hdr__)->eh_max) - 1)
-//ext4 extent B+Ê÷×î´ó×î¿¿ºóµÄext4_extent_idx½á¹¹
+//ext4 extent B+æ ‘æœ€å¤§æœ€é åçš„ext4_extent_idxç»“æ„
 #define EXT_MAX_INDEX(__hdr__) \
 	(EXT_FIRST_INDEX((__hdr__)) + le16_to_cpu((__hdr__)->eh_max) - 1)
 
@@ -218,27 +218,27 @@ static inline struct ext4_extent_header *ext_block_hdr(struct buffer_head *bh)
 {
 	return (struct ext4_extent_header *) bh->b_data;
 }
-//ÕâÊÇ¸ù¾İEXT4_I(inode)->i_data£¬µÃµ½root ½Úµãext4_extent_header->eh_depth£¬¼ÆËãext4 extent B+Ê÷Éî¶È
+//è¿™æ˜¯æ ¹æ®EXT4_I(inode)->i_dataï¼Œå¾—åˆ°root èŠ‚ç‚¹ext4_extent_header->eh_depthï¼Œè®¡ç®—ext4 extent B+æ ‘æ·±åº¦
 static inline unsigned short ext_depth(struct inode *inode)
 {
 	return le16_to_cpu(ext_inode_hdr(inode)->eh_depth);
 }
-//ext4_ext_convert_to_initialized()ÖĞ¶à´¦±ê¼Çext4_extentµÄÎ´³õÊ¼»¯×´Ì¬
+//ext4_ext_convert_to_initialized()ä¸­å¤šå¤„æ ‡è®°ext4_extentçš„æœªåˆå§‹åŒ–çŠ¶æ€
 static inline void ext4_ext_mark_uninitialized(struct ext4_extent *ext)
 {
 	/* We can not have an uninitialized extent of zero length! */
 	BUG_ON((le16_to_cpu(ext->ee_len) & ~EXT_INIT_MAX_LEN) == 0);
-    //ÉèÖÃext4_extentµÄuninitialized±ê¼Ç£¬ÎŞ·ÇÊÇÉèÖÃbit15Îª1
+    //è®¾ç½®ext4_extentçš„uninitializedæ ‡è®°ï¼Œæ— éæ˜¯è®¾ç½®bit15ä¸º1
 	ext->ee_len |= cpu_to_le16(EXT_INIT_MAX_LEN);
 }
 
 static inline int ext4_ext_is_uninitialized(struct ext4_extent *ext)
 {
 	/* Extent with ee_len of 0x8000 is treated as an initialized extent */
-    //ext->ee_len´óÓÚ0x8000£¬ËµÃ÷ext4_extentÊÇÃ»ÓĞ³õÊ¼»¯¹ıµÄ
+    //ext->ee_lenå¤§äº0x8000ï¼Œè¯´æ˜ext4_extentæ˜¯æ²¡æœ‰åˆå§‹åŒ–è¿‡çš„
 	return (le16_to_cpu(ext->ee_len) > EXT_INIT_MAX_LEN);
 }
-//ext4_extent½á¹¹Ó³ÉäµÄÎïÀí¿é¸öÊı
+//ext4_extentç»“æ„æ˜ å°„çš„ç‰©ç†å—ä¸ªæ•°
 static inline int ext4_ext_get_actual_len(struct ext4_extent *ext)
 {
 	return (le16_to_cpu(ext->ee_len) <= EXT_INIT_MAX_LEN ?
@@ -302,7 +302,7 @@ static inline void ext4_idx_store_pblock(struct ext4_extent_idx *ix,
 	ix->ei_leaf_hi = cpu_to_le16((unsigned long) ((pb >> 31) >> 1) &
 				     0xffff);
 }
-//ext4_extentÓ³ÉäµÄÂß¼­¿é·¶Î§¿ÉÄÜ·¢Éú±ä»¯ÁË£¬±ê¼Ç¶ÔÓ¦µÄÎïÀí¿éÓ³ÉäµÄbh»òÕßÎÄ¼şinodeÔà.
+//ext4_extentæ˜ å°„çš„é€»è¾‘å—èŒƒå›´å¯èƒ½å‘ç”Ÿå˜åŒ–äº†ï¼Œæ ‡è®°å¯¹åº”çš„ç‰©ç†å—æ˜ å°„çš„bhæˆ–è€…æ–‡ä»¶inodeè„.
 #define ext4_ext_dirty(handle, inode, path) \
 		__ext4_ext_dirty(__func__, __LINE__, (handle), (inode), (path))
 int __ext4_ext_dirty(const char *where, unsigned int line, handle_t *handle,

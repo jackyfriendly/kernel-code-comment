@@ -558,7 +558,7 @@ static void ext4_map_blocks_es_recheck(handle_t *handle,
  *
  * It returns the error in case of allocation failure.
  */
-//¸ù¾İ´«ÈëµÄÎÄ¼ş»òÄ¿Â¼inodeµÄÂß¼­µØÖ·map->m_lblk´Óext4ÎÄ¼şÏµÍ³µÄdata blockÇø·ÖÅämap->m_len¸öÎïÀí¿é£¬²¢ÓëÂß¼­µØÖ·map->m_lblk¹¹³ÉÓ³Éä£¬²¢°ÑÓ³Éä¹ØÏµ±£´æµ½ext4 extent½á¹¹
+//æ ¹æ®ä¼ å…¥çš„æ–‡ä»¶æˆ–ç›®å½•inodeçš„é€»è¾‘åœ°å€map->m_lblkä»ext4æ–‡ä»¶ç³»ç»Ÿçš„data blockåŒºåˆ†é…map->m_lenä¸ªç‰©ç†å—ï¼Œå¹¶ä¸é€»è¾‘åœ°å€map->m_lblkæ„æˆæ˜ å°„ï¼Œå¹¶æŠŠæ˜ å°„å…³ç³»ä¿å­˜åˆ°ext4 extentç»“æ„
 int ext4_map_blocks(handle_t *handle, struct inode *inode,
 		    struct ext4_map_blocks *map, int flags)
 {
@@ -605,7 +605,7 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
 	if (!(flags & EXT4_GET_BLOCKS_NO_LOCK))
 		down_read((&EXT4_I(inode)->i_data_sem));
 	if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS)) {
-        //¸ù¾İ´«ÈëµÄÎÄ¼ş»òÄ¿Â¼inodeµÄÂß¼­µØÖ·map->m_lblk´Óext4ÎÄ¼şÏµÍ³µÄdata blockÇø·ÖÅämap->m_len¸öÎïÀí¿é£¬²¢ÓëÂß¼­µØÖ·map->m_lblk¹¹³ÉÓ³Éä£¬²¢°ÑÓ³Éä¹ØÏµ±£´æµ½ext4 extent½á¹¹
+        //æ ¹æ®ä¼ å…¥çš„æ–‡ä»¶æˆ–ç›®å½•inodeçš„é€»è¾‘åœ°å€map->m_lblkä»ext4æ–‡ä»¶ç³»ç»Ÿçš„data blockåŒºåˆ†é…map->m_lenä¸ªç‰©ç†å—ï¼Œå¹¶ä¸é€»è¾‘åœ°å€map->m_lblkæ„æˆæ˜ å°„ï¼Œå¹¶æŠŠæ˜ å°„å…³ç³»ä¿å­˜åˆ°ext4 extentç»“æ„
 		retval = ext4_ext_map_blocks(handle, inode, map, flags &
 					     EXT4_GET_BLOCKS_KEEP_SIZE);
 	} else {
@@ -744,7 +744,7 @@ found:
 					     map->m_lblk + map->m_len - 1))
 			status |= EXTENT_STATUS_DELAYED;
 
-        //°ÑmapµÄÆğÊ¼Âß¼­¿éµØÖ·¡¢Ó³ÉäµÄÆğÊ¼ÎïÀí¿éµØÖ·¡¢Ó³ÉäµÄÎïÀí¿é¸öÊı±£´æµ½extent_status£¬ÔÙ°Ñextent_status²åÈëext4_es_treeºìºÚÊ÷
+        //æŠŠmapçš„èµ·å§‹é€»è¾‘å—åœ°å€ã€æ˜ å°„çš„èµ·å§‹ç‰©ç†å—åœ°å€ã€æ˜ å°„çš„ç‰©ç†å—ä¸ªæ•°ä¿å­˜åˆ°extent_statusï¼Œå†æŠŠextent_statusæ’å…¥ext4_es_treeçº¢é»‘æ ‘
 		ret = ext4_es_insert_extent(inode, map->m_lblk, map->m_len,
 					    map->m_pblk, status);
 		if (ret < 0)
@@ -764,13 +764,13 @@ has_zeroout:
 /* Maximum number of blocks we map for direct IO at once. */
 #define DIO_MAX_BLOCKS 4096
 
-//¸ù¾İ±¾´Î¶ÁĞ´µÄÎÄ¼şÆğÊ¼´ÅÅÌÂß¼­¿éºÅiblockºÍ×î´ó¶ÁÈ¡µÄÎÄ¼şÊı¾İÁ¿bh->b_size£¬Íê³ÉÎÄ¼ş´ÅÅÌÂß¼­µØÖ·ÓëÒ»Æ¬Á¬ĞøµÄ´ÅÅÌÎïÀí¿éµÄÓ³Éä¡£
-//º¯Êı·µ»Øºó£¬bh->b_blocknrÊÇÓ³ÉäµÄ´ÅÅÌÎïÀí¿éµØÖ·£¬bh->b_sizeÊÇÊµ¼ÊÍê³ÉÓ³ÉäµÄ´ÅÅÌÎïÀí¿éÊıÁ¿*¿é´óĞ¡¡£×¢Òâ£¬±¾´Î
-//¶ÁÈ¡ÎÄ¼ş´ÅÅÌÂß¼­µØÖ·²¢²»ÄÜÈ«²¿Íê³ÉÓ³Éä¡£±ÈÈçÎÄ¼ş64*4K´óĞ¡£¬µ«ÊÇÕâ64*4KÊı¾İÔÚÎïÀí´ÅÅÌ·Ö³ÉÁ½¿é£¬Èç´ÅÅÌÎïÀíµØÖ·0~32*4kºÍ64*4k~96*4k¡£
-//ÔòµÚÒ»´ÎÖ´ĞĞ_ext4_get_blockÍê³ÉÎÄ¼şµØÖ·0~32*4KÓë´ÅÅÌÎïÀí¿é0~32*4kµÄÓ³Éä£¬Ö®ºó¾ÍÖªµÀÁËÎÄ¼şµØÖ·0~32*4K¶ÔÓ¦µÄ´ÅÅÌÎïÀí¿éµØÖ·£¬Ö´ĞĞ
-//submit_bio°ÑÎÄ¼şÊı¾İ´«Êäµ½¶ÔÓ¦´ÅÅÌÎïÀí¿é(ÕâÊÇĞ´£¬¶ÁÔò·´¹ıÀ´)¡£½Ó×ÅÖ´ĞĞ_ext4_get_blockÍê³ÉÎÄ¼şµØÖ·32*4~64*4KÓë´ÅÅÌÎïÀí¿é64*4k~96*4k
-//µÄÓ³Éä£¬×îºóÍ¬ÑùÖ´ĞĞsubmit_bio°ÑÎÄ¼şÊı¾İ´«Êäµ½¶ÔÓ¦´ÅÅÌÎïÀí¿é(ÕâÊÇĞ´£¬¶ÁÔò·´¹ıÀ´).
-static int _ext4_get_block(struct inode *inode, sector_t iblock,//iblockÊÇ±¾´Î¶ÁĞ´µÄÆğÊ¼´ÅÅÌÂß¼­¿éºÅ
+//æ ¹æ®æœ¬æ¬¡è¯»å†™çš„æ–‡ä»¶èµ·å§‹ç£ç›˜é€»è¾‘å—å·iblockå’Œæœ€å¤§è¯»å–çš„æ–‡ä»¶æ•°æ®é‡bh->b_sizeï¼Œå®Œæˆæ–‡ä»¶ç£ç›˜é€»è¾‘åœ°å€ä¸ä¸€ç‰‡è¿ç»­çš„ç£ç›˜ç‰©ç†å—çš„æ˜ å°„ã€‚
+//å‡½æ•°è¿”å›åï¼Œbh->b_blocknræ˜¯æ˜ å°„çš„ç£ç›˜ç‰©ç†å—åœ°å€ï¼Œbh->b_sizeæ˜¯å®é™…å®Œæˆæ˜ å°„çš„ç£ç›˜ç‰©ç†å—æ•°é‡*å—å¤§å°ã€‚æ³¨æ„ï¼Œæœ¬æ¬¡
+//è¯»å–æ–‡ä»¶ç£ç›˜é€»è¾‘åœ°å€å¹¶ä¸èƒ½å…¨éƒ¨å®Œæˆæ˜ å°„ã€‚æ¯”å¦‚æ–‡ä»¶64*4Kå¤§å°ï¼Œä½†æ˜¯è¿™64*4Kæ•°æ®åœ¨ç‰©ç†ç£ç›˜åˆ†æˆä¸¤å—ï¼Œå¦‚ç£ç›˜ç‰©ç†åœ°å€0~32*4kå’Œ64*4k~96*4kã€‚
+//åˆ™ç¬¬ä¸€æ¬¡æ‰§è¡Œ_ext4_get_blockå®Œæˆæ–‡ä»¶åœ°å€0~32*4Kä¸ç£ç›˜ç‰©ç†å—0~32*4kçš„æ˜ å°„ï¼Œä¹‹åå°±çŸ¥é“äº†æ–‡ä»¶åœ°å€0~32*4Kå¯¹åº”çš„ç£ç›˜ç‰©ç†å—åœ°å€ï¼Œæ‰§è¡Œ
+//submit_bioæŠŠæ–‡ä»¶æ•°æ®ä¼ è¾“åˆ°å¯¹åº”ç£ç›˜ç‰©ç†å—(è¿™æ˜¯å†™ï¼Œè¯»åˆ™åè¿‡æ¥)ã€‚æ¥ç€æ‰§è¡Œ_ext4_get_blockå®Œæˆæ–‡ä»¶åœ°å€32*4~64*4Kä¸ç£ç›˜ç‰©ç†å—64*4k~96*4k
+//çš„æ˜ å°„ï¼Œæœ€ååŒæ ·æ‰§è¡Œsubmit_bioæŠŠæ–‡ä»¶æ•°æ®ä¼ è¾“åˆ°å¯¹åº”ç£ç›˜ç‰©ç†å—(è¿™æ˜¯å†™ï¼Œè¯»åˆ™åè¿‡æ¥).
+static int _ext4_get_block(struct inode *inode, sector_t iblock,//iblockæ˜¯æœ¬æ¬¡è¯»å†™çš„èµ·å§‹ç£ç›˜é€»è¾‘å—å·
 			   struct buffer_head *bh, int flags)
 {
 	handle_t *handle = ext4_journal_current_handle();
@@ -781,10 +781,10 @@ static int _ext4_get_block(struct inode *inode, sector_t iblock,//iblockÊÇ±¾´Î¶Á
 	if (ext4_has_inline_data(inode))
 		return -ERANGE;
     
-    //±¾´Î¶ÁÈ¡µÄÎÄ¼şµÄÂß¼­¿éºÅ
+    //æœ¬æ¬¡è¯»å–çš„æ–‡ä»¶çš„é€»è¾‘å—å·
 	map.m_lblk = iblock;
-    //bh->b_sizeÊÇ±¾´Î¶ÁÈ¡µÄÎÄ¼ş´óĞ¡£¬Ïà³ıºóµÄmap.m_lenÊÇ±¾´Î¶ÁÈ¡ÎÄ¼ş´óĞ¡¶ÔÓ¦µÄ´ÅÅÌÎïÀí¿é¸öÊı¡£×¢Òâ£¬ÕâĞ©´ÅÅÌÎïÀí¿é²¢²»Ò»¶¨ÊÇ
-    //Á¬ĞøµÄ!
+    //bh->b_sizeæ˜¯æœ¬æ¬¡è¯»å–çš„æ–‡ä»¶å¤§å°ï¼Œç›¸é™¤åçš„map.m_lenæ˜¯æœ¬æ¬¡è¯»å–æ–‡ä»¶å¤§å°å¯¹åº”çš„ç£ç›˜ç‰©ç†å—ä¸ªæ•°ã€‚æ³¨æ„ï¼Œè¿™äº›ç£ç›˜ç‰©ç†å—å¹¶ä¸ä¸€å®šæ˜¯
+    //è¿ç»­çš„!
 	map.m_len = bh->b_size >> inode->i_blkbits;
 
 	if (flags && !(flags & EXT4_GET_BLOCKS_NO_LOCK) && !handle) {
@@ -801,21 +801,21 @@ static int _ext4_get_block(struct inode *inode, sector_t iblock,//iblockÊÇ±¾´Î¶Á
 		started = 1;
 	}
     
-    //ÎªbhµÄÕÒµ½Ó³ÉäµÄ´ÅÅÌÎïÀí¿é£¬º¯Êı·µ»ØÊ±map.m_pblk¾ÍÊÇbhÓ³ÉäµÄµÚÒ»¸ö´ÅÅÌÎïÀí¿éºÅ£¬map.m_lenÊÇÊµ¼ÊÓ³ÉäµÄ´ÅÅÌÎïÀí¿é¸öÊı¡£
-    //ÕâĞ©´ÅÅÌÓ³Éä³É¹¦µÄ´ÅÅÌÎïÀí¿éÊÇÎïÀíµØÖ·Á¬ĞøµÄ¡£³É¹¦·µ»ØÖµ´óÓÚ0¡£
+    //ä¸ºbhçš„æ‰¾åˆ°æ˜ å°„çš„ç£ç›˜ç‰©ç†å—ï¼Œå‡½æ•°è¿”å›æ—¶map.m_pblkå°±æ˜¯bhæ˜ å°„çš„ç¬¬ä¸€ä¸ªç£ç›˜ç‰©ç†å—å·ï¼Œmap.m_lenæ˜¯å®é™…æ˜ å°„çš„ç£ç›˜ç‰©ç†å—ä¸ªæ•°ã€‚
+    //è¿™äº›ç£ç›˜æ˜ å°„æˆåŠŸçš„ç£ç›˜ç‰©ç†å—æ˜¯ç‰©ç†åœ°å€è¿ç»­çš„ã€‚æˆåŠŸè¿”å›å€¼å¤§äº0ã€‚
 	ret = ext4_map_blocks(handle, inode, &map, flags);
 	if (ret > 0) {
-        //ÉèÖÃbh->b_stateµÄ"mapped"£¬¸³ÖµbhÓ³ÉäµÄÆğÊ¼´ÅÅÌÎïÀí¿éºÅbh->b_blocknrÎªmap.m_pblk
+        //è®¾ç½®bh->b_stateçš„"mapped"ï¼Œèµ‹å€¼bhæ˜ å°„çš„èµ·å§‹ç£ç›˜ç‰©ç†å—å·bh->b_blocknrä¸ºmap.m_pblk
 		map_bh(bh, inode->i_sb, map.m_pblk);
 		bh->b_state = (bh->b_state & ~EXT4_MAP_FLAGS) | map.m_flags;
-        //°´ÕÕbhÊµ¼ÊÓ³ÉäµÄ´ÅÅÌÎïÀí¿é¸öÊı¸üĞÂbh->b_size£¬_ext4_get_blockº¯Êı¸ÕÖ´ĞĞÊ±£¬bh->b_sizeÊÇ±¾´Î¶ÁÈ¡µÄÎÄ¼şÊı¾İ´óĞ¡£¬ÕâÊÇ
-        //ÎÄ¼şÂß¼­µØÖ·£¬Âß¼­µØÖ·Á¬Ğø£¬µ«ÊÇÕâÆ¬Âß¼­µØÖ·Ó³ÉäµÄ´ÅÅÌÎïÀí¿éµØÖ·Î´±ØÁ¬Ğø¡£±ÈÈç±¾´Î¶ÁÈ¡0~64*4KµÄÎÄ¼ş£¬bh->b_size¸Õ¿ªÊ¼
-        //ÊÇ64*4K£¬µ«ÊÇÎÄ¼ş0~64*4KÊı¾İÔÚ´ÅÅÌÎïÀí¿é²»Á¬Ğø£¬·Ö³ÉÁ½Æ¬Èç´ÅÅÌÎïÀíµØÖ·0~32*4KºÍ64*4K~96*4k¡£ÔòµÚÒ»´ÎÖ´ĞĞext4_map_blocksºó£¬Ö»Ó³ÉäÁËÇ°32*4KµÄÎÄ¼ş
-        //Êı¾İ,map.m_lenÊÇ32*4K£¬ÕâÀï»á¸üĞÂbh->b_size=32*4K¡£Ä¬ÈÏext4ÎÄ¼şÏµÍ³ÊÇ4K£¬Ïàµ±ÓÚµÚÒ»Ö´ĞĞ_ext4_get_block()£¬Ö»Íê³ÉÎÄ¼şÂß¼­
-        //µØÖ·0~32*4KÓë´ÅÅÌÎïÀí¿éµÄÓ³Éä¹ØÏµ£¬ÖªµÀÁËÎÄ¼ş0~32*4KµØÖ·¶ÔÓ¦´ÅÅÌÎïÀí¿éµØÖ·£¬Ö®ºó¾Í¿ÉÒÔµ÷ÓÃsubmit_bio°ÑÎÄ¼şÎÄ¼şÊı¾İ´«Êä
-        //ÎÄ¼ş0~32*4KµØÖ··¶Î§µÄ´ÅÅÌÎïÀí¿é(»òÕß·´¹ıÀ´)¡£´«ÊäÍê³Éºó£¬¼ÌĞøÖ´ĞĞ_ext4_get_block()Íê³ÉÎÄ¼şµØÖ·32*4k~64*4KÂß¼­µØÖ·Óë´ÅÅÌ
-        //ÎïÀí¿éµÄÓ³Éä£¬ÖªµÀÁËÎÄ¼ş32*4K~64*4KµØÖ·¶ÔÓ¦´ÅÅÌÎïÀí¿éµØÖ·£¬¼ÌĞøµ÷ÓÃsubmit_bioÕâ32*4K~64*4KµÄÎÄ¼şÊı¾İµ½´ÅÅÌÎïÀí¿é¡£×ÜÖ®£¬
-        //ext4_map_blocks()Ö´ĞĞºóÖ»ÄÜÍê³ÉÎÄ¼şÂß¼­µØÖ·ÓëÒ»Æ¬Á¬ĞøµÄ´ÅÅÌÎïÀíµØÖ·µÄÓ³Éä¡£
+        //æŒ‰ç…§bhå®é™…æ˜ å°„çš„ç£ç›˜ç‰©ç†å—ä¸ªæ•°æ›´æ–°bh->b_sizeï¼Œ_ext4_get_blockå‡½æ•°åˆšæ‰§è¡Œæ—¶ï¼Œbh->b_sizeæ˜¯æœ¬æ¬¡è¯»å–çš„æ–‡ä»¶æ•°æ®å¤§å°ï¼Œè¿™æ˜¯
+        //æ–‡ä»¶é€»è¾‘åœ°å€ï¼Œé€»è¾‘åœ°å€è¿ç»­ï¼Œä½†æ˜¯è¿™ç‰‡é€»è¾‘åœ°å€æ˜ å°„çš„ç£ç›˜ç‰©ç†å—åœ°å€æœªå¿…è¿ç»­ã€‚æ¯”å¦‚æœ¬æ¬¡è¯»å–0~64*4Kçš„æ–‡ä»¶ï¼Œbh->b_sizeåˆšå¼€å§‹
+        //æ˜¯64*4Kï¼Œä½†æ˜¯æ–‡ä»¶0~64*4Kæ•°æ®åœ¨ç£ç›˜ç‰©ç†å—ä¸è¿ç»­ï¼Œåˆ†æˆä¸¤ç‰‡å¦‚ç£ç›˜ç‰©ç†åœ°å€0~32*4Kå’Œ64*4K~96*4kã€‚åˆ™ç¬¬ä¸€æ¬¡æ‰§è¡Œext4_map_blocksåï¼Œåªæ˜ å°„äº†å‰32*4Kçš„æ–‡ä»¶
+        //æ•°æ®,map.m_lenæ˜¯32*4Kï¼Œè¿™é‡Œä¼šæ›´æ–°bh->b_size=32*4Kã€‚é»˜è®¤ext4æ–‡ä»¶ç³»ç»Ÿæ˜¯4Kï¼Œç›¸å½“äºç¬¬ä¸€æ‰§è¡Œ_ext4_get_block()ï¼Œåªå®Œæˆæ–‡ä»¶é€»è¾‘
+        //åœ°å€0~32*4Kä¸ç£ç›˜ç‰©ç†å—çš„æ˜ å°„å…³ç³»ï¼ŒçŸ¥é“äº†æ–‡ä»¶0~32*4Kåœ°å€å¯¹åº”ç£ç›˜ç‰©ç†å—åœ°å€ï¼Œä¹‹åå°±å¯ä»¥è°ƒç”¨submit_bioæŠŠæ–‡ä»¶æ–‡ä»¶æ•°æ®ä¼ è¾“
+        //æ–‡ä»¶0~32*4Kåœ°å€èŒƒå›´çš„ç£ç›˜ç‰©ç†å—(æˆ–è€…åè¿‡æ¥)ã€‚ä¼ è¾“å®Œæˆåï¼Œç»§ç»­æ‰§è¡Œ_ext4_get_block()å®Œæˆæ–‡ä»¶åœ°å€32*4k~64*4Ké€»è¾‘åœ°å€ä¸ç£ç›˜
+        //ç‰©ç†å—çš„æ˜ å°„ï¼ŒçŸ¥é“äº†æ–‡ä»¶32*4K~64*4Kåœ°å€å¯¹åº”ç£ç›˜ç‰©ç†å—åœ°å€ï¼Œç»§ç»­è°ƒç”¨submit_bioè¿™32*4K~64*4Kçš„æ–‡ä»¶æ•°æ®åˆ°ç£ç›˜ç‰©ç†å—ã€‚æ€»ä¹‹ï¼Œ
+        //ext4_map_blocks()æ‰§è¡Œååªèƒ½å®Œæˆæ–‡ä»¶é€»è¾‘åœ°å€ä¸ä¸€ç‰‡è¿ç»­çš„ç£ç›˜ç‰©ç†åœ°å€çš„æ˜ å°„ã€‚
 		bh->b_size = inode->i_sb->s_blocksize * map.m_len;
 		ret = 0;
 	}
@@ -834,7 +834,7 @@ int ext4_get_block(struct inode *inode, sector_t iblock,
 /*
  * `handle' can be NULL if create is zero
  */
-//¸ù¾İ´«ÈëµÄÎÄ¼ş»òÄ¿Â¼inodeµÄÂß¼­µØÖ·block´Óext4ÎÄ¼şÏµÍ³µÄdata blockÇø·ÖÅä1¸öÎïÀí¿é£¬²¢ÓëÂß¼­µØÖ·block¹¹³ÉÓ³Éä£¬×îºó·µ»ØÕâÎïÀí¿éµÄbh
+//æ ¹æ®ä¼ å…¥çš„æ–‡ä»¶æˆ–ç›®å½•inodeçš„é€»è¾‘åœ°å€blockä»ext4æ–‡ä»¶ç³»ç»Ÿçš„data blockåŒºåˆ†é…1ä¸ªç‰©ç†å—ï¼Œå¹¶ä¸é€»è¾‘åœ°å€blockæ„æˆæ˜ å°„ï¼Œæœ€åè¿”å›è¿™ç‰©ç†å—çš„bh
 struct buffer_head *ext4_getblk(handle_t *handle, struct inode *inode,
 				ext4_lblk_t block, int create, int *errp)
 {
@@ -846,7 +846,7 @@ struct buffer_head *ext4_getblk(handle_t *handle, struct inode *inode,
 
 	map.m_lblk = block;
 	map.m_len = 1;
-    //¸ù¾İ´«ÈëµÄÎÄ¼ş»òÄ¿Â¼inodeµÄÂß¼­µØÖ·map->m_lblk´Óext4ÎÄ¼şÏµÍ³µÄdata blockÇø·ÖÅä1¸öÎïÀí¿é£¬²¢ÓëÂß¼­µØÖ·map->m_lblk¹¹³ÉÓ³Éä£¬²¢°ÑÓ³Éä¹ØÏµ±£´æµ½ext4 extent½á¹¹
+    //æ ¹æ®ä¼ å…¥çš„æ–‡ä»¶æˆ–ç›®å½•inodeçš„é€»è¾‘åœ°å€map->m_lblkä»ext4æ–‡ä»¶ç³»ç»Ÿçš„data blockåŒºåˆ†é…1ä¸ªç‰©ç†å—ï¼Œå¹¶ä¸é€»è¾‘åœ°å€map->m_lblkæ„æˆæ˜ å°„ï¼Œå¹¶æŠŠæ˜ å°„å…³ç³»ä¿å­˜åˆ°ext4 extentç»“æ„
 	err = ext4_map_blocks(handle, inode, &map,
 			      create ? EXT4_GET_BLOCKS_CREATE : 0);
 
@@ -859,7 +859,7 @@ struct buffer_head *ext4_getblk(handle_t *handle, struct inode *inode,
 		*errp = err;
 	if (err <= 0)
 		return NULL;
-    //map.m_pblk¾ÍÊÇÉÏ±ßÎªÎÄ¼şinode·ÖÅäµÄÆğÊ¼ÎïÀí¿é£¬ÕâÀïÊÇÕÒµ½ËüµÄbh
+    //map.m_pblkå°±æ˜¯ä¸Šè¾¹ä¸ºæ–‡ä»¶inodeåˆ†é…çš„èµ·å§‹ç‰©ç†å—ï¼Œè¿™é‡Œæ˜¯æ‰¾åˆ°å®ƒçš„bh
 	bh = sb_getblk(inode->i_sb, map.m_pblk);
 	if (unlikely(!bh)) {
 		*errp = -ENOMEM;
@@ -898,20 +898,20 @@ struct buffer_head *ext4_getblk(handle_t *handle, struct inode *inode,
 	}
 	return bh;
 }
-//¸ù¾İ´«ÈëµÄÎÄ¼ş»òÄ¿Â¼inodeµÄÂß¼­µØÖ·block´Óext4ÎÄ¼şÏµÍ³µÄdata blockÇø·ÖÅä1¸öÎïÀí¿é£¬²¢ÓëÂß¼­µØÖ·block¹¹³ÉÓ³Éä£¬×îºó·µ»ØÕâÎïÀí¿éµÄbh
-struct buffer_head *ext4_bread(handle_t *handle, struct inode *inode,//inodeÊÇ¸¸Ä¿Â¼µÄ
+//æ ¹æ®ä¼ å…¥çš„æ–‡ä»¶æˆ–ç›®å½•inodeçš„é€»è¾‘åœ°å€blockä»ext4æ–‡ä»¶ç³»ç»Ÿçš„data blockåŒºåˆ†é…1ä¸ªç‰©ç†å—ï¼Œå¹¶ä¸é€»è¾‘åœ°å€blockæ„æˆæ˜ å°„ï¼Œæœ€åè¿”å›è¿™ç‰©ç†å—çš„bh
+struct buffer_head *ext4_bread(handle_t *handle, struct inode *inode,//inodeæ˜¯çˆ¶ç›®å½•çš„
 			       ext4_lblk_t block, int create, int *err)
 {
 	struct buffer_head *bh;
-    //¸ù¾İ´«ÈëµÄÎÄ¼ş»òÄ¿Â¼inodeµÄÂß¼­µØÖ·block´Óext4ÎÄ¼şÏµÍ³µÄdata blockÇø·ÖÅä1¸öÎïÀí¿é£¬²¢ÓëÂß¼­µØÖ·block¹¹³ÉÓ³Éä£¬×îºó·µ»ØÕâÎïÀí¿éµÄbh
+    //æ ¹æ®ä¼ å…¥çš„æ–‡ä»¶æˆ–ç›®å½•inodeçš„é€»è¾‘åœ°å€blockä»ext4æ–‡ä»¶ç³»ç»Ÿçš„data blockåŒºåˆ†é…1ä¸ªç‰©ç†å—ï¼Œå¹¶ä¸é€»è¾‘åœ°å€blockæ„æˆæ˜ å°„ï¼Œæœ€åè¿”å›è¿™ç‰©ç†å—çš„bh
 	bh = ext4_getblk(handle, inode, block, create, err);
 	if (!bh)
 		return bh;
 	if (buffer_uptodate(bh))
 		return bh;
-    //¶ÁÈ¡bhÓ³ÉäµÄÎïÀí¿éµÄÊı¾İµ½bh
+    //è¯»å–bhæ˜ å°„çš„ç‰©ç†å—çš„æ•°æ®åˆ°bh
 	ll_rw_block(READ | REQ_META | REQ_PRIO, 1, &bh);
-    //µÈ´ıbhÎïÀí¿éµÄÊı¾İ¶ÁÈ¡µ½bh
+    //ç­‰å¾…bhç‰©ç†å—çš„æ•°æ®è¯»å–åˆ°bh
 	wait_on_buffer(bh);
 	if (buffer_uptodate(bh))
 		return bh;
@@ -1156,7 +1156,7 @@ static int ext4_write_end(struct file *file,
 		if (ret < 0)
 			goto errout;
 		copied = ret;
-	} else//ÕâÀï£¬__set_page_dirty()pageÔàÒ³
+	} else//è¿™é‡Œï¼Œ__set_page_dirty()pageè„é¡µ
 		copied = block_write_end(file, mapping, pos,
 					 len, copied, page, fsdata);
 
@@ -1593,9 +1593,9 @@ static int mpage_da_submit_io(struct mpage_da_data *mpd,
 				continue;
 			}
             
-            //ÇåÀípageÔàÒ³±ê¼Ç£¬ÔàÒ³Êı¼õ1
+            //æ¸…ç†pageè„é¡µæ ‡è®°ï¼Œè„é¡µæ•°å‡1
 			clear_page_dirty_for_io(page);
-            //ÉèÖÃpageµÄwriteback±ê¼Ç£¬µ÷ÓÃsubmit_bio·¢ËÍIOÇëÇó
+            //è®¾ç½®pageçš„writebackæ ‡è®°ï¼Œè°ƒç”¨submit_bioå‘é€IOè¯·æ±‚
 			err = ext4_bio_write_page(&io_submit, page, len,
 						  mpd->wbc);
 			if (!err)
@@ -1610,7 +1610,7 @@ static int mpage_da_submit_io(struct mpage_da_data *mpd,
 		pagevec_release(&pvec);
 	}
     
-    //ÕâÀïÒ²ÓĞsubmit_bio()
+    //è¿™é‡Œä¹Ÿæœ‰submit_bio()
 	ext4_io_submit(&io_submit);
 	return ret;
 }
@@ -1643,7 +1643,7 @@ static void ext4_da_block_invalidatepages(struct mpage_da_data *mpd)
 			BUG_ON(!PageLocked(page));
 			BUG_ON(PageWriteback(page));
 			block_invalidatepage(page, 0);
-			ClearPageUptodate(page);//ÇåÀípageµÄ"Uptodate"±ê¼Ç
+			ClearPageUptodate(page);//æ¸…ç†pageçš„"Uptodate"æ ‡è®°
 			unlock_page(page);
 		}
 		index = pvec.pages[nr_pages - 1]->index + 1;
@@ -2286,7 +2286,7 @@ static int ext4_writepage(struct page *page,
 		return __ext4_journalled_writepage(page, len);
 
 	memset(&io_submit, 0, sizeof(io_submit));
-	ret = ext4_bio_write_page(&io_submit, page, len, wbc);//ÕâÀï
+	ret = ext4_bio_write_page(&io_submit, page, len, wbc);//è¿™é‡Œ
 	ext4_io_submit(&io_submit);//submit_bio()
 	return ret;
 }
@@ -3036,7 +3036,7 @@ static int ext4_readpage(struct file *file, struct page *page)
 	if (ext4_has_inline_data(inode))
 		ret = ext4_readpage_inline(inode, page);
 
-    //Æô¶¯ÎÄ¼şÏµÍ³Êı¾İ´«Êä£¬µ÷ÓÃµ½submit_bio£¬Òì²½µÄ£¬·µ»Ø·µ»Ø²¢²»ÄÜ±£Ö¤ÎÄ¼şÊı¾İÒÑ¾­¶ÁÈ¡µ½page
+    //å¯åŠ¨æ–‡ä»¶ç³»ç»Ÿæ•°æ®ä¼ è¾“ï¼Œè°ƒç”¨åˆ°submit_bioï¼Œå¼‚æ­¥çš„ï¼Œè¿”å›è¿”å›å¹¶ä¸èƒ½ä¿è¯æ–‡ä»¶æ•°æ®å·²ç»è¯»å–åˆ°page
 	if (ret == -EAGAIN)
 		return mpage_readpage(page, ext4_get_block);
 
@@ -3973,7 +3973,7 @@ out_stop:
  * data in memory that is needed to recreate the on-disk version of this
  * inode.
  */
-//¸ù¾İinode±àºÅµÃµ½ËüÔÚ ËùÊôµÄ¿é×éµÄinode tableµÄÎïÀí¿éºÅ£¬Õâ¸öÎïÀí¿é±£´æµÄÊÇ¸Ã¿é×éµÄinode table£¬Õâ¸öinode table±£´æÁËÕâ¸öinode½á¹¹
+//æ ¹æ®inodeç¼–å·å¾—åˆ°å®ƒåœ¨ æ‰€å±çš„å—ç»„çš„inode tableçš„ç‰©ç†å—å·ï¼Œè¿™ä¸ªç‰©ç†å—ä¿å­˜çš„æ˜¯è¯¥å—ç»„çš„inode tableï¼Œè¿™ä¸ªinode tableä¿å­˜äº†è¿™ä¸ªinodeç»“æ„
 static int __ext4_get_inode_loc(struct inode *inode,
 				struct ext4_iloc *iloc, int in_mem)
 {
@@ -3986,9 +3986,9 @@ static int __ext4_get_inode_loc(struct inode *inode,
 	iloc->bh = NULL;
 	if (!ext4_valid_inum(sb, inode->i_ino))
 		return -EIO;
-    //inodeµÄ±àºÅºÅ³ıÒÔÃ¿¿é×éinode¸öÊı£¬¼ÆËã³ö¸ÃinodeÔÚµÚ¼¸¸ö¿é×é£¬Ã¿¸ö¿é×éÈİÄÉµÄ×î´óinode¸öÊıÊÇÒ»ÖÂµÄ
+    //inodeçš„ç¼–å·å·é™¤ä»¥æ¯å—ç»„inodeä¸ªæ•°ï¼Œè®¡ç®—å‡ºè¯¥inodeåœ¨ç¬¬å‡ ä¸ªå—ç»„ï¼Œæ¯ä¸ªå—ç»„å®¹çº³çš„æœ€å¤§inodeä¸ªæ•°æ˜¯ä¸€è‡´çš„
 	iloc->block_group = (inode->i_ino - 1) / EXT4_INODES_PER_GROUP(sb);
-    //¸ù¾İ¿é×éºÅµÃµ½¸ÃinodeËùÊôµÄ¿é×éÃèÊö·û
+    //æ ¹æ®å—ç»„å·å¾—åˆ°è¯¥inodeæ‰€å±çš„å—ç»„æè¿°ç¬¦
 	gdp = ext4_get_group_desc(sb, iloc->block_group, NULL);
 	if (!gdp)
 		return -EIO;
@@ -3996,17 +3996,17 @@ static int __ext4_get_inode_loc(struct inode *inode,
 	/*
 	 * Figure out the offset within the block group inode table
 	 */
-	//Ã¿¸öÎïÀí¿é¿ÉÒÔÈİÄÉµÄinode¸öÊı
+	//æ¯ä¸ªç‰©ç†å—å¯ä»¥å®¹çº³çš„inodeä¸ªæ•°
 	inodes_per_block = EXT4_SB(sb)->s_inodes_per_block;
-    //inode_offsetÊÇ¸Ãinode±àºÅÔÚ¿é×éÄÚµÄÆ«ÒÆ
+    //inode_offsetæ˜¯è¯¥inodeç¼–å·åœ¨å—ç»„å†…çš„åç§»
 	inode_offset = ((inode->i_ino - 1) %
 			EXT4_INODES_PER_GROUP(sb));
-    //ext4_inode_table(sb, gdp)ÊÇµÃµ½inodeËùÊô¿é×éinode tableËùÔÚµÄÆğÊ¼ÎïÀí¿éºÅ£¬(inode_offset / inodes_per_block)ÊÇ
-    //¸ù¾İinodeºÅÔÚ¿é×éÄÚµÄÆ«ÒÆ¼ÆËã¸ÃinodeÔÚinode tableµÄÆ«ÒÆ£¬¶şÕßÏà¼Ó¾ÍÊÇ¸ÃinodeÔÚ¸Ã¿é×éµÄinode tableµÄÎïÀí¿éºÅ
-    //ext4_inode_table(sb, gdp)ÊÇ¿é×éµÄinode tableËùÔÚµÄÆğÊ¼ÎïÀí¿éºÅ£¬ÕâÀï¼ÆËãµÄblock£¬ÊÇinode table£¬Àï±ß±£´æÁË¸Ãinode½á¹¹
+    //ext4_inode_table(sb, gdp)æ˜¯å¾—åˆ°inodeæ‰€å±å—ç»„inode tableæ‰€åœ¨çš„èµ·å§‹ç‰©ç†å—å·ï¼Œ(inode_offset / inodes_per_block)æ˜¯
+    //æ ¹æ®inodeå·åœ¨å—ç»„å†…çš„åç§»è®¡ç®—è¯¥inodeåœ¨inode tableçš„åç§»ï¼ŒäºŒè€…ç›¸åŠ å°±æ˜¯è¯¥inodeåœ¨è¯¥å—ç»„çš„inode tableçš„ç‰©ç†å—å·
+    //ext4_inode_table(sb, gdp)æ˜¯å—ç»„çš„inode tableæ‰€åœ¨çš„èµ·å§‹ç‰©ç†å—å·ï¼Œè¿™é‡Œè®¡ç®—çš„blockï¼Œæ˜¯inode tableï¼Œé‡Œè¾¹ä¿å­˜äº†è¯¥inodeç»“æ„
 	block = ext4_inode_table(sb, gdp) + (inode_offset / inodes_per_block);
 	iloc->offset = (inode_offset % inodes_per_block) * EXT4_INODE_SIZE(sb);
-    //ÕâÓ¦¸ÃÊÇµÃµ½inodeÔªÊı¾İËùÔÚµÄÎïÀí¿é¶ÔÓ¦µÄbh°É£¬×¢Òâ£¬Õâ²»ÊÇinode¶ÔÓ¦µÄÎÄ¼şµÄÊı¾İËùÔÚµÄÎïÀí¿éµÄbh
+    //è¿™åº”è¯¥æ˜¯å¾—åˆ°inodeå…ƒæ•°æ®æ‰€åœ¨çš„ç‰©ç†å—å¯¹åº”çš„bhå§ï¼Œæ³¨æ„ï¼Œè¿™ä¸æ˜¯inodeå¯¹åº”çš„æ–‡ä»¶çš„æ•°æ®æ‰€åœ¨çš„ç‰©ç†å—çš„bh
 	bh = sb_getblk(sb, block);
 	if (unlikely(!bh))
 		return -ENOMEM;
@@ -4113,11 +4113,11 @@ make_io:
 		}
 	}
 has_buffer:
-    //inodeÔªÊı¾İËùÔÚµÄÎïÀí¿éµÄbh¸³Óèiloc->bh
+    //inodeå…ƒæ•°æ®æ‰€åœ¨çš„ç‰©ç†å—çš„bhèµ‹äºˆiloc->bh
 	iloc->bh = bh;
 	return 0;
 }
-//¸ù¾İinode±àºÅµÃµ½ËüÔÚ ËùÊôµÄ¿é×éµÄinode tableµÄÎïÀí¿éºÅ£¬Õâ¸öÎïÀí¿é±£´æµÄÊÇ¸Ã¿é×éµÄinode table£¬Õâ¸öinode table±£´æÁËÕâ¸öinode½á¹¹
+//æ ¹æ®inodeç¼–å·å¾—åˆ°å®ƒåœ¨ æ‰€å±çš„å—ç»„çš„inode tableçš„ç‰©ç†å—å·ï¼Œè¿™ä¸ªç‰©ç†å—ä¿å­˜çš„æ˜¯è¯¥å—ç»„çš„inode tableï¼Œè¿™ä¸ªinode tableä¿å­˜äº†è¿™ä¸ªinodeç»“æ„
 int ext4_get_inode_loc(struct inode *inode, struct ext4_iloc *iloc)
 {
 	/* We have all inode data except xattrs in memory here. */
@@ -4487,13 +4487,13 @@ static int ext4_inode_blocks_set(handle_t *handle,
  *
  * The caller must have write access to iloc->bh.
  */
-//ÔÚÕâÀï¸üĞÂinodeÔªÊı¾İ£¬±ÈÈçÎÄ¼şĞŞ¸ÄÊ±¼ä,±ê¼ÇinodeÎïÀí¿éÔªÊı¾İ¶ÔÓ¦µÄbhÔà
-//°ÑjhÌí¼Óµ½handle->h_transactionµÄBJ_MetadataÁ´±í
+//åœ¨è¿™é‡Œæ›´æ–°inodeå…ƒæ•°æ®ï¼Œæ¯”å¦‚æ–‡ä»¶ä¿®æ”¹æ—¶é—´,æ ‡è®°inodeç‰©ç†å—å…ƒæ•°æ®å¯¹åº”çš„bhè„
+//æŠŠjhæ·»åŠ åˆ°handle->h_transactionçš„BJ_Metadataé“¾è¡¨
 static int ext4_do_update_inode(handle_t *handle,
 				struct inode *inode,
 				struct ext4_iloc *iloc)
 {
-    //Í¨¹ıÎÄ¼şinodeµÄbh£¬µÃµ½inode¶ÔÓ¦µÄÔªÊı¾İext4_inode
+    //é€šè¿‡æ–‡ä»¶inodeçš„bhï¼Œå¾—åˆ°inodeå¯¹åº”çš„å…ƒæ•°æ®ext4_inode
 	struct ext4_inode *raw_inode = ext4_raw_inode(iloc);
 	struct ext4_inode_info *ei = EXT4_I(inode);
 	struct buffer_head *bh = iloc->bh;
@@ -4534,7 +4534,7 @@ static int ext4_do_update_inode(handle_t *handle,
 		raw_inode->i_gid_high = 0;
 	}
 	raw_inode->i_links_count = cpu_to_le16(inode->i_nlink);
-    //ÕâÓ¦¸ÃÊÇĞŞ¸ÄinodeµÄĞŞ¸ÄÊ±¼ä°É£¬ÒòÎªĞ´ÎÄ¼şÊ±£¬¾Í»á´¥·¢ext4 jbdĞ´
+    //è¿™åº”è¯¥æ˜¯ä¿®æ”¹inodeçš„ä¿®æ”¹æ—¶é—´å§ï¼Œå› ä¸ºå†™æ–‡ä»¶æ—¶ï¼Œå°±ä¼šè§¦å‘ext4 jbdå†™
 	EXT4_INODE_SET_XTIME(i_ctime, inode, raw_inode);
 	EXT4_INODE_SET_XTIME(i_mtime, inode, raw_inode);
 	EXT4_INODE_SET_XTIME(i_atime, inode, raw_inode);
@@ -4601,7 +4601,7 @@ static int ext4_do_update_inode(handle_t *handle,
 	ext4_inode_csum_set(inode, raw_inode, ei);
 
 	BUFFER_TRACE(bh, "call ext4_handle_dirty_metadata");
-    //°ÑjhÌí¼Óµ½handle->h_transactionµÄBJ_MetadataÁ´±í,±ê¼ÇinodeÎïÀí¿éÔªÊı¾İ¶ÔÓ¦µÄbhÔà
+    //æŠŠjhæ·»åŠ åˆ°handle->h_transactionçš„BJ_Metadataé“¾è¡¨,æ ‡è®°inodeç‰©ç†å—å…ƒæ•°æ®å¯¹åº”çš„bhè„
 	rc = ext4_handle_dirty_metadata(handle, NULL, bh);
 	if (!err)
 		err = rc;
@@ -5023,10 +5023,10 @@ int ext4_mark_iloc_dirty(handle_t *handle,
 	get_bh(iloc->bh);
 
 	/* ext4_do_update_inode() does jbd2_journal_dirty_metadata */
-    //ĞŞ¸ÄinodeÔªÊı¾İ£¬±ÈÈçÎÄ¼şÊ±¼ä£¬Êµ¼ÊÊÇĞŞ¸ÄinodeÎïÀí¿éÔªÊı¾İµÄbhËùÔÚµÄÄÚ´æbh->b_data
-    //ÔÚÕâÀï¸üĞÂinodeÔªÊı¾İ£¬±ÈÈçÎÄ¼şĞŞ¸ÄÊ±¼ä,±ê¼ÇinodeÎïÀí¿éÔªÊı¾İ¶ÔÓ¦µÄbhÔà
-    //°ÑjhÌí¼Óµ½handle->h_transactionµÄBJ_MetadataÁ´±í
-	err = ext4_do_update_inode(handle, inode, iloc);//Àï±ßµ÷ÓÃÁËext4_handle_dirty_metadata()
+    //ä¿®æ”¹inodeå…ƒæ•°æ®ï¼Œæ¯”å¦‚æ–‡ä»¶æ—¶é—´ï¼Œå®é™…æ˜¯ä¿®æ”¹inodeç‰©ç†å—å…ƒæ•°æ®çš„bhæ‰€åœ¨çš„å†…å­˜bh->b_data
+    //åœ¨è¿™é‡Œæ›´æ–°inodeå…ƒæ•°æ®ï¼Œæ¯”å¦‚æ–‡ä»¶ä¿®æ”¹æ—¶é—´,æ ‡è®°inodeç‰©ç†å—å…ƒæ•°æ®å¯¹åº”çš„bhè„
+    //æŠŠjhæ·»åŠ åˆ°handle->h_transactionçš„BJ_Metadataé“¾è¡¨
+	err = ext4_do_update_inode(handle, inode, iloc);//é‡Œè¾¹è°ƒç”¨äº†ext4_handle_dirty_metadata()
 	put_bh(iloc->bh);
 	return err;
 }
@@ -5035,18 +5035,18 @@ int ext4_mark_iloc_dirty(handle_t *handle,
  * On success, We end up with an outstanding reference count against
  * iloc->bh.  This _must_ be cleaned up later.
  */
-//½¨Á¢bhÓëjhµÄÁªÏµ£¬¶şÕßÒ»Ò»¶ÔÓ¦£¬°ÑjhÌí¼Óµ½handle->h_transactionÖ¸ÏòµÄtransactionµÄBJ_ReservedÁ´±í
+//å»ºç«‹bhä¸jhçš„è”ç³»ï¼ŒäºŒè€…ä¸€ä¸€å¯¹åº”ï¼ŒæŠŠjhæ·»åŠ åˆ°handle->h_transactionæŒ‡å‘çš„transactionçš„BJ_Reservedé“¾è¡¨
 int
 ext4_reserve_inode_write(handle_t *handle, struct inode *inode,
 			 struct ext4_iloc *iloc)
 {
 	int err;
-    //¸ù¾İinode±àºÅµÃµ½ËüÔÚ ËùÊôµÄ¿é×éµÄinode tableµÄÎïÀí¿éºÅ£¬Õâ¸öÎïÀí¿é±£´æµÄÊÇ¸Ã¿é×éµÄinode table£¬Õâ¸öinode table±£´æÁËÕâ¸öinode½á¹¹
-    //×îºóµÃµ½inodeÔªÊı¾İËùÔÚÎïÀí¿éµÄbh,´æÓÚiloc->bh
+    //æ ¹æ®inodeç¼–å·å¾—åˆ°å®ƒåœ¨ æ‰€å±çš„å—ç»„çš„inode tableçš„ç‰©ç†å—å·ï¼Œè¿™ä¸ªç‰©ç†å—ä¿å­˜çš„æ˜¯è¯¥å—ç»„çš„inode tableï¼Œè¿™ä¸ªinode tableä¿å­˜äº†è¿™ä¸ªinodeç»“æ„
+    //æœ€åå¾—åˆ°inodeå…ƒæ•°æ®æ‰€åœ¨ç‰©ç†å—çš„bh,å­˜äºiloc->bh
 	err = ext4_get_inode_loc(inode, iloc);
 	if (!err) {
 		BUFFER_TRACE(iloc->bh, "get_write_access");
-        //½¨Á¢bhÓëjhµÄÁªÏµ£¬¶şÕßÒ»Ò»¶ÔÓ¦£¬°ÑjhÌí¼Óµ½handle->h_transactionÖ¸ÏòµÄtransactionµÄBJ_ReservedÁ´±í
+        //å»ºç«‹bhä¸jhçš„è”ç³»ï¼ŒäºŒè€…ä¸€ä¸€å¯¹åº”ï¼ŒæŠŠjhæ·»åŠ åˆ°handle->h_transactionæŒ‡å‘çš„transactionçš„BJ_Reservedé“¾è¡¨
 		err = ext4_journal_get_write_access(handle, iloc->bh);
 		if (err) {
 			brelse(iloc->bh);
@@ -5112,9 +5112,9 @@ int ext4_mark_inode_dirty(handle_t *handle, struct inode *inode)
 
 	might_sleep();
 	trace_ext4_mark_inode_dirty(inode, _RET_IP_);
-    //½¨Á¢bhÓëjhµÄÁªÏµ£¬¶şÕßÒ»Ò»¶ÔÓ¦£¬°ÑjhÌí¼Óµ½handle->h_transactionÖ¸ÏòµÄtransactionµÄBJ_ReservedÁ´±í
-    //¸ù¾İinode±àºÅµÃµ½ËüÔÚ ËùÊôµÄ¿é×éµÄinode tableµÄÎïÀí¿éºÅ£¬Õâ¸öÎïÀí¿é±£´æµÄÊÇ¸Ã¿é×éµÄinode table£¬Õâ¸öinode table±£´æÁËÕâ¸öinode½á¹¹
-    //×îºóµÃµ½inodeÔªÊı¾İËùÔÚÎïÀí¿éµÄbh,´æÓÚiloc->bh
+    //å»ºç«‹bhä¸jhçš„è”ç³»ï¼ŒäºŒè€…ä¸€ä¸€å¯¹åº”ï¼ŒæŠŠjhæ·»åŠ åˆ°handle->h_transactionæŒ‡å‘çš„transactionçš„BJ_Reservedé“¾è¡¨
+    //æ ¹æ®inodeç¼–å·å¾—åˆ°å®ƒåœ¨ æ‰€å±çš„å—ç»„çš„inode tableçš„ç‰©ç†å—å·ï¼Œè¿™ä¸ªç‰©ç†å—ä¿å­˜çš„æ˜¯è¯¥å—ç»„çš„inode tableï¼Œè¿™ä¸ªinode tableä¿å­˜äº†è¿™ä¸ªinodeç»“æ„
+    //æœ€åå¾—åˆ°inodeå…ƒæ•°æ®æ‰€åœ¨ç‰©ç†å—çš„bh,å­˜äºiloc->bh
 	err = ext4_reserve_inode_write(handle, inode, &iloc);
 	if (ext4_handle_valid(handle) &&
 	    EXT4_I(inode)->i_extra_isize < sbi->s_want_extra_isize &&
@@ -5146,8 +5146,8 @@ int ext4_mark_inode_dirty(handle_t *handle, struct inode *inode)
 			}
 		}
 	}
-    //ÔÚÕâÀï¸üĞÂinodeÔªÊı¾İ£¬±ÈÈçÎÄ¼şĞŞ¸ÄÊ±¼ä,±ê¼ÇinodeÎïÀí¿éÔªÊı¾İ¶ÔÓ¦µÄbhÔà
-    //°ÑjhÌí¼Óµ½handle->h_transactionµÄBJ_MetadataÁ´±í
+    //åœ¨è¿™é‡Œæ›´æ–°inodeå…ƒæ•°æ®ï¼Œæ¯”å¦‚æ–‡ä»¶ä¿®æ”¹æ—¶é—´,æ ‡è®°inodeç‰©ç†å—å…ƒæ•°æ®å¯¹åº”çš„bhè„
+    //æŠŠjhæ·»åŠ åˆ°handle->h_transactionçš„BJ_Metadataé“¾è¡¨
 	if (!err)
 		err = ext4_mark_iloc_dirty(handle, inode, &iloc);
 	return err;
@@ -5167,11 +5167,11 @@ int ext4_mark_inode_dirty(handle_t *handle, struct inode *inode)
  * so would cause a commit on atime updates, which we don't bother doing.
  * We handle synchronous inodes at the highest possible level.
  */
-//inodeÔªÊı¾İ±»ĞŞ¸Ä£¬µ÷ÓÃ¸Ãº¯Êı·¢ÆğjbdĞ´£¬½«À´»á°Ñ¸ÃÔªÊı¾İÏÈ±£´æµ½jbd·ÖÇø£¬·ÀÖ¹µôµç¶ªÊ§ext4ÔªÊı¾İ
+//inodeå…ƒæ•°æ®è¢«ä¿®æ”¹ï¼Œè°ƒç”¨è¯¥å‡½æ•°å‘èµ·jbdå†™ï¼Œå°†æ¥ä¼šæŠŠè¯¥å…ƒæ•°æ®å…ˆä¿å­˜åˆ°jbdåˆ†åŒºï¼Œé˜²æ­¢æ‰ç”µä¸¢å¤±ext4å…ƒæ•°æ®
 void ext4_dirty_inode(struct inode *inode, int flags)
 {
 	handle_t *handle;
-    //·¢ÆğÒ»´Îext4 jbd
+    //å‘èµ·ä¸€æ¬¡ext4 jbd
 	handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
 	if (IS_ERR(handle))
 		goto out;

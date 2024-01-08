@@ -124,8 +124,8 @@ int ext4_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
 
 	trace_ext4_sync_file_enter(file, datasync);
 
-    //½«±¾´ÎwriteÒª´«ÊäµÄËùÓĞÎÄ¼şÔàÒ³page´«Êäµ½´ÅÅÌ,¶ÔÃ¿¸öpageÇåÀíÔàÒ³±ê¼Ç²¢ÔàÒ³Êı¼õ1£¬¶ÔpageÉÏwriteback±ê¼Ç£¬×îºóÖ´ĞĞsubmit_bioÂäÅÌ¡£
-    //½Ó×Å,ÒÀ´ÎµÈ´ı±¾´Î´«ÊäµÄËùÓĞpageÔàÒ³ÂäÅÌ³É¹¦:ÏÈÔÚpage writebackµÈ´ı¶ÓÁĞÉÏĞİÃß£¬µÈÊı¾İ´«ÊäÍê³É»½ĞÑ
+    //å°†æœ¬æ¬¡writeè¦ä¼ è¾“çš„æ‰€æœ‰æ–‡ä»¶è„é¡µpageä¼ è¾“åˆ°ç£ç›˜,å¯¹æ¯ä¸ªpageæ¸…ç†è„é¡µæ ‡è®°å¹¶è„é¡µæ•°å‡1ï¼Œå¯¹pageä¸Šwritebackæ ‡è®°ï¼Œæœ€åæ‰§è¡Œsubmit_bioè½ç›˜ã€‚
+    //æ¥ç€,ä¾æ¬¡ç­‰å¾…æœ¬æ¬¡ä¼ è¾“çš„æ‰€æœ‰pageè„é¡µè½ç›˜æˆåŠŸ:å…ˆåœ¨page writebackç­‰å¾…é˜Ÿåˆ—ä¸Šä¼‘çœ ï¼Œç­‰æ•°æ®ä¼ è¾“å®Œæˆå”¤é†’
 	ret = filemap_write_and_wait_range(inode->i_mapping, start, end);
 	if (ret)
 		return ret;

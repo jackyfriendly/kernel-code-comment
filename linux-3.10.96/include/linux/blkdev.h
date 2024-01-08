@@ -127,9 +127,9 @@ struct request {
 	struct request_queue *q;//块设备运行队列
 	struct blk_mq_ctx *mq_ctx;//req的软件队列，blk_mq_rq_ctx_init中赋值,req在分配后就会初始化指向当前CPU的软件队列
     struct blk_mq_hw_ctx *mq_hctx;//rq的硬件队列
-        
+
 	u64 cmd_flags;//__blk_mq_alloc_request和blk_mq_get_driver_tag 中置REQ_MQ_INFLIGHT
-	
+
 	enum rq_cmd_type_bits cmd_type;
     //0，req传输完成   1:req开始传输状态
 	unsigned long atomic_flags;

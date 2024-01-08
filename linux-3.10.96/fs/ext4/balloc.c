@@ -50,22 +50,22 @@ ext4_group_t ext4_get_group_number(struct super_block *sb,
  * Calculate the block group number and offset into the block/cluster
  * allocation bitmap, given a block number
  */
-//¸ù¾İ´«ÈëµÄÎïÀí¿éºÅblocknrµÃµ½ËüËùÔÚµÄ¿ì×éºÅ²¢¸³Óèblockgrpp£¬µÃµ½ËüËùÔÚ¿é×éblockgrppµÄÆ«ÒÆ¸³ÓÚoffsetp
-void ext4_get_group_no_and_offset(struct super_block *sb, ext4_fsblk_t blocknr,//blocknrÊÇ·ÖÅäÎïÀí¿éÊ±µÄ»ù×¼ÎïÀí¿éºÅ
+//æ ¹æ®ä¼ å…¥çš„ç‰©ç†å—å·blocknrå¾—åˆ°å®ƒæ‰€åœ¨çš„å¿«ç»„å·å¹¶èµ‹äºˆblockgrppï¼Œå¾—åˆ°å®ƒæ‰€åœ¨å—ç»„blockgrppçš„åç§»èµ‹äºoffsetp
+void ext4_get_group_no_and_offset(struct super_block *sb, ext4_fsblk_t blocknr,//blocknræ˜¯åˆ†é…ç‰©ç†å—æ—¶çš„åŸºå‡†ç‰©ç†å—å·
 		ext4_group_t *blockgrpp, ext4_grpblk_t *offsetp)
 {
 	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
 	ext4_grpblk_t offset;
-    //blocknr×î³õÀ´×Ôar->goal£¬ÊÇ·ÖÅäÎïÀí¿éÊ±µÄ»ù×¼ÎïÀí¿éºÅ£¬¼õÈ¥s_first_data_blockµÃµ½µÄÊÇÏà¶Ôext4ÎÄ¼şÏµÍ³µÚÒ»¸öÎïÀí¿éºÅ
-    //µÄÏà¶ÔÎïÀí¿éºÅ¡£µ«s_first_data_blockÊÇ0
+    //blocknræœ€åˆæ¥è‡ªar->goalï¼Œæ˜¯åˆ†é…ç‰©ç†å—æ—¶çš„åŸºå‡†ç‰©ç†å—å·ï¼Œå‡å»s_first_data_blockå¾—åˆ°çš„æ˜¯ç›¸å¯¹ext4æ–‡ä»¶ç³»ç»Ÿç¬¬ä¸€ä¸ªç‰©ç†å—å·
+    //çš„ç›¸å¯¹ç‰©ç†å—å·ã€‚ä½†s_first_data_blockæ˜¯0
 	blocknr = blocknr - le32_to_cpu(es->s_first_data_block);
-    //blocknr³ıÒÔÃ¿¸ö¿é×éµÄÎïÀí¿é¸öÊı£¬³ıÊı¸³ÓÚblocknrÔòblocknrÊÇ¸ÃÎÄ¼şinodeËùÊô¿é×éºÅ£¬ÓàÊı¸³ÓÚoffsetÔòoffsetÊÇÔÚ¿é×éÄÚµÄÆ«ÒÆ
+    //blocknré™¤ä»¥æ¯ä¸ªå—ç»„çš„ç‰©ç†å—ä¸ªæ•°ï¼Œé™¤æ•°èµ‹äºblocknråˆ™blocknræ˜¯è¯¥æ–‡ä»¶inodeæ‰€å±å—ç»„å·ï¼Œä½™æ•°èµ‹äºoffsetåˆ™offsetæ˜¯åœ¨å—ç»„å†…çš„åç§»
 	offset = do_div(blocknr, EXT4_BLOCKS_PER_GROUP(sb)) >>
-		EXT4_SB(sb)->s_cluster_bits;//s_cluster_bitsÊÇ0
+		EXT4_SB(sb)->s_cluster_bits;//s_cluster_bitsæ˜¯0
 	if (offsetp)
-		*offsetp = offset;//ÔÚ¿é×éÄÚµÄÆ«ÒÆ
+		*offsetp = offset;//åœ¨å—ç»„å†…çš„åç§»
 	if (blockgrpp)
-		*blockgrpp = blocknr;//ËùÔÚµÄ¿é×éºÅ
+		*blockgrpp = blocknr;//æ‰€åœ¨çš„å—ç»„å·
 
 }
 
@@ -268,7 +268,7 @@ unsigned ext4_free_clusters_after_init(struct super_block *sb,
  * @bh:			pointer to the buffer head to store the block
  *			group descriptor
  */
-//ÓÉ¿é×é±àºÅblock_groupµÃµ½¿é×éÃèÊö·û½á¹¹ext4_group_desc£¬²¢ÇÒÁîgroup_desc_bhÖ¸Ïò±£´æ¿é×éÃèÊö·ûÊı¾İµÄÎïÀí¿éÓ³ÉäµÄbh
+//ç”±å—ç»„ç¼–å·block_groupå¾—åˆ°å—ç»„æè¿°ç¬¦ç»“æ„ext4_group_descï¼Œå¹¶ä¸”ä»¤group_desc_bhæŒ‡å‘ä¿å­˜å—ç»„æè¿°ç¬¦æ•°æ®çš„ç‰©ç†å—æ˜ å°„çš„bh
 struct ext4_group_desc * ext4_get_group_desc(struct super_block *sb,
 					     ext4_group_t block_group,
 					     struct buffer_head **bh)
@@ -285,15 +285,15 @@ struct ext4_group_desc * ext4_get_group_desc(struct super_block *sb,
 
 		return NULL;
 	}
-    /*ext4ÎÄ¼şÏµÍ³µÄ×é³ÉÊÇ ³¬¼¶¿é(1¸öblock)+¿é×éÃèÊö·û(N¸öblock)+Data Block Bitmap(1¸öblock)
-    + inode Bitmap(1¸öblock)+inode table(N¸öblock)+ data block(N¸öblock)¡£ext4Ò»¸öÎïÀíblock
-    ´óĞ¡4k£¬Ò»¸ö¿é×éÃèÊö·ûext4_group_desc½á¹¹64B£¬Ò»¸öblock¿ÉÒÔÈİÄÉ64¸ö¿é×éÃèÊö·û¡£
-    group_desc = block_group >> EXT4_DESC_PER_BLOCK_BITS(sb)¾ÍÊÇgroup_desc=block_group/64£¬
-    ¼ÆËãµ±Ç°µÄ¿é×éºÅblock_groupÂäÔÚµÚ¼¸¸öÎïÀí¿é(¼´µÚgroup_desc¸öÎïÀí¿é)£¬
-    offset = block_group & (EXT4_DESC_PER_BLOCK(sb) - 1)ÊÇ¼ÆËãµ±Ç°µÄ¿é×éºÅblock_group
-    ¶ÔÓ¦µÄ¿é×éÃèÊö·ûÔÚµÚgroup_desc¸öÎïÀí¿éµÄÆ«ÒÆ£¬×¼È·ËµÊÇgroup_descÎïÀí¿éÀïµÄµÚoffset¸ö
-    ¿é×éÃèÊö·û¡£Ëµ×Å±È½Ï³éÏó£¬¾Ù¸öÀı×Ó£¬Ò»¸ö2¸öÎïÀí¿é£¬2*64¸ö¿é×é£¬ÄÇ¿é×éºÅ65µÄ¿é×éÃèÊö·ûÔÚÄÄÀï?
-    group_desc=65/64=1ËµÃ÷ÔÚµÚ2¸öÎïÀí¿é£¬offset=65%64=1ËµÃ÷ÔÚµÚ2¸öÎïÀí¿éµÄµÚÒ»¸ö¿é×éÃèÊö·ûÄÄÀï*/
+    /*ext4æ–‡ä»¶ç³»ç»Ÿçš„ç»„æˆæ˜¯ è¶…çº§å—(1ä¸ªblock)+å—ç»„æè¿°ç¬¦(Nä¸ªblock)+Data Block Bitmap(1ä¸ªblock)
+    + inode Bitmap(1ä¸ªblock)+inode table(Nä¸ªblock)+ data block(Nä¸ªblock)ã€‚ext4ä¸€ä¸ªç‰©ç†block
+    å¤§å°4kï¼Œä¸€ä¸ªå—ç»„æè¿°ç¬¦ext4_group_descç»“æ„64Bï¼Œä¸€ä¸ªblockå¯ä»¥å®¹çº³64ä¸ªå—ç»„æè¿°ç¬¦ã€‚
+    group_desc = block_group >> EXT4_DESC_PER_BLOCK_BITS(sb)å°±æ˜¯group_desc=block_group/64ï¼Œ
+    è®¡ç®—å½“å‰çš„å—ç»„å·block_groupè½åœ¨ç¬¬å‡ ä¸ªç‰©ç†å—(å³ç¬¬group_descä¸ªç‰©ç†å—)ï¼Œ
+    offset = block_group & (EXT4_DESC_PER_BLOCK(sb) - 1)æ˜¯è®¡ç®—å½“å‰çš„å—ç»„å·block_group
+    å¯¹åº”çš„å—ç»„æè¿°ç¬¦åœ¨ç¬¬group_descä¸ªç‰©ç†å—çš„åç§»ï¼Œå‡†ç¡®è¯´æ˜¯group_descç‰©ç†å—é‡Œçš„ç¬¬offsetä¸ª
+    å—ç»„æè¿°ç¬¦ã€‚è¯´ç€æ¯”è¾ƒæŠ½è±¡ï¼Œä¸¾ä¸ªä¾‹å­ï¼Œä¸€ä¸ª2ä¸ªç‰©ç†å—ï¼Œ2*64ä¸ªå—ç»„ï¼Œé‚£å—ç»„å·65çš„å—ç»„æè¿°ç¬¦åœ¨å“ªé‡Œ?
+    group_desc=65/64=1è¯´æ˜åœ¨ç¬¬2ä¸ªç‰©ç†å—ï¼Œoffset=65%64=1è¯´æ˜åœ¨ç¬¬2ä¸ªç‰©ç†å—çš„ç¬¬ä¸€ä¸ªå—ç»„æè¿°ç¬¦å“ªé‡Œ*/
 	group_desc = block_group >> EXT4_DESC_PER_BLOCK_BITS(sb);
 	offset = block_group & (EXT4_DESC_PER_BLOCK(sb) - 1);
 	if (!sbi->s_group_desc[group_desc]) {
@@ -302,12 +302,12 @@ struct ext4_group_desc * ext4_get_group_desc(struct super_block *sb,
 			   block_group, group_desc, offset);
 		return NULL;
 	}
-    //sbi->s_group_desc[group_desc]->b_data±£´æµÄÊı¾İÊÇÄ¿±ê¿é×éblock_groupÕâ¸ö¿é×éËùÔÚÎïÀí¿éµÄ4KÊı¾İ£¬¶¼ÊÇ¿é×éÃèÊö·û½á¹¹¡£
-    //offset*EXT4_DESC_SIZE(sb)ÊÇÄ¿±ê¿é×éblock_groupµÄ64×Ö½Ú¿é×éÃèÊö·ûÊı¾İÔÚÕâ¸öÎïÀí¿é4KÊı¾İÖĞµÄµÄÆ«ÒÆ¡£×îÖÕµÃµ½block_groupÕâ¸ö¿é×éµÄ¿é×éÃèÊö·û½á¹¹
+    //sbi->s_group_desc[group_desc]->b_dataä¿å­˜çš„æ•°æ®æ˜¯ç›®æ ‡å—ç»„block_groupè¿™ä¸ªå—ç»„æ‰€åœ¨ç‰©ç†å—çš„4Kæ•°æ®ï¼Œéƒ½æ˜¯å—ç»„æè¿°ç¬¦ç»“æ„ã€‚
+    //offset*EXT4_DESC_SIZE(sb)æ˜¯ç›®æ ‡å—ç»„block_groupçš„64å­—èŠ‚å—ç»„æè¿°ç¬¦æ•°æ®åœ¨è¿™ä¸ªç‰©ç†å—4Kæ•°æ®ä¸­çš„çš„åç§»ã€‚æœ€ç»ˆå¾—åˆ°block_groupè¿™ä¸ªå—ç»„çš„å—ç»„æè¿°ç¬¦ç»“æ„
 	desc = (struct ext4_group_desc *)(
 		(__u8 *)sbi->s_group_desc[group_desc]->b_data +
 		offset * EXT4_DESC_SIZE(sb));
-	if (bh)//bhÖ¸Ïò±£´æ¿é×éÃèÊö·ûÊı¾İµÄbuffer_head
+	if (bh)//bhæŒ‡å‘ä¿å­˜å—ç»„æè¿°ç¬¦æ•°æ®çš„buffer_head
 		*bh = sbi->s_group_desc[group_desc];
 	return desc;
 }
@@ -808,17 +808,17 @@ static unsigned ext4_num_base_meta_clusters(struct super_block *sb,
  *	Return the ideal location to start allocating blocks for a
  *	newly created inode.
  */
-//ÒªÎªÎÄ¼şinode·ÖÅä±£´æÊı¾İµÄÎïÀí¿éÁË£¬¸Ãº¯ÊıÊÇ´ÓinodeËùÊô¿é×éÏÈÕÒÒ»¸öÀíÏëµÄ¿ÕÏĞÎïÀí¿é£¬ºóĞø´ÓÕâ¸öÎïÀí¿é¿ªÊ¼ËÑË÷£¬×îÖÕ²éÕÒ±¾´ÎÒª·ÖÅäµÄÎïÀí¿é
+//è¦ä¸ºæ–‡ä»¶inodeåˆ†é…ä¿å­˜æ•°æ®çš„ç‰©ç†å—äº†ï¼Œè¯¥å‡½æ•°æ˜¯ä»inodeæ‰€å±å—ç»„å…ˆæ‰¾ä¸€ä¸ªç†æƒ³çš„ç©ºé—²ç‰©ç†å—ï¼Œåç»­ä»è¿™ä¸ªç‰©ç†å—å¼€å§‹æœç´¢ï¼Œæœ€ç»ˆæŸ¥æ‰¾æœ¬æ¬¡è¦åˆ†é…çš„ç‰©ç†å—
 ext4_fsblk_t ext4_inode_to_goal_block(struct inode *inode)
 {
 	struct ext4_inode_info *ei = EXT4_I(inode);
 	ext4_group_t block_group;
 	ext4_grpblk_t colour;
-    //Êµ¼Ê²âÊÔflex ÊÇ16
+    //å®é™…æµ‹è¯•flex æ˜¯16
 	int flex_size = ext4_flex_bg_size(EXT4_SB(inode->i_sb));
 	ext4_fsblk_t bg_start;
 	ext4_fsblk_t last_block;
-    //È¡³öinodeËùÊô¿é×éºÅ block_group
+    //å–å‡ºinodeæ‰€å±å—ç»„å· block_group
 	block_group = ei->i_block_group;
 	if (flex_size >= EXT4_FLEX_SIZE_DIR_ALLOC_SCHEME) {
 		/*
@@ -829,12 +829,12 @@ ext4_fsblk_t ext4_inode_to_goal_block(struct inode *inode)
 		 * tends to speed up directory access and improves
 		 * fsck times.
 		 */
-		//ÕâÊÇÁîblock_group³ıÒÔ16£¬µÃµ½flex groupµÄ±àºÅ£¬Ò»¸öflex groupÓĞ16¸ö¿é×é
+		//è¿™æ˜¯ä»¤block_groupé™¤ä»¥16ï¼Œå¾—åˆ°flex groupçš„ç¼–å·ï¼Œä¸€ä¸ªflex groupæœ‰16ä¸ªå—ç»„
 		block_group &= ~(flex_size-1);
 		if (S_ISREG(inode->i_mode))
 			block_group++;
 	}
-    //bg_start:µÃµ½block_groupÕâ¸ö¿é×éµÚÒ»¸öÎïÀí¿éºÅ£¬¾ÍÊÇ¸Ã¿é×éµÄÆğÊ¼ÎïÀí¿éºÅ
+    //bg_start:å¾—åˆ°block_groupè¿™ä¸ªå—ç»„ç¬¬ä¸€ä¸ªç‰©ç†å—å·ï¼Œå°±æ˜¯è¯¥å—ç»„çš„èµ·å§‹ç‰©ç†å—å·
 	bg_start = ext4_group_first_block_no(inode->i_sb, block_group);
 	last_block = ext4_blocks_count(EXT4_SB(inode->i_sb)->s_es) - 1;
 
@@ -844,14 +844,14 @@ ext4_fsblk_t ext4_inode_to_goal_block(struct inode *inode)
 	 */
 	if (test_opt(inode->i_sb, DELALLOC))
 		return bg_start;
-    //¸ù¾İ½ø³ÌID¼ÆËãÒ»¸öÆ«ÒÆÖµ
+    //æ ¹æ®è¿›ç¨‹IDè®¡ç®—ä¸€ä¸ªåç§»å€¼
 	if (bg_start + EXT4_BLOCKS_PER_GROUP(inode->i_sb) <= last_block)
 		colour = (current->pid % 16) *
 			(EXT4_BLOCKS_PER_GROUP(inode->i_sb) / 16);
 	else
 		colour = (current->pid % 16) * ((last_block - bg_start) / 16);
     
-    //bg_start+Æ«ÒÆÖµcolourµÃµ½ÀíÏëµÄÒª·ÖÅäµÄÎïÀí¿éºÅ
+    //bg_start+åç§»å€¼colourå¾—åˆ°ç†æƒ³çš„è¦åˆ†é…çš„ç‰©ç†å—å·
 	return bg_start + colour;
 }
 

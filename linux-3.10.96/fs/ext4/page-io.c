@@ -364,7 +364,7 @@ submit_and_retry:
 	return 0;
 }
 
-//Ò»°ãµ÷ÓÃ¸Ãº¯Êıºó¾Í»áµ÷ÓÃsubmit_bio·¢ËÍIOÇëÇó
+//ä¸€èˆ¬è°ƒç”¨è¯¥å‡½æ•°åå°±ä¼šè°ƒç”¨submit_bioå‘é€IOè¯·æ±‚
 int ext4_bio_write_page(struct ext4_io_submit *io,
 			struct page *page,
 			int len,
@@ -381,7 +381,7 @@ int ext4_bio_write_page(struct ext4_io_submit *io,
 	BUG_ON(!PageLocked(page));
 	BUG_ON(PageWriteback(page));
 
-	set_page_writeback(page);//±ê¼Çpage"writeback"±ê¼Ç
+	set_page_writeback(page);//æ ‡è®°page"writeback"æ ‡è®°
 	ClearPageError(page);
 
 	/*
@@ -416,7 +416,7 @@ int ext4_bio_write_page(struct ext4_io_submit *io,
 			if (!buffer_mapped(bh))
 				clear_buffer_dirty(bh);
 			if (io->io_bio)
-				ext4_io_submit(io);//ÕâÀï»áµ÷ÓÃ submit_bio()
+				ext4_io_submit(io);//è¿™é‡Œä¼šè°ƒç”¨ submit_bio()
 			continue;
 		}
 		if (buffer_new(bh)) {

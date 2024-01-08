@@ -193,16 +193,16 @@ ext4_fsblk_t ext4_block_bitmap(struct super_block *sb,
 		(EXT4_DESC_SIZE(sb) >= EXT4_MIN_DESC_SIZE_64BIT ?
 		 (ext4_fsblk_t)le32_to_cpu(bg->bg_block_bitmap_hi) << 32 : 0);
 }
-//¸Ãº¯ÊýÖ»ÊÇ·µ»ØbgÕâ¸ö¿é×éµÄinode bitmapµÄÎïÀí¿éºÅ
+//è¯¥å‡½æ•°åªæ˜¯è¿”å›žbgè¿™ä¸ªå—ç»„çš„inode bitmapçš„ç‰©ç†å—å·
 ext4_fsblk_t ext4_inode_bitmap(struct super_block *sb,
 			       struct ext4_group_desc *bg)
 {
-    //ÓÉbg->bg_inode_bitmap_loºÍbg->bg_inode_bitmap_hi×é³É¸ßµÍÎ»
+    //ç”±bg->bg_inode_bitmap_loå’Œbg->bg_inode_bitmap_hiç»„æˆé«˜ä½Žä½
 	return le32_to_cpu(bg->bg_inode_bitmap_lo) |
 		(EXT4_DESC_SIZE(sb) >= EXT4_MIN_DESC_SIZE_64BIT ?
 		 (ext4_fsblk_t)le32_to_cpu(bg->bg_inode_bitmap_hi) << 32 : 0);
 }
-//ÓÉbg_inode_table_loºÍbg_inode_table_hi×éºÏµÃµ½ bgÕâ¸ö¿é×éµÄinode tableµÄÆðÊ¼ÎïÀí¿éºÅ
+//ç”±bg_inode_table_loå’Œbg_inode_table_hiç»„åˆå¾—åˆ° bgè¿™ä¸ªå—ç»„çš„inode tableçš„èµ·å§‹ç‰©ç†å—å·
 ext4_fsblk_t ext4_inode_table(struct super_block *sb,
 			      struct ext4_group_desc *bg)
 {
@@ -210,7 +210,7 @@ ext4_fsblk_t ext4_inode_table(struct super_block *sb,
 		(EXT4_DESC_SIZE(sb) >= EXT4_MIN_DESC_SIZE_64BIT ?
 		 (ext4_fsblk_t)le32_to_cpu(bg->bg_inode_table_hi) << 32 : 0);
 }
-//¾ÍÊÇ¿é×ébgµÄ¿ÕÏÐÎïÀí¿é¸öÊý
+//å°±æ˜¯å—ç»„bgçš„ç©ºé—²ç‰©ç†å—ä¸ªæ•°
 __u32 ext4_free_group_clusters(struct super_block *sb,
 			       struct ext4_group_desc *bg)
 {
@@ -218,10 +218,10 @@ __u32 ext4_free_group_clusters(struct super_block *sb,
 		(EXT4_DESC_SIZE(sb) >= EXT4_MIN_DESC_SIZE_64BIT ?
 		 (__u32)le16_to_cpu(bg->bg_free_blocks_count_hi) << 16 : 0);
 }
-//µÃµ½¿é×éµÄ¿ÕÏÐinode¸öÊý
+//å¾—åˆ°å—ç»„çš„ç©ºé—²inodeä¸ªæ•°
 __u32 ext4_free_inodes_count(struct super_block *sb,
 			      struct ext4_group_desc *bg)
-{   //ÓÉbg->bg_free_inodes_count_lo ºÍ bg->bg_free_inodes_count_hi ×é³É
+{   //ç”±bg->bg_free_inodes_count_lo å’Œ bg->bg_free_inodes_count_hi ç»„æˆ
 	return le16_to_cpu(bg->bg_free_inodes_count_lo) |
 		(EXT4_DESC_SIZE(sb) >= EXT4_MIN_DESC_SIZE_64BIT ?
 		 (__u32)le16_to_cpu(bg->bg_free_inodes_count_hi) << 16 : 0);
@@ -278,12 +278,12 @@ void ext4_free_group_clusters_set(struct super_block *sb,
 void ext4_free_inodes_set(struct super_block *sb,
 			  struct ext4_group_desc *bg, __u32 count)
 {
-    //ÉèÖÃ¿é×é×îÐÂµÄ¿ÕÏÐinode¸öÊý¡£ÉèÖÃµ½ bg->bg_free_inodes_count_lo ºÍ bg->bg_free_inodes_count_hi
+    //è®¾ç½®å—ç»„æœ€æ–°çš„ç©ºé—²inodeä¸ªæ•°ã€‚è®¾ç½®åˆ° bg->bg_free_inodes_count_lo å’Œ bg->bg_free_inodes_count_hi
 	bg->bg_free_inodes_count_lo = cpu_to_le16((__u16)count);
 	if (EXT4_DESC_SIZE(sb) >= EXT4_MIN_DESC_SIZE_64BIT)
 		bg->bg_free_inodes_count_hi = cpu_to_le16(count >> 16);
 }
-//ÉèÖÃ¿é×éÒÑ·ÖÅäµÄÄ¿Â¼inode¸öÊý
+//è®¾ç½®å—ç»„å·²åˆ†é…çš„ç›®å½•inodeä¸ªæ•°
 void ext4_used_dirs_set(struct super_block *sb,
 			  struct ext4_group_desc *bg, __u32 count)
 {
@@ -845,7 +845,7 @@ static struct kmem_cache *ext4_inode_cachep;
 /*
  * Called inside transaction, so use GFP_NOFS
  */
-//·ÖÅäext4_inode_info½á¹¹²¢·µ»ØËüµÄ³ÉÔ±struct inode vfs_inodeµÄµØÖ·
+//åˆ†é…ext4_inode_infoç»“æž„å¹¶è¿”å›žå®ƒçš„æˆå‘˜struct inode vfs_inodeçš„åœ°å€
 static struct inode *ext4_alloc_inode(struct super_block *sb)
 {
 	struct ext4_inode_info *ei;
@@ -3288,7 +3288,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
 	unsigned int journal_ioprio = DEFAULT_JOURNAL_IOPRIO;
 	ext4_group_t first_not_zeroed;
 
-    //·ÖÅästruct ext4_sb_info *sbi½á¹¹
+    //åˆ†é…struct ext4_sb_info *sbiç»“æž„
 	sbi = kzalloc(sizeof(*sbi), GFP_KERNEL);
 	if (!sbi)
 		goto out_free_orig;
@@ -3299,7 +3299,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
 		kfree(sbi);
 		goto out_free_orig;
 	}
-    //sbºÍsbi½¨Á¢ÁªÏµ
+    //sbå’Œsbiå»ºç«‹è”ç³»
 	sb->s_fs_info = sbi;
 	sbi->s_sb = sb;
 	sbi->s_inode_readahead_blks = EXT4_DEF_INODE_READAHEAD_BLKS;
@@ -3314,7 +3314,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
 
 	/* -EINVAL is default */
 	ret = -EINVAL;
-    //ext4ÎÄ¼þÏµÍ³¿é´óÐ¡
+    //ext4æ–‡ä»¶ç³»ç»Ÿå—å¤§å°
 	blocksize = sb_min_blocksize(sb, EXT4_MIN_BLOCK_SIZE);
 	if (!blocksize) {
 		ext4_msg(sb, KERN_ERR, "unable to set blocksize");
@@ -3325,14 +3325,14 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
 	 * The ext4 superblock will not be buffer aligned for other than 1kB
 	 * block sizes.  We need to calculate the offset from buffer start.
 	 */
-	//ÉèÖÃext4ÎÄ¼þÏµÍ³µÚÒ»¸öÂß¼­¿é±àºÅ
+	//è®¾ç½®ext4æ–‡ä»¶ç³»ç»Ÿç¬¬ä¸€ä¸ªé€»è¾‘å—ç¼–å·
 	if (blocksize != EXT4_MIN_BLOCK_SIZE) {
 		logical_sb_block = sb_block * EXT4_MIN_BLOCK_SIZE;
 		offset = do_div(logical_sb_block, blocksize);
 	} else {
 		logical_sb_block = sb_block;
 	}
-    //¶ÁÈ¡ext4µÚÒ»¸öÂß¼­¿éÊý¾Ý£¬Êý¾ÝÔÚbh->b_data¡£
+    //è¯»å–ext4ç¬¬ä¸€ä¸ªé€»è¾‘å—æ•°æ®ï¼Œæ•°æ®åœ¨bh->b_dataã€‚
 	if (!(bh = sb_bread(sb, logical_sb_block))) {
 		ext4_msg(sb, KERN_ERR, "unable to read superblock");
 		goto out_fail;
@@ -3341,15 +3341,15 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
 	 * Note: s_es must be initialized as soon as possible because
 	 *       some ext4 macro-instructions depend on its value
 	 */
-	//esÖ¸Ïòbh->b_data ÖÐext4_super_block½á¹¹Ìå²¿·Ö
+	//esæŒ‡å‘bh->b_data ä¸­ext4_super_blockç»“æž„ä½“éƒ¨åˆ†
 	es = (struct ext4_super_block *) (bh->b_data + offset);
-	sbi->s_es = es;//sbi->s_es = esÖ¸Ïòes
+	sbi->s_es = es;//sbi->s_es = esæŒ‡å‘es
 	sb->s_magic = le16_to_cpu(es->s_magic);
 	if (sb->s_magic != EXT4_SUPER_MAGIC)
 		goto cantfind_ext4;
 	sbi->s_kbytes_written = le64_to_cpu(es->s_kbytes_written);
 
-    //³¬¼¶¿ìÐÅÏ¢µÄ¸÷ÖÖÅÐ¶Ï£¬sb->s_fs_infoÖ¸Ïòsbi
+    //è¶…çº§å¿«ä¿¡æ¯çš„å„ç§åˆ¤æ–­ï¼Œsb->s_fs_infoæŒ‡å‘sbi
 	/* Warn if metadata_csum and gdt_csum are both set. */
 	if (EXT4_HAS_RO_COMPAT_FEATURE(sb,
 				       EXT4_FEATURE_RO_COMPAT_METADATA_CSUM) &&
@@ -3391,7 +3391,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
 		sbi->s_csum_seed = ext4_chksum(sbi, ~0, es->s_uuid,
 					       sizeof(es->s_uuid));
 
-    //¸÷ÖÖsb³¬¼¶¿ìµÄÉèÖÃ
+    //å„ç§sbè¶…çº§å¿«çš„è®¾ç½®
 	/* Set defaults before we parse the mount options */
 	def_mount_opts = le32_to_cpu(es->s_default_mount_opts);
 	set_opt(sb, INIT_INODE_TABLE);
@@ -3587,7 +3587,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
 		}
 	} else
 		sbi->s_desc_size = EXT4_MIN_DESC_SIZE;
-    //ext4¿é×éÃèÊö·û
+    //ext4å—ç»„æè¿°ç¬¦
 	sbi->s_blocks_per_group = le32_to_cpu(es->s_blocks_per_group);
 	sbi->s_inodes_per_group = le32_to_cpu(es->s_inodes_per_group);
 	if (EXT4_INODE_SIZE(sb) == 0 || EXT4_INODES_PER_GROUP(sb) == 0)
@@ -3738,7 +3738,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
 			(EXT4_MAX_BLOCK_FILE_PHYS / EXT4_BLOCKS_PER_GROUP(sb)));
 	db_count = (sbi->s_groups_count + EXT4_DESC_PER_BLOCK(sb) - 1) /
 		   EXT4_DESC_PER_BLOCK(sb);
-    //¿é×éÃèÊö·ûÊý×é
+    //å—ç»„æè¿°ç¬¦æ•°ç»„
 	sbi->s_group_desc = ext4_kvmalloc(db_count *
 					  sizeof(struct buffer_head *),
 					  GFP_KERNEL);
@@ -3952,7 +3952,7 @@ no_journal:
 	 * The jbd2_journal_load will have done any necessary log recovery,
 	 * so we can safely mount the rest of the filesystem now.
 	 */
-    //ÖØµãÀ´ÁË£¬ext4ÎÄ¼þÏµÍ³µÄ¸ùÄ¿Â¼inode
+    //é‡ç‚¹æ¥äº†ï¼Œext4æ–‡ä»¶ç³»ç»Ÿçš„æ ¹ç›®å½•inode
 	root = ext4_iget(sb, EXT4_ROOT_INO);
 	if (IS_ERR(root)) {
 		ext4_msg(sb, KERN_ERR, "get root inode failed");
@@ -3965,7 +3965,7 @@ no_journal:
 		iput(root);
 		goto failed_mount4;
 	}
-    //¸ùÄ¿Â¼dentry
+    //æ ¹ç›®å½•dentry
 	sb->s_root = d_make_root(root);
 	if (!sb->s_root) {
 		ext4_msg(sb, KERN_ERR, "get root dentry failed");

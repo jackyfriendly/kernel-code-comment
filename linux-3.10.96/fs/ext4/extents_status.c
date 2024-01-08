@@ -639,7 +639,7 @@ out:
  *
  * Return 0 on success, error code on failure.
  */
-//°ÑmapµÄÆğÊ¼Âß¼­¿éµØÖ·¡¢Ó³ÉäµÄÆğÊ¼ÎïÀí¿éµØÖ·¡¢Ó³ÉäµÄÎïÀí¿é¸öÊı±£´æµ½extent_status£¬ÔÙ°Ñextent_status²åÈëext4_es_treeºìºÚÊ÷
+//æŠŠmapçš„èµ·å§‹é€»è¾‘å—åœ°å€ã€æ˜ å°„çš„èµ·å§‹ç‰©ç†å—åœ°å€ã€æ˜ å°„çš„ç‰©ç†å—ä¸ªæ•°ä¿å­˜åˆ°extent_statusï¼Œå†æŠŠextent_statusæ’å…¥ext4_es_treeçº¢é»‘æ ‘
 int ext4_es_insert_extent(struct inode *inode, ext4_lblk_t lblk,
 			  ext4_lblk_t len, ext4_fsblk_t pblk,
 			  unsigned long long status)
@@ -663,11 +663,11 @@ int ext4_es_insert_extent(struct inode *inode, ext4_lblk_t lblk,
 				" cause data loss.\n", lblk, len);
 		WARN_ON(1);
 	}
-    //extent_status¼ÇÂ¼ext4_extentµÄÆğÊ¼Âß¼­¿éµØÖ·
+    //extent_statusè®°å½•ext4_extentçš„èµ·å§‹é€»è¾‘å—åœ°å€
 	newes.es_lblk = lblk;
-    //extent_status¼ÇÂ¼ext4_extentµÄÂß¼­¿éµØÖ·Ó³ÉäµÄÎïÀí¿é¸öÊı
+    //extent_statusè®°å½•ext4_extentçš„é€»è¾‘å—åœ°å€æ˜ å°„çš„ç‰©ç†å—ä¸ªæ•°
 	newes.es_len = len;
-    //extent_status¼ÇÂ¼ext4_extentµÄÆğÊ¼Âß¼­¿éµØÖ·¶ÔÓ¦µÄÆğÊ¼ÎïÀí¿éµØÖ·
+    //extent_statusè®°å½•ext4_extentçš„èµ·å§‹é€»è¾‘å—åœ°å€å¯¹åº”çš„èµ·å§‹ç‰©ç†å—åœ°å€
 	ext4_es_store_pblock(&newes, pblk);
 	ext4_es_store_status(&newes, status);
 	trace_ext4_es_insert_extent(inode, &newes);
@@ -678,7 +678,7 @@ int ext4_es_insert_extent(struct inode *inode, ext4_lblk_t lblk,
 	err = __es_remove_extent(inode, lblk, end);
 	if (err != 0)
 		goto error;
-    //°Ñextent_status²åÈëext4_es_treeºìºÚÊ÷
+    //æŠŠextent_statusæ’å…¥ext4_es_treeçº¢é»‘æ ‘
 	err = __es_insert_extent(inode, &newes);
 
 error:

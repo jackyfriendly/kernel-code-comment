@@ -135,13 +135,13 @@ enum {
 };
 
 struct ext4_free_extent {
-    //ÆðÊ¼Âß¼­¿éºÅ£¬ext4_mb_new_blocks->ext4_mb_initialize_context()ÖÐ¸³Öµ£¬À´×Ôar->logical£¬±¾ÖÊÊÇext4_ext_map_blocks()ÖÐ¸³ÖµµÄmap->m_lblk
+    //èµ·å§‹é€»è¾‘å—å·ï¼Œext4_mb_new_blocks->ext4_mb_initialize_context()ä¸­èµ‹å€¼ï¼Œæ¥è‡ªar->logicalï¼Œæœ¬è´¨æ˜¯ext4_ext_map_blocks()ä¸­èµ‹å€¼çš„map->m_lblk
 	ext4_lblk_t fe_logical;
-    //·ÖÅäµÄÆðÊ¼ÎïÀí¿éºÅ£¬Ïà¶ÔÓÚ¿é×éÆðÊ¼ÎïÀí¿é
+    //åˆ†é…çš„èµ·å§‹ç‰©ç†å—å·ï¼Œç›¸å¯¹äºŽå—ç»„èµ·å§‹ç‰©ç†å—
 	ext4_grpblk_t fe_start;	/* In cluster units */
-    //Òª·ÖÅäÎïÀí¿éµÄÎÄ¼þinodeËùÊô¿é×éºÅ
+    //è¦åˆ†é…ç‰©ç†å—çš„æ–‡ä»¶inodeæ‰€å±žå—ç»„å·
 	ext4_group_t fe_group;
-    //Òª·ÖÅäµÄÎïÀí¿é¸öÊý
+    //è¦åˆ†é…çš„ç‰©ç†å—ä¸ªæ•°
 	ext4_grpblk_t fe_len;	/* In cluster units */
 };
 
@@ -163,7 +163,7 @@ struct ext4_locality_group {
 	spinlock_t		lg_prealloc_lock;
 };
 
-//¸Ã½á¹¹±£´æext4 mballoc·ÖÅäÎïÀí¿éµÄÐÅÏ¢£¬ext4_mb_new_blocks->ext4_mb_initialize_context()ÖÐ¸³Öµ
+//è¯¥ç»“æž„ä¿å­˜ext4 mballocåˆ†é…ç‰©ç†å—çš„ä¿¡æ¯ï¼Œext4_mb_new_blocks->ext4_mb_initialize_context()ä¸­èµ‹å€¼
 struct ext4_allocation_context {
 	struct inode *ac_inode;
 	struct super_block *ac_sb;
