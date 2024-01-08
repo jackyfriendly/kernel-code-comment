@@ -7,7 +7,7 @@
  */
 #include <linux/kernel.h>
 #include <linux/module.h>
-
+  
 #include <linux/blk-mq.h>
 #include "blk.h"
 #include "blk-mq.h"
@@ -89,8 +89,8 @@ static inline bool hctx_may_queue(struct blk_mq_hw_ctx *hctx,
 	depth = max((bt->sb.depth + users - 1) / users, 4U);
 	return atomic_read(&hctx->nr_active) < depth;
 }
-//¸ù¾İsbitmap_queueµÃµ½blk_mq_tags½á¹¹ÌåµÄstatic_rqs[]Êı×éÀï¿ÕÏĞµÄrequestµÄÊı×éÏÂ±ê£¬·µ»ØÕâ¸öÏÂ±ê£¬Êµ¼ÊÕâ¸öÏÂ±ê²»ÊÇstatic_rqs[]
-//ÕæÕıµÄÊı×éÏÂ±ê£¬¼ÓÒ»¸öÆ«ÒÆÖµ²ÅÊÇ
+//æ ¹æ®sbitmap_queueå¾—åˆ°blk_mq_tagsç»“æ„ä½“çš„static_rqs[]æ•°ç»„é‡Œç©ºé—²çš„requestçš„æ•°ç»„ä¸‹æ ‡ï¼Œè¿”å›è¿™ä¸ªä¸‹æ ‡ï¼Œå®é™…è¿™ä¸ªä¸‹æ ‡ä¸æ˜¯static_rqs[]
+//çœŸæ­£çš„æ•°ç»„ä¸‹æ ‡ï¼ŒåŠ ä¸€ä¸ªåç§»å€¼æ‰æ˜¯
 static int __blk_mq_get_tag(struct blk_mq_alloc_data *data,
 			    struct sbitmap_queue *bt)
 {
@@ -103,62 +103,62 @@ static int __blk_mq_get_tag(struct blk_mq_alloc_data *data,
 		return __sbitmap_queue_get(bt);
 }
 /*
-1 ¹ØÓÚÓ²¼ş¶ÓÁĞµÄtags->breserved_tags¡¢tags->bitmap_tags¡¢static_rqs[]¡¢nr_reserved_tagsÒ»Ö±ºÜÒÉ»ó£¬ÏÖÔÚÓ¦¸Ã¸ãÇå³şÁË¡£µ±submioÊ±Ö´ĞĞ
-blk_mq_make_request->blk_mq_sched_get_request£¬´ÓÓ²¼ş¶ÓÁĞÏà¹ØµÄblk_mq_tags½á¹¹µÄstatic_rqs[]Êı×éÀïµÃµ½¿ÕÏĞµÄreq¡£ÆäÊµ±¾ÖÊÊÇ:
-ÏÈµÃµ½Ó²¼ş¶ÓÁĞhctx£¬È»ºó¸ù¾İÓĞÎŞµ÷¶ÈËã·¨·µ»Ø¸ÃÓ²¼şÎ¨Ò»°ó¶¨µÄhctx->sched_tags»òÕßhctx->tags£¬¼´blk_mq_get_tag()ÖĞµÄ
-struct blk_mq_tags *tags = blk_mq_tags_from_data(data)¡£ÏÖÔÚÓĞÁËblk_mq_tags£¬½Ó×Å´Ótags->breserved_tags»òÕßtags->bitmap_tagsÏÈ·ÖÅä
-Ò»¸ö¿ÕÏĞtag£¬Õâ¸ötagÖ¸¶¨ÁË±¾´Î·ÖÅäµÄreqÔÚstatic_rqs[]Êı×éµÄÏÂ±ê£¬ÏÂ±ê¾ÍÊÇblk_mq_get_tag()µÄ·µ»ØÖµtag + tag_offset¡£
-tags->breserved_tags»òÕßtags->bitmap_tagsÊÇstruct sbitmap_queue½á¹¹£¬Ó¦¸Ã¿ÉÒÔÀí½â³É¾ÍÊÇÒ»¸ö¸öbitÎ»°É£¬
-ÓĞµãÏñext4ÎÄ¼şÏµÍ³µÄinode bitmap£¬Ã¿Ò»¸öbit±íÊ¾Ò»¸ötag£¬¸Ãbit±íÊ¾µÄtag±»·ÖÅäÁË¾ÍÖÃ1£¬·ÖÅätagÓ¦¸Ã¾ÍÊÇ´Ótags->breserved_tags»òÕß
-tags->bitmap_tags²éÕÒbitÎªÊÇ0µÄÄÄ¸ö?Ó¦¸ÃÊÇÕâ¸öÒâË¼¡£È»ºó¸³Öµreq->tag =tag £¬hctx->tags->rqs[req->tag] = req¡£
+1 å…³äºç¡¬ä»¶é˜Ÿåˆ—çš„tags->breserved_tagsã€tags->bitmap_tagsã€static_rqs[]ã€nr_reserved_tagsä¸€ç›´å¾ˆç–‘æƒ‘ï¼Œç°åœ¨åº”è¯¥ææ¸…æ¥šäº†ã€‚å½“submioæ—¶æ‰§è¡Œ
+blk_mq_make_request->blk_mq_sched_get_requestï¼Œä»ç¡¬ä»¶é˜Ÿåˆ—ç›¸å…³çš„blk_mq_tagsç»“æ„çš„static_rqs[]æ•°ç»„é‡Œå¾—åˆ°ç©ºé—²çš„reqã€‚å…¶å®æœ¬è´¨æ˜¯:
+å…ˆå¾—åˆ°ç¡¬ä»¶é˜Ÿåˆ—hctxï¼Œç„¶åæ ¹æ®æœ‰æ— è°ƒåº¦ç®—æ³•è¿”å›è¯¥ç¡¬ä»¶å”¯ä¸€ç»‘å®šçš„hctx->sched_tagsæˆ–è€…hctx->tagsï¼Œå³blk_mq_get_tag()ä¸­çš„
+struct blk_mq_tags *tags = blk_mq_tags_from_data(data)ã€‚ç°åœ¨æœ‰äº†blk_mq_tagsï¼Œæ¥ç€ä»tags->breserved_tagsæˆ–è€…tags->bitmap_tagså…ˆåˆ†é…
+ä¸€ä¸ªç©ºé—²tagï¼Œè¿™ä¸ªtagæŒ‡å®šäº†æœ¬æ¬¡åˆ†é…çš„reqåœ¨static_rqs[]æ•°ç»„çš„ä¸‹æ ‡ï¼Œä¸‹æ ‡å°±æ˜¯blk_mq_get_tag()çš„è¿”å›å€¼tag + tag_offsetã€‚
+tags->breserved_tagsæˆ–è€…tags->bitmap_tagsæ˜¯struct sbitmap_queueç»“æ„ï¼Œåº”è¯¥å¯ä»¥ç†è§£æˆå°±æ˜¯ä¸€ä¸ªä¸ªbitä½å§ï¼Œ
+æœ‰ç‚¹åƒext4æ–‡ä»¶ç³»ç»Ÿçš„inode bitmapï¼Œæ¯ä¸€ä¸ªbitè¡¨ç¤ºä¸€ä¸ªtagï¼Œè¯¥bitè¡¨ç¤ºçš„tagè¢«åˆ†é…äº†å°±ç½®1ï¼Œåˆ†é…tagåº”è¯¥å°±æ˜¯ä»tags->breserved_tagsæˆ–è€…
+tags->bitmap_tagsæŸ¥æ‰¾bitä¸ºæ˜¯0çš„å“ªä¸ª?åº”è¯¥æ˜¯è¿™ä¸ªæ„æ€ã€‚ç„¶åèµ‹å€¼req->tag =tag ï¼Œhctx->tags->rqs[req->tag] = reqã€‚
 
-2 ´Ótags->bitmap_tags»òÕßtags->breserved_tags·ÖÅäµÄtag£¬ÆäÊµÊÇÒ»¸öÊı×Ö£¬±íÊ¾±¾´Î·ÖÅäµÄregÔÚstatic_rqs[]Êı×éµÄÏÂ±ê¡£
+2 ä»tags->bitmap_tagsæˆ–è€…tags->breserved_tagsåˆ†é…çš„tagï¼Œå…¶å®æ˜¯ä¸€ä¸ªæ•°å­—ï¼Œè¡¨ç¤ºæœ¬æ¬¡åˆ†é…çš„regåœ¨static_rqs[]æ•°ç»„çš„ä¸‹æ ‡ã€‚
 
-3 ¹ØÓÚtags->breserved_tagsºÍtags->bitmap_tags£¬
-¿´blk_mq_get_tag()º¯Êıif (data->flags & BLK_MQ_REQ_RESERVED)³ÉÁ¢£¬ÔòÊ¹ÓÃtags->breserved_tags£¬Ê²Ã´Ìõ¼ş³ÉÁ¢ÄØ?
+3 å…³äºtags->breserved_tagså’Œtags->bitmap_tagsï¼Œ
+çœ‹blk_mq_get_tag()å‡½æ•°if (data->flags & BLK_MQ_REQ_RESERVED)æˆç«‹ï¼Œåˆ™ä½¿ç”¨tags->breserved_tagsï¼Œä»€ä¹ˆæ¡ä»¶æˆç«‹å‘¢?
 
-submioÖ´ĞĞblk_mq_make_request->blk_mq_sched_get_request£¬Ê¹ÓÃÁËµ÷¶ÈÆ÷£¬Ôòdata->flags |= BLK_MQ_REQ_INTERNAL¡£
+submioæ‰§è¡Œblk_mq_make_request->blk_mq_sched_get_requestï¼Œä½¿ç”¨äº†è°ƒåº¦å™¨ï¼Œåˆ™data->flags |= BLK_MQ_REQ_INTERNALã€‚
 
-È»ºóÖ´ĞĞblk_mq_get_tag(),if (data->flags & BLK_MQ_REQ_RESERVED²»³ÉÁ¢£¬Ö´ĞĞbt = &tags->bitmap_tagsºÍtag_offset = tags->nr_reserved_tags£¬
-È»ºó´Ótags->bitmap_tags·ÖÅäÒ»¸ötag£¬È»ºótags->nr_reserved_tags+tag ÊÇ±¾´Î·ÖÅäµÄreqÔÚstatic_rqs[]µÄÏÂ±ê£¬É¶ÒâË¼?static_rqs[]Êı×éµÄ
-0~tags->nr_reserved_tagsÎ»ÖÃ¶¼ÊÇreserved tag£¬tags->nr_reserved_tagsºó±ßµÄ²ÅÊÇ·Çreserved tag¡£½Ó×ÅÖ´ĞĞ__blk_mq_alloc_request(),
-ÒòÎªif (data->flags & BLK_MQ_REQ_INTERNAL)³ÉÁ¢£¬Ôò__rq_aux(rq, data->q)->internal_tag = tag£¬Õâ¸ötag´óÓÚtags->nr_reserved_tags£¬
-ÕâµãºÜÖØÒª£¬ÉÔºó¾ÍÓĞÓÃ¡£È»ºó¾­¹ıÂş³¤µÄÂÃÍ¾£¬Òª°Ñ¸ÃreqÅÉËÍ¸øÓ²¼şÇı¶¯ÁË£¬ĞèÖ´ĞĞblk_mq_dispatch_rq_list()¡£µ«ÊÇÒòÎª´ÅÅÌÇı¶¯Ó²¼ş·±Ã¦£¬
-¸ÃreqÃ»ÓĞÅÉ·¢³É¹¦¡£ÔòÒªÖ´ĞĞ__blk_mq_requeue_request(req)£¬°Ñ¸ÃreqÕ¼ÓÃµÄtag´Ótags->bitmap_tags´ÓÊÍ·Åµô£¬È»ºó°Ñreq·ÅÈëhctx->dispatch
-Á´±íÆô¶¯Òì²½ÅÉ·¢¡£×îÖÕ»¹»áÖ´ĞĞblk_mq_dispatch_rq_list()->blk_mq_get_driver_tag()£¬
-if (blk_mq_tag_is_reserved(data.hctx->sched_tags, rq_aux(rq)->internal_tag))²»³ÉÁ¢£¬²»»áÖ´ĞĞdata.flags |= BLK_MQ_REQ_RESERVED£¬
-½Ó×ÅÖ´ĞĞblk_mq_get_tag()£¬¸úÉÏ±ßµÄÁ÷³ÌÒ»Ñù£¬»¹ÊÇbt = &tags->bitmap_tags ´Óbitmap_tags·ÖÅätag¡£
+ç„¶åæ‰§è¡Œblk_mq_get_tag(),if (data->flags & BLK_MQ_REQ_RESERVEDä¸æˆç«‹ï¼Œæ‰§è¡Œbt = &tags->bitmap_tagså’Œtag_offset = tags->nr_reserved_tagsï¼Œ
+ç„¶åä»tags->bitmap_tagsåˆ†é…ä¸€ä¸ªtagï¼Œç„¶åtags->nr_reserved_tags+tag æ˜¯æœ¬æ¬¡åˆ†é…çš„reqåœ¨static_rqs[]çš„ä¸‹æ ‡ï¼Œå•¥æ„æ€?static_rqs[]æ•°ç»„çš„
+0~tags->nr_reserved_tagsä½ç½®éƒ½æ˜¯reserved tagï¼Œtags->nr_reserved_tagsåè¾¹çš„æ‰æ˜¯éreserved tagã€‚æ¥ç€æ‰§è¡Œ__blk_mq_alloc_request(),
+å› ä¸ºif (data->flags & BLK_MQ_REQ_INTERNAL)æˆç«‹ï¼Œåˆ™__rq_aux(rq, data->q)->internal_tag = tagï¼Œè¿™ä¸ªtagå¤§äºtags->nr_reserved_tagsï¼Œ
+è¿™ç‚¹å¾ˆé‡è¦ï¼Œç¨åå°±æœ‰ç”¨ã€‚ç„¶åç»è¿‡æ¼«é•¿çš„æ—…é€”ï¼Œè¦æŠŠè¯¥reqæ´¾é€ç»™ç¡¬ä»¶é©±åŠ¨äº†ï¼Œéœ€æ‰§è¡Œblk_mq_dispatch_rq_list()ã€‚ä½†æ˜¯å› ä¸ºç£ç›˜é©±åŠ¨ç¡¬ä»¶ç¹å¿™ï¼Œ
+è¯¥reqæ²¡æœ‰æ´¾å‘æˆåŠŸã€‚åˆ™è¦æ‰§è¡Œ__blk_mq_requeue_request(req)ï¼ŒæŠŠè¯¥reqå ç”¨çš„tagä»tags->bitmap_tagsä»é‡Šæ”¾æ‰ï¼Œç„¶åæŠŠreqæ”¾å…¥hctx->dispatch
+é“¾è¡¨å¯åŠ¨å¼‚æ­¥æ´¾å‘ã€‚æœ€ç»ˆè¿˜ä¼šæ‰§è¡Œblk_mq_dispatch_rq_list()->blk_mq_get_driver_tag()ï¼Œ
+if (blk_mq_tag_is_reserved(data.hctx->sched_tags, rq_aux(rq)->internal_tag))ä¸æˆç«‹ï¼Œä¸ä¼šæ‰§è¡Œdata.flags |= BLK_MQ_REQ_RESERVEDï¼Œ
+æ¥ç€æ‰§è¡Œblk_mq_get_tag()ï¼Œè·Ÿä¸Šè¾¹çš„æµç¨‹ä¸€æ ·ï¼Œè¿˜æ˜¯bt = &tags->bitmap_tags ä»bitmap_tagsåˆ†é…tagã€‚
 
-4Èç¹ûsubmioÖ´ĞĞblk_mq_make_request->blk_mq_sched_get_request£¬Ã»ÓĞÊ¹ÓÃµ÷¶ÈÆ÷£¬²»»áÖ´ĞĞdata->flags |= BLK_MQ_REQ_INTERNAL£¬
+4å¦‚æœsubmioæ‰§è¡Œblk_mq_make_request->blk_mq_sched_get_requestï¼Œæ²¡æœ‰ä½¿ç”¨è°ƒåº¦å™¨ï¼Œä¸ä¼šæ‰§è¡Œdata->flags |= BLK_MQ_REQ_INTERNALï¼Œ
 
-È»ºóÖ´ĞĞblk_mq_get_tag(),if (data->flags & BLK_MQ_REQ_RESERVED²»³ÉÁ¢£¬Ö´ĞĞbt = &tags->bitmap_tagsºÍtag_offset = tags->nr_reserved_tags£¬
-È»ºó´Ótags->bitmap_tags·ÖÅäÒ»¸ötag£¬È»ºótags->nr_reserved_tags+tag ÊÇ±¾´Î·ÖÅäµÄreqÔÚstatic_rqs[]µÄÏÂ±ê¡£½Ó×ÅÖ´ĞĞ
-__blk_mq_alloc_request(),ÒòÎªif (data->flags & BLK_MQ_REQ_INTERNAL)²»²»²»²»³ÉÁ¢£¬Ôò__rq_aux(rq, data->q)->internal_tag = -1£¬
-ÕâÑùtagĞ¡ÓÚtags->nr_reserved_tags£¬ÕâµãºÜÖØÒª£¬ÉÔºó¾ÍÓĞÓÃ¡£È»ºó¾­¹ıÂş³¤µÄÂÃÍ¾£¬Òª°Ñ¸ÃreqÅÉËÍ¸øÓ²¼şÇı¶¯ÁË£¬ĞèÖ´ĞĞ
-blk_mq_dispatch_rq_list()¡£µ«ÊÇÒòÎª´ÅÅÌÇı¶¯Ó²¼ş·±Ã¦£¬¸ÃreqÃ»ÓĞÅÉ·¢³É¹¦¡£ÔòÒªÖ´ĞĞ__blk_mq_requeue_request(req)£¬°Ñ¸ÃreqÕ¼ÓÃµÄ
-tag´Ótags->bitmap_tags´ÓÊÍ·Åµô£¬È»ºó°Ñreq·ÅÈëhctx->dispatchÁ´±íÆô¶¯Òì²½ÅÉ·¢¡£×îÖÕ»¹»áÖ´ĞĞblk_mq_dispatch_rq_list()->
-blk_mq_get_driver_tag()£¬if (blk_mq_tag_is_reserved(data.hctx->sched_tags, rq_aux(rq)->internal_tag))³ÉÁ¢³ÉÁ¢³ÉÁ¢³ÉÁ¢³ÉÁ¢£¬
-ÔòÖ´ĞĞdata.flags |= BLK_MQ_REQ_RESERVED£¬½Ó×ÅÖ´ĞĞblk_mq_get_tag()£¬ÒòÎªif (data->flags & BLK_MQ_REQ_RESERVED) ³ÉÁ¢£¬Ôò
-bt = &tags->breserved_tagsºÍtag_offset = 0£¬Ôò±¾´ÎÊÇ´Ótags->breserved_tagsÕâ¸öreserved tag·ÖÅätag£¬²¢ÇÒtag+0ÊÇ±¾´Î·ÖÅäµÄreqÔÚ
-static_rqs[]Êı×éµÄÏÂ±ê¡£Ò²¾ÍÊÇËµ£¬static_rqs[]Êı×éµÄ0~tags->nr_reserved_tagsÊÇreserved tagµÄreqµÄÊı×éÏÂ±ê£¬tags->nr_reserved_tagsÒÔÉÏ
-µÄtagÊÇ·Çreserved tagµÄreqµÄÊı×éÏÂ±ê¡£
+ç„¶åæ‰§è¡Œblk_mq_get_tag(),if (data->flags & BLK_MQ_REQ_RESERVEDä¸æˆç«‹ï¼Œæ‰§è¡Œbt = &tags->bitmap_tagså’Œtag_offset = tags->nr_reserved_tagsï¼Œ
+ç„¶åä»tags->bitmap_tagsåˆ†é…ä¸€ä¸ªtagï¼Œç„¶åtags->nr_reserved_tags+tag æ˜¯æœ¬æ¬¡åˆ†é…çš„reqåœ¨static_rqs[]çš„ä¸‹æ ‡ã€‚æ¥ç€æ‰§è¡Œ
+__blk_mq_alloc_request(),å› ä¸ºif (data->flags & BLK_MQ_REQ_INTERNAL)ä¸ä¸ä¸ä¸æˆç«‹ï¼Œåˆ™__rq_aux(rq, data->q)->internal_tag = -1ï¼Œ
+è¿™æ ·tagå°äºtags->nr_reserved_tagsï¼Œè¿™ç‚¹å¾ˆé‡è¦ï¼Œç¨åå°±æœ‰ç”¨ã€‚ç„¶åç»è¿‡æ¼«é•¿çš„æ—…é€”ï¼Œè¦æŠŠè¯¥reqæ´¾é€ç»™ç¡¬ä»¶é©±åŠ¨äº†ï¼Œéœ€æ‰§è¡Œ
+blk_mq_dispatch_rq_list()ã€‚ä½†æ˜¯å› ä¸ºç£ç›˜é©±åŠ¨ç¡¬ä»¶ç¹å¿™ï¼Œè¯¥reqæ²¡æœ‰æ´¾å‘æˆåŠŸã€‚åˆ™è¦æ‰§è¡Œ__blk_mq_requeue_request(req)ï¼ŒæŠŠè¯¥reqå ç”¨çš„
+tagä»tags->bitmap_tagsä»é‡Šæ”¾æ‰ï¼Œç„¶åæŠŠreqæ”¾å…¥hctx->dispatché“¾è¡¨å¯åŠ¨å¼‚æ­¥æ´¾å‘ã€‚æœ€ç»ˆè¿˜ä¼šæ‰§è¡Œblk_mq_dispatch_rq_list()->
+blk_mq_get_driver_tag()ï¼Œif (blk_mq_tag_is_reserved(data.hctx->sched_tags, rq_aux(rq)->internal_tag))æˆç«‹æˆç«‹æˆç«‹æˆç«‹æˆç«‹ï¼Œ
+åˆ™æ‰§è¡Œdata.flags |= BLK_MQ_REQ_RESERVEDï¼Œæ¥ç€æ‰§è¡Œblk_mq_get_tag()ï¼Œå› ä¸ºif (data->flags & BLK_MQ_REQ_RESERVED) æˆç«‹ï¼Œåˆ™
+bt = &tags->breserved_tagså’Œtag_offset = 0ï¼Œåˆ™æœ¬æ¬¡æ˜¯ä»tags->breserved_tagsè¿™ä¸ªreserved tagåˆ†é…tagï¼Œå¹¶ä¸”tag+0æ˜¯æœ¬æ¬¡åˆ†é…çš„reqåœ¨
+static_rqs[]æ•°ç»„çš„ä¸‹æ ‡ã€‚ä¹Ÿå°±æ˜¯è¯´ï¼Œstatic_rqs[]æ•°ç»„çš„0~tags->nr_reserved_tagsæ˜¯reserved tagçš„reqçš„æ•°ç»„ä¸‹æ ‡ï¼Œtags->nr_reserved_tagsä»¥ä¸Š
+çš„tagæ˜¯éreserved tagçš„reqçš„æ•°ç»„ä¸‹æ ‡ã€‚
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Àí½â´íÁË£¬¿´¿´Õâ¸öÀí½âreq´Ó³õ´Î·ÖÅä£¬reqÊ¼ÖÕÃ»ÓĞ±ä£¬µ«ÊÇtag·ÖÅäÊÍ·ÅÔÙ·ÖÅä£¬tagÔç±äÁË£¬tag»¹ÄÜÎ¨Ò»
-±íÊ¾reqÔÚstatic_rqs[]Êı×éµÄÎ»ÖÃÂğ£¬²»ĞĞ°ÉreqÊÇ¹Ì¶¨µÄ£¬µ«ÊÇtag±äÀ´±äÈ¥
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!ç†è§£é”™äº†ï¼Œçœ‹çœ‹è¿™ä¸ªç†è§£reqä»åˆæ¬¡åˆ†é…ï¼Œreqå§‹ç»ˆæ²¡æœ‰å˜ï¼Œä½†æ˜¯tagåˆ†é…é‡Šæ”¾å†åˆ†é…ï¼Œtagæ—©å˜äº†ï¼Œtagè¿˜èƒ½å”¯ä¸€
+è¡¨ç¤ºreqåœ¨static_rqs[]æ•°ç»„çš„ä½ç½®å—ï¼Œä¸è¡Œå§reqæ˜¯å›ºå®šçš„ï¼Œä½†æ˜¯tagå˜æ¥å˜å»
 
-5 ·²ÊÇÖ´ĞĞblk_mq_get_driver_tag()µÄÇé¿ö£¬¶¼ÊÇ¸ÃreqÔÚµÚÒ»´ÎÅÉ·¢Ê±Óöµ½Ó²¼ş¶ÓÁĞ·±Ã¦£¬¾Í°ÑtagÊÍ·ÅÁË£¬È»ºórq->tag=-1¡£
-½Ó×ÅÆô¶¯Òì²½ÅÉ·¢£¬²Å»áÖ´ĞĞ¸Ãº¯Êı
+5 å‡¡æ˜¯æ‰§è¡Œblk_mq_get_driver_tag()çš„æƒ…å†µï¼Œéƒ½æ˜¯è¯¥reqåœ¨ç¬¬ä¸€æ¬¡æ´¾å‘æ—¶é‡åˆ°ç¡¬ä»¶é˜Ÿåˆ—ç¹å¿™ï¼Œå°±æŠŠtagé‡Šæ”¾äº†ï¼Œç„¶årq->tag=-1ã€‚
+æ¥ç€å¯åŠ¨å¼‚æ­¥æ´¾å‘ï¼Œæ‰ä¼šæ‰§è¡Œè¯¥å‡½æ•°
 
-6 tagºÍreqÊÇ°ó¶¨µÄ£¬ÔÚsubmioÖ´ĞĞblk_mq_make_request->blk_mq_sched_get_requestÊ±£¬ÊÇÏÈ´ÓÓ²¼ş¶ÓÁĞblk_mq_tags·ÖÅätag£¬È»ºó´Óblk_mq_tags
-µÄstatic_rqs[tag]µÃµ½req¡£Ö®ºóÔÚ½øĞĞreq´«ÊäÊ±£¬Óöµ½´ÅÅÌÇı¶¯Ó²¼ş·±Ã¦£¬Ôò»áÖ´ĞĞ__blk_mq_requeue_request(req)°ÑreqµÄtagÊÍ·Åµô£¬È»ºóµÈ
-Òì²½ÅÉ·¢reqÊ±£¬Ôò»áÖ´ĞĞblk_mq_get_driver_tag()ÖØĞÂÎªreq·ÖÅätag¡£
+6 tagå’Œreqæ˜¯ç»‘å®šçš„ï¼Œåœ¨submioæ‰§è¡Œblk_mq_make_request->blk_mq_sched_get_requestæ—¶ï¼Œæ˜¯å…ˆä»ç¡¬ä»¶é˜Ÿåˆ—blk_mq_tagsåˆ†é…tagï¼Œç„¶åä»blk_mq_tags
+çš„static_rqs[tag]å¾—åˆ°reqã€‚ä¹‹ååœ¨è¿›è¡Œreqä¼ è¾“æ—¶ï¼Œé‡åˆ°ç£ç›˜é©±åŠ¨ç¡¬ä»¶ç¹å¿™ï¼Œåˆ™ä¼šæ‰§è¡Œ__blk_mq_requeue_request(req)æŠŠreqçš„tagé‡Šæ”¾æ‰ï¼Œç„¶åç­‰
+å¼‚æ­¥æ´¾å‘reqæ—¶ï¼Œåˆ™ä¼šæ‰§è¡Œblk_mq_get_driver_tag()é‡æ–°ä¸ºreqåˆ†é…tagã€‚
 */
 
-//´ÓÓ²¼ş¶ÓÁĞµÄblk_mq_tags½á¹¹ÌåµÄtags->bitmap_tags»òÕßtags->nr_reserved_tags·ÖÅäÒ»¸ö¿ÕÏĞtag£¬Ò»¸öreq±ØĞë·ÖÅäÒ»¸ötag²ÅÄÜIO´«Êä¡£
-//·ÖÅäÊ§°ÜÔòÆô¶¯Ó²¼şIOÊı¾İÅÉ·¢£¬ĞİÃß£¬ºóÔÙ³¢ÊÔ´Óblk_mq_tags½á¹¹ÌåµÄtags->bitmap_tags»òÕßtags->nr_reserved_tags·ÖÅäÒ»¸ö¿ÕÏĞtag¡£
+//ä»ç¡¬ä»¶é˜Ÿåˆ—çš„blk_mq_tagsç»“æ„ä½“çš„tags->bitmap_tagsæˆ–è€…tags->nr_reserved_tagsåˆ†é…ä¸€ä¸ªç©ºé—²tagï¼Œä¸€ä¸ªreqå¿…é¡»åˆ†é…ä¸€ä¸ªtagæ‰èƒ½IOä¼ è¾“ã€‚
+//åˆ†é…å¤±è´¥åˆ™å¯åŠ¨ç¡¬ä»¶IOæ•°æ®æ´¾å‘ï¼Œä¼‘çœ ï¼Œåå†å°è¯•ä»blk_mq_tagsç»“æ„ä½“çš„tags->bitmap_tagsæˆ–è€…tags->nr_reserved_tagsåˆ†é…ä¸€ä¸ªç©ºé—²tagã€‚
 unsigned int blk_mq_get_tag(struct blk_mq_alloc_data *data)
 {
-    //Ê¹ÓÃµ÷¶ÈÆ÷Ê±·µ»ØÓ²¼ş¶ÓÁĞµÄhctx->sched_tags£¬ÎŞµ÷¶ÈÆ÷Ê±·µ»ØÓ²¼ş¶ÓÁĞµÄhctx->tags¡£·µ»ØµÄÊÇÓ²¼ş¶ÓÁĞÎ¨Ò»¶ÔÓ¦µÄµÄblk_mq_tags
+    //ä½¿ç”¨è°ƒåº¦å™¨æ—¶è¿”å›ç¡¬ä»¶é˜Ÿåˆ—çš„hctx->sched_tagsï¼Œæ— è°ƒåº¦å™¨æ—¶è¿”å›ç¡¬ä»¶é˜Ÿåˆ—çš„hctx->tagsã€‚è¿”å›çš„æ˜¯ç¡¬ä»¶é˜Ÿåˆ—å”¯ä¸€å¯¹åº”çš„çš„blk_mq_tags
 	struct blk_mq_tags *tags = blk_mq_tags_from_data(data);
 	struct sbitmap_queue *bt;
 	struct sbq_wait_state *ws;
@@ -167,42 +167,42 @@ unsigned int blk_mq_get_tag(struct blk_mq_alloc_data *data)
 	bool drop_ctx;
 	int tag;
 
-	if (data->flags & BLK_MQ_REQ_RESERVED) {//Ê¹ÓÃÔ¤Áôtag
+	if (data->flags & BLK_MQ_REQ_RESERVED) {//ä½¿ç”¨é¢„ç•™tag
 		if (unlikely(!tags->nr_reserved_tags)) {
 			WARN_ON_ONCE(1);
 			return BLK_MQ_TAG_FAIL;
 		}
 		bt = &tags->breserved_tags;
 		tag_offset = 0;
-	} else {//²»Ê¹ÓÃÔ¤Áôtag
+	} else {//ä¸ä½¿ç”¨é¢„ç•™tag
 	
-	    //·µ»Øblk_mq_tagsµÄbitmap_tags
+	    //è¿”å›blk_mq_tagsçš„bitmap_tags
 		bt = &tags->bitmap_tags;
-        //Ó¦¸ÃÊÇstatic_rqs[]Àï¿ÕÏĞµÄrequestµÄÊı×éÏÂ±êÆ«ÒÆ£¬¼û¸Ãº¯Êı×îºó
+        //åº”è¯¥æ˜¯static_rqs[]é‡Œç©ºé—²çš„requestçš„æ•°ç»„ä¸‹æ ‡åç§»ï¼Œè§è¯¥å‡½æ•°æœ€å
 		tag_offset = tags->nr_reserved_tags;
 	}
     
-//´ÓÓ²¼ş¶ÓÁĞµÄblk_mq_tags½á¹¹ÌåµÄtags->bitmap_tags»òÕßtags->nr_reserved_tags·ÖÅäÒ»¸ö¿ÕÏĞtag¡£tag±íÃ÷ÁËreqÔÚstatic_rqs[]µÄÊı×éÏÂ±ê¡£
-//Êµ¼Êtag²¢²»ÊÇreqÔÚstatic_rqs[]Êı×éµÄÏÂ±ê£¬ÕæÕıµÄÊı×éÏÂ±ê£¬¼ÓÒ»¸öÆ«ÒÆÖµtag_offset²ÅÊÇ¡£·µ»Ø-1ËµÃ÷Ã»ÓĞ¿ÕÏĞtag£¬¾Í»áÖ´ĞĞÏÂ±ßµÄÑ­»·£¬
-//Æô¶¯´ÅÅÌÓ²¼ş´«Êä£¬ÒÔÌÚ³ö¿ÕÏĞµÄtag¡£Ò»¸ötag¾ÍÊÇÒ»¸öreq£¬req´«ÊäÇ°±ØĞëµÃ·ÖÅätag£¬·ÖÅätag±¾ÖÊÊÇ´ÓÓ²¼ş¶ÓÁĞblk_mq_tagsµÃµ½¿ÕÏĞreq¡£
+//ä»ç¡¬ä»¶é˜Ÿåˆ—çš„blk_mq_tagsç»“æ„ä½“çš„tags->bitmap_tagsæˆ–è€…tags->nr_reserved_tagsåˆ†é…ä¸€ä¸ªç©ºé—²tagã€‚tagè¡¨æ˜äº†reqåœ¨static_rqs[]çš„æ•°ç»„ä¸‹æ ‡ã€‚
+//å®é™…tagå¹¶ä¸æ˜¯reqåœ¨static_rqs[]æ•°ç»„çš„ä¸‹æ ‡ï¼ŒçœŸæ­£çš„æ•°ç»„ä¸‹æ ‡ï¼ŒåŠ ä¸€ä¸ªåç§»å€¼tag_offsetæ‰æ˜¯ã€‚è¿”å›-1è¯´æ˜æ²¡æœ‰ç©ºé—²tagï¼Œå°±ä¼šæ‰§è¡Œä¸‹è¾¹çš„å¾ªç¯ï¼Œ
+//å¯åŠ¨ç£ç›˜ç¡¬ä»¶ä¼ è¾“ï¼Œä»¥è…¾å‡ºç©ºé—²çš„tagã€‚ä¸€ä¸ªtagå°±æ˜¯ä¸€ä¸ªreqï¼Œreqä¼ è¾“å‰å¿…é¡»å¾—åˆ†é…tagï¼Œåˆ†é…tagæœ¬è´¨æ˜¯ä»ç¡¬ä»¶é˜Ÿåˆ—blk_mq_tagså¾—åˆ°ç©ºé—²reqã€‚
 	tag = __blk_mq_get_tag(data, bt);
 	if (tag != -1)
 		goto found_tag;
 
-	if (data->flags & BLK_MQ_REQ_NOWAIT)//ÏÔÈ»ÕâÊÇ²»ÔËĞĞµÈ´ı
+	if (data->flags & BLK_MQ_REQ_NOWAIT)//æ˜¾ç„¶è¿™æ˜¯ä¸è¿è¡Œç­‰å¾…
 		return BLK_MQ_TAG_FAIL;
 
-    //×ßµ½ÕâÒ»²½£¬ËµÃ÷Ó²¼ş¶ÓÁĞÓĞ¹ØµÄblk_mq_tagsÀïÃ»ÓĞ¿ÕÏĞµÄrequest¿É·ÖÅä£¬ÄÇ¾Í»áÏİÈëĞİÃßµÈ´ı£¬²¢ÇÒÖ´ĞĞblk_mq_run_hw_queue
-    //Æô¶¯IO Êı¾İ´«Êä£¬´«ÊäÍê³Éºó¿ÉÒÔÊÍ·Å³örequest£¬´ïµ½·ÖÅärequestµÄÄ¿µÄ
+    //èµ°åˆ°è¿™ä¸€æ­¥ï¼Œè¯´æ˜ç¡¬ä»¶é˜Ÿåˆ—æœ‰å…³çš„blk_mq_tagsé‡Œæ²¡æœ‰ç©ºé—²çš„requestå¯åˆ†é…ï¼Œé‚£å°±ä¼šé™·å…¥ä¼‘çœ ç­‰å¾…ï¼Œå¹¶ä¸”æ‰§è¡Œblk_mq_run_hw_queue
+    //å¯åŠ¨IO æ•°æ®ä¼ è¾“ï¼Œä¼ è¾“å®Œæˆåå¯ä»¥é‡Šæ”¾å‡ºrequestï¼Œè¾¾åˆ°åˆ†é…requestçš„ç›®çš„
 
-	ws = bt_wait_ptr(bt, data->hctx);//»ñÈ¡Ó²¼ş¶ÓÁĞÎ¨Ò»¶ÔÓ¦µÄwait_queue_head_tµÈ´ı¶ÓÁĞÍ·£¬ÎÒÈ¥£¬ÕâÒ²ÊÇÓ²¼ş¶ÓÁĞÎ¨Ò»¶ÔÓ¦µÄ
+	ws = bt_wait_ptr(bt, data->hctx);//è·å–ç¡¬ä»¶é˜Ÿåˆ—å”¯ä¸€å¯¹åº”çš„wait_queue_head_tç­‰å¾…é˜Ÿåˆ—å¤´ï¼Œæˆ‘å»ï¼Œè¿™ä¹Ÿæ˜¯ç¡¬ä»¶é˜Ÿåˆ—å”¯ä¸€å¯¹åº”çš„
 	drop_ctx = data->ctx == NULL;
 	do {
 		struct sbitmap_queue *bt_prev;
 
-		prepare_to_wait(&ws->wait, &wait, TASK_UNINTERRUPTIBLE);//ÔÚws->waitµÈ´ı¶ÓÁĞ×¼±¸ĞİÃß
+		prepare_to_wait(&ws->wait, &wait, TASK_UNINTERRUPTIBLE);//åœ¨ws->waitç­‰å¾…é˜Ÿåˆ—å‡†å¤‡ä¼‘çœ 
         
-        //ÔÙ´Î³¢ÊÔ´Óblk_mq_tags½á¹¹ÌåÀï·ÖÅä¿ÕÏĞtag
+        //å†æ¬¡å°è¯•ä»blk_mq_tagsç»“æ„ä½“é‡Œåˆ†é…ç©ºé—²tag
 		tag = __blk_mq_get_tag(data, bt);
 		if (tag != -1)
 			break;
@@ -212,14 +212,14 @@ unsigned int blk_mq_get_tag(struct blk_mq_alloc_data *data)
 		 * pending IO submits before going to sleep waiting for
 		 * some to complete.
 		 */
-		//Æô¶¯´ÅÅÌÓ²¼ş¶ÓÁĞIOÍ¬²½´«Êä£¬ÒÔÌÚ³ö¿ÕÏĞreq
+		//å¯åŠ¨ç£ç›˜ç¡¬ä»¶é˜Ÿåˆ—IOåŒæ­¥ä¼ è¾“ï¼Œä»¥è…¾å‡ºç©ºé—²req
 		blk_mq_run_hw_queue(data->hctx, false);
 
 		/*
 		 * Retry tag allocation after running the hardware queue,
 		 * as running the queue may also have found completions.
 		 */
-		//ÔÙ´Î³¢ÊÔ´Óblk_mq_tags½á¹¹ÌåÀï·ÖÅä¿ÕÏĞtag
+		//å†æ¬¡å°è¯•ä»blk_mq_tagsç»“æ„ä½“é‡Œåˆ†é…ç©ºé—²tag
 		tag = __blk_mq_get_tag(data, bt);
 		if (tag != -1)
 			break;
@@ -228,22 +228,22 @@ unsigned int blk_mq_get_tag(struct blk_mq_alloc_data *data)
 			blk_mq_put_ctx(data->ctx);
 
 		bt_prev = bt;
-        //ĞİÃßµ÷¶È
+        //ä¼‘çœ è°ƒåº¦
 		io_schedule();
 
-        //Ææ¹Ö£¬ÔÙ´Î»ñÈ¡Èí¼ş¶ÓÁĞºÍÓ²¼ş¶ÓÁĞ£¬ÎªÊ²Ã´?????????ÉÏ±ßÆô¶¯ÁËÓ²¼şIOÊı¾İÅÉ·¢£¬µÈio_schedule()µ÷¶ÈºóÔÙ±»»½ĞÑ£¬½ø³ÌËù´¦CPUÓĞ
-        //¿ÉÄÜ»á±ä£¬ËùÒÔÒª¸ù¾İ½ø³ÌËù´¦CPU»ñÈ¡¶ÔÓ¦µÄÈí¼ş¶ÓÁĞ£¬ÔÙ»ñÈ¡¶ÔÓ¦µÄÓ²¼ş¶ÓÁĞ
+        //å¥‡æ€ªï¼Œå†æ¬¡è·å–è½¯ä»¶é˜Ÿåˆ—å’Œç¡¬ä»¶é˜Ÿåˆ—ï¼Œä¸ºä»€ä¹ˆ?????????ä¸Šè¾¹å¯åŠ¨äº†ç¡¬ä»¶IOæ•°æ®æ´¾å‘ï¼Œç­‰io_schedule()è°ƒåº¦åå†è¢«å”¤é†’ï¼Œè¿›ç¨‹æ‰€å¤„CPUæœ‰
+        //å¯èƒ½ä¼šå˜ï¼Œæ‰€ä»¥è¦æ ¹æ®è¿›ç¨‹æ‰€å¤„CPUè·å–å¯¹åº”çš„è½¯ä»¶é˜Ÿåˆ—ï¼Œå†è·å–å¯¹åº”çš„ç¡¬ä»¶é˜Ÿåˆ—
 		data->ctx = blk_mq_get_ctx(data->q);
 		data->hctx = blk_mq_map_queue(data->q, data->ctx->cpu);
         
-        //Ê¹ÓÃµ÷¶ÈÆ÷Ê±·µ»ØÓ²¼ş¶ÓÁĞµÄhctx->sched_tags£¬ÎŞµ÷¶ÈÆ÷Ê±·µ»ØÓ²¼ş¶ÓÁĞµÄhctx->tags
+        //ä½¿ç”¨è°ƒåº¦å™¨æ—¶è¿”å›ç¡¬ä»¶é˜Ÿåˆ—çš„hctx->sched_tagsï¼Œæ— è°ƒåº¦å™¨æ—¶è¿”å›ç¡¬ä»¶é˜Ÿåˆ—çš„hctx->tags
 		tags = blk_mq_tags_from_data(data);
 		if (data->flags & BLK_MQ_REQ_RESERVED)
 			bt = &tags->breserved_tags;
-		else//ÔÙ´Î»ñÈ¡bitmap_tags£¬Á÷³Ì¸úÇ°±ßÒ»Ä£Ò»Ñù
+		else//å†æ¬¡è·å–bitmap_tagsï¼Œæµç¨‹è·Ÿå‰è¾¹ä¸€æ¨¡ä¸€æ ·
 			bt = &tags->bitmap_tags;
 
-        //ĞİÃßºó»½ĞÑ£¬Íê³ÉĞİÃß
+        //ä¼‘çœ åå”¤é†’ï¼Œå®Œæˆä¼‘çœ 
 		finish_wait(&ws->wait, &wait);
 
 		/*
@@ -254,7 +254,7 @@ unsigned int blk_mq_get_tag(struct blk_mq_alloc_data *data)
 		if (bt != bt_prev)
 			sbitmap_queue_wake_up(bt_prev);
 
-        //ÔÙ´Î¸ù¾İÓ²¼ş¶ÓÁĞ»ñÈ¡Î¨Ò»¶ÔÓ¦µÄwait_queue_head_tµÈ´ı¶ÓÁĞÍ·
+        //å†æ¬¡æ ¹æ®ç¡¬ä»¶é˜Ÿåˆ—è·å–å”¯ä¸€å¯¹åº”çš„wait_queue_head_tç­‰å¾…é˜Ÿåˆ—å¤´
 		ws = bt_wait_ptr(bt, data->hctx);
 	} while (1);
 
@@ -264,15 +264,15 @@ unsigned int blk_mq_get_tag(struct blk_mq_alloc_data *data)
 	finish_wait(&ws->wait, &wait);
 
 found_tag:
-    //¿´µ½Ã»ÓĞ£¬tag+tag_offset²ÅÊÇ±¾´Î·ÖÅäµÄ¿ÕÏĞrequestÔÚstatic_rqs[]Êı×éµÄÕæÕıÏÂ±ê
+    //çœ‹åˆ°æ²¡æœ‰ï¼Œtag+tag_offsetæ‰æ˜¯æœ¬æ¬¡åˆ†é…çš„ç©ºé—²requeståœ¨static_rqs[]æ•°ç»„çš„çœŸæ­£ä¸‹æ ‡
 	return tag + tag_offset;
 }
-//tags->bitmap_tagsÖĞ°´ÕÕreq->tagÕâ¸ötag±àºÅÊÍ·Åtag
+//tags->bitmap_tagsä¸­æŒ‰ç…§req->tagè¿™ä¸ªtagç¼–å·é‡Šæ”¾tag
 void blk_mq_put_tag(struct blk_mq_hw_ctx *hctx, struct blk_mq_tags *tags,
 		    struct blk_mq_ctx *ctx, unsigned int tag)
 {
 	if (!blk_mq_tag_is_reserved(tags, tag)) {
-        //tag - tags->nr_reserved_tagsºó²ÅÊÇ¸ÃtagÔÚtags->bitmap_tagsµÄÕæÊÇÎ»ÖÃ
+        //tag - tags->nr_reserved_tagsåæ‰æ˜¯è¯¥tagåœ¨tags->bitmap_tagsçš„çœŸæ˜¯ä½ç½®
 		const int real_tag = tag - tags->nr_reserved_tags;
 
 		BUG_ON(real_tag >= tags->nr_tags);
@@ -465,25 +465,25 @@ free_tags:
 	kfree(tags);
 	return NULL;
 }
-//·ÖÅäÒ»¸öblk_mq_tags½á¹¹£¬ÉèÖÃÆä³ÉÔ±nr_reserved_tagsºÍnr_tags£¬·ÖÅäblk_mq_tagsµÄbitmap_tags¡¢breserved_tags½á¹¹
+//åˆ†é…ä¸€ä¸ªblk_mq_tagsç»“æ„ï¼Œè®¾ç½®å…¶æˆå‘˜nr_reserved_tagså’Œnr_tagsï¼Œåˆ†é…blk_mq_tagsçš„bitmap_tagsã€breserved_tagsç»“æ„
 struct blk_mq_tags *blk_mq_init_tags(unsigned int total_tags,
 				     unsigned int reserved_tags,
 				     int node, int alloc_policy)
 {
 	struct blk_mq_tags *tags;
-    //total_tags¾¹È»ÊÇset->queue_depth
+    //total_tagsç«Ÿç„¶æ˜¯set->queue_depth
 	if (total_tags > BLK_MQ_TAG_MAX) {
 		pr_err("blk-mq: tag depth too large\n");
 		return NULL;
 	}
-    //·ÖÅäÒ»¸öblk_mq_tags½á¹¹£¬ÉèÖÃÆä³ÉÔ±nr_reserved_tagsºÍnr_tags
+    //åˆ†é…ä¸€ä¸ªblk_mq_tagsç»“æ„ï¼Œè®¾ç½®å…¶æˆå‘˜nr_reserved_tagså’Œnr_tags
 	tags = kzalloc_node(sizeof(*tags), GFP_KERNEL, node);
 	if (!tags)
 		return NULL;
 
 	tags->nr_tags = total_tags;
 	tags->nr_reserved_tags = reserved_tags;
-    //·ÖÅäblk_mq_tagsµÄbitmap_tags¡¢breserved_tags½á¹¹
+    //åˆ†é…blk_mq_tagsçš„bitmap_tagsã€breserved_tagsç»“æ„
 	return blk_mq_init_bitmap_tags(tags, node, alloc_policy);
 }
 
