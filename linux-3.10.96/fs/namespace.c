@@ -36,7 +36,7 @@ static DEFINE_SPINLOCK(mnt_id_lock);
 static int mnt_id_start = 0;
 static int mnt_group_start = 1;
 
-//__lookup_mnt()´Ómount_hashtableÁ´±íËÑË÷mount
+//__lookup_mnt()ä»mount_hashtableé“¾è¡¨æœç´¢mount
 static struct list_head *mount_hashtable __read_mostly;
 static struct list_head *mountpoint_hashtable __read_mostly;
 static struct kmem_cache *mnt_cache __read_mostly;
@@ -174,7 +174,7 @@ static struct mount *alloc_vfsmnt(const char *name)
 			goto out_free_cache;
 
 		if (name) {
-            //¸³ÓèmountµÄmnt_devname
+            //èµ‹äºˆmountçš„mnt_devname
 			mnt->mnt_devname = kstrdup(name, GFP_KERNEL);
 			if (!mnt->mnt_devname)
 				goto out_free_id;
@@ -557,47 +557,47 @@ static void free_vfsmnt(struct mount *mnt)
  * vfsmount_lock must be held for read or write.
  */
  
-/*Õâ¸öº¯ÊıÊÇ±éÀú¹ÒÔØµãÄ¿Â¼µÄºËĞÄ¡£mount /dev/sda3 /home/£¬/home/ËùÔÚÎÄ¼şÏµÍ³µÄÊÇmount1£¬±¾´ÎÊÇdest mount£¬¹ÒÔØµãÄ¿Â¼ÊÇhomeÄ¿Â¼dentry£¬
-³ÉÎªdentry1£¬´ËÊ±homeÄ¿Â¼»¹Ã»ÓĞ¿éÉè±¸¹ÒÔØ¡£
-±¾´ÎµÄsource mountÊÇ/dev/sda3Éú³É£¬³ÉÎªmount2¡£ÔÚ¹ÒÔØµÄ×îºó£¬»áÉèÖÃmount2->parent=mount1£¬mount2->mnt_mountpoint=dentry1¡£
-dest mountÊÇsource mountµÄ¸¸Ç×£¬ÕâÊÇ¹æ¶¨!µ±ÔÙmount /dev/sd2 /home£¬±¾´ÎµÄ¹ÒÔØµãÄ¿Â¼ÒÀÈ»ÊÇhome£¬µ«ÊÇhomeµÄdentryÊôĞÔ±íÊ¾ËüÊÇ¸ö¹ÒÔØµã
-Ä¿Â¼£¬´ËÊ±¾ÍÒªÖ´ĞĞ__follow_mount_rcu->__lookup_mnt(mount1->mnt,dentry1)·µ»Ø×îºóÒ»´Î¹ÒÔØµ½homeÄ¿Â¼µÄ¿éÉè±¸¹ÒÔØÊ±Éú³ÉµÄmount½á¹¹¡£
-ÅĞ¶Ï·½·¨ºÜ¼òµ¥£¬¾ÍÊÇif (&p->mnt_parent->mnt == mnt && p->mnt_mountpoint == dentry)£¬´ÓmountÊ÷ÖĞÕÒµ½Ò»¸ömount_x£¬
-Èç¹ûmount_x->mnt_parent->mnt=mount1->mnt,²¢ÇÒmount_x->mnt_mountpoint=dentry1£¬ÄÇËµÃ÷Õâ¸ömount_xÒ»¶¨ÊÇ¹ÒÔØµ½homeÄ¿Â¼µÄÄÇ¸ö
-¿éÉè±¸¹ÒÔØÊ±Éú³É£¬·µ»Ømount_x¼´¿É¡£µ±È»Õâ¸öhomeÄ¿Â¼»áÓĞ¶à¸ö¿éÉè±¸»òÕßtmpfs¹ÒÔØ£¬ÄÇ¾ÍÑ­»·Ö´ĞĞ__lookup_mnt()£¬
-Ö±µ½ÕÒµ½×îºóÒ»´Î¹ÒÔØµ½homeÄ¿Â¼µÄÄÇ¸ö¿éÉè±¸µÄmount½á¹¹¡£ÖØµã×¢Òâ£¬ÉÏ±ß±íÊöÓĞÎóµ¼µÄµØ·½£¬
-/home/ËùÔÚÎÄ¼şÏµÍ³¹ÒÔØÊ±Éú³É£¬mount1
-mount /dev/sda3 /home/  source mount:mount2£¬dest mountÊÇmount1£¬mount2->parent=mount1¡£¹ÒÔØµãÄ¿Â¼ÊÇdentry1
-mount /dev/sda5 /home/  source mount:mount5£¬dest mountÊÇmount2£¬mount5->parent=mount2¡£¹ÒÔØµãÄ¿Â¼ÊÇdentry2
-__lookup_mnt()ÔòÒªÅĞ¶ÏÁ½´Î£¬µÚÒ»´ÎÊÇif (&p->mnt_parent->mnt ==mount1->vfsmnt  && p->mnt_mountpoint == dentry1)£¬´ËÊ±ÊÇÒª±éÀú¸¸mount
-ÊÇmount1µÄmount£¬¼´mount2¡£½Ó×ÅÒªif (&p->mnt_parent->mnt ==mount2->vfsmnt  && p->mnt_mountpoint == dentry2)£¬
-´ËÊ±ÊÇÒª±éÀú¸¸mountÊÇmount2µÄmount£¬¼´mount5¡£ËùÒÔËµ£¬µ±ÓĞ¶à¸ö¿éÉè±¸¹ÒÔØµ½/homeÄ¿Â¼Ê±£¬Ã¿´ÎµÄ¸¸mount¶¼ÊÇ²»Ò»ÑùµÄ¡£
+/*è¿™ä¸ªå‡½æ•°æ˜¯éå†æŒ‚è½½ç‚¹ç›®å½•çš„æ ¸å¿ƒã€‚mount /dev/sda3 /home/ï¼Œ/home/æ‰€åœ¨æ–‡ä»¶ç³»ç»Ÿçš„æ˜¯mount1ï¼Œæœ¬æ¬¡æ˜¯dest mountï¼ŒæŒ‚è½½ç‚¹ç›®å½•æ˜¯homeç›®å½•dentryï¼Œ
+æˆä¸ºdentry1ï¼Œæ­¤æ—¶homeç›®å½•è¿˜æ²¡æœ‰å—è®¾å¤‡æŒ‚è½½ã€‚
+æœ¬æ¬¡çš„source mountæ˜¯/dev/sda3ç”Ÿæˆï¼Œæˆä¸ºmount2ã€‚åœ¨æŒ‚è½½çš„æœ€åï¼Œä¼šè®¾ç½®mount2->parent=mount1ï¼Œmount2->mnt_mountpoint=dentry1ã€‚
+dest mountæ˜¯source mountçš„çˆ¶äº²ï¼Œè¿™æ˜¯è§„å®š!å½“å†mount /dev/sd2 /homeï¼Œæœ¬æ¬¡çš„æŒ‚è½½ç‚¹ç›®å½•ä¾ç„¶æ˜¯homeï¼Œä½†æ˜¯homeçš„dentryå±æ€§è¡¨ç¤ºå®ƒæ˜¯ä¸ªæŒ‚è½½ç‚¹
+ç›®å½•ï¼Œæ­¤æ—¶å°±è¦æ‰§è¡Œ__follow_mount_rcu->__lookup_mnt(mount1->mnt,dentry1)è¿”å›æœ€åä¸€æ¬¡æŒ‚è½½åˆ°homeç›®å½•çš„å—è®¾å¤‡æŒ‚è½½æ—¶ç”Ÿæˆçš„mountç»“æ„ã€‚
+åˆ¤æ–­æ–¹æ³•å¾ˆç®€å•ï¼Œå°±æ˜¯if (&p->mnt_parent->mnt == mnt && p->mnt_mountpoint == dentry)ï¼Œä»mountæ ‘ä¸­æ‰¾åˆ°ä¸€ä¸ªmount_xï¼Œ
+å¦‚æœmount_x->mnt_parent->mnt=mount1->mnt,å¹¶ä¸”mount_x->mnt_mountpoint=dentry1ï¼Œé‚£è¯´æ˜è¿™ä¸ªmount_xä¸€å®šæ˜¯æŒ‚è½½åˆ°homeç›®å½•çš„é‚£ä¸ª
+å—è®¾å¤‡æŒ‚è½½æ—¶ç”Ÿæˆï¼Œè¿”å›mount_xå³å¯ã€‚å½“ç„¶è¿™ä¸ªhomeç›®å½•ä¼šæœ‰å¤šä¸ªå—è®¾å¤‡æˆ–è€…tmpfsæŒ‚è½½ï¼Œé‚£å°±å¾ªç¯æ‰§è¡Œ__lookup_mnt()ï¼Œ
+ç›´åˆ°æ‰¾åˆ°æœ€åä¸€æ¬¡æŒ‚è½½åˆ°homeç›®å½•çš„é‚£ä¸ªå—è®¾å¤‡çš„mountç»“æ„ã€‚é‡ç‚¹æ³¨æ„ï¼Œä¸Šè¾¹è¡¨è¿°æœ‰è¯¯å¯¼çš„åœ°æ–¹ï¼Œ
+/home/æ‰€åœ¨æ–‡ä»¶ç³»ç»ŸæŒ‚è½½æ—¶ç”Ÿæˆï¼Œmount1
+mount /dev/sda3 /home/  source mount:mount2ï¼Œdest mountæ˜¯mount1ï¼Œmount2->parent=mount1ã€‚æŒ‚è½½ç‚¹ç›®å½•æ˜¯dentry1
+mount /dev/sda5 /home/  source mount:mount5ï¼Œdest mountæ˜¯mount2ï¼Œmount5->parent=mount2ã€‚æŒ‚è½½ç‚¹ç›®å½•æ˜¯dentry2
+__lookup_mnt()åˆ™è¦åˆ¤æ–­ä¸¤æ¬¡ï¼Œç¬¬ä¸€æ¬¡æ˜¯if (&p->mnt_parent->mnt ==mount1->vfsmnt  && p->mnt_mountpoint == dentry1)ï¼Œæ­¤æ—¶æ˜¯è¦éå†çˆ¶mount
+æ˜¯mount1çš„mountï¼Œå³mount2ã€‚æ¥ç€è¦if (&p->mnt_parent->mnt ==mount2->vfsmnt  && p->mnt_mountpoint == dentry2)ï¼Œ
+æ­¤æ—¶æ˜¯è¦éå†çˆ¶mountæ˜¯mount2çš„mountï¼Œå³mount5ã€‚æ‰€ä»¥è¯´ï¼Œå½“æœ‰å¤šä¸ªå—è®¾å¤‡æŒ‚è½½åˆ°/homeç›®å½•æ—¶ï¼Œæ¯æ¬¡çš„çˆ¶mountéƒ½æ˜¯ä¸ä¸€æ ·çš„ã€‚
 
-×Ü½áÒ»¾ä»°:__follow_mount_rcu->__lookup_mnt ¾ÍÊÇÕÒµ½×îºóÒ»´Î¹ÒÔØµ½/homeµÄ¿éÉè±¸»òÕßtmpfsµÄÎÄ¼şÏµÍ³Éú³ÉµÄmount½á¹¹
+æ€»ç»“ä¸€å¥è¯:__follow_mount_rcu->__lookup_mnt å°±æ˜¯æ‰¾åˆ°æœ€åä¸€æ¬¡æŒ‚è½½åˆ°/homeçš„å—è®¾å¤‡æˆ–è€…tmpfsçš„æ–‡ä»¶ç³»ç»Ÿç”Ÿæˆçš„mountç»“æ„
 */
-//ÔÚmount hashÁ´±íÖĞÕÒµ½mountµÄmnt_parent£¬Èç¹ûÕâ¸öparent mountÓë´«ÈëµÄvfsmountµÄmountÊÇÍ¬Ò»¸ö£¬²¢ÇÒparent mountµÄmnt_mountpoint
-//Óë´«ÈëµÄ¹ÒÔØµãÄ¿Â¼dentryÊÇÍ¬Ò»¸ö£¬ÄÇ¾Í·µ»ØÕâ¸öparent mount
+//åœ¨mount hashé“¾è¡¨ä¸­æ‰¾åˆ°mountçš„mnt_parentï¼Œå¦‚æœè¿™ä¸ªparent mountä¸ä¼ å…¥çš„vfsmountçš„mountæ˜¯åŒä¸€ä¸ªï¼Œå¹¶ä¸”parent mountçš„mnt_mountpoint
+//ä¸ä¼ å…¥çš„æŒ‚è½½ç‚¹ç›®å½•dentryæ˜¯åŒä¸€ä¸ªï¼Œé‚£å°±è¿”å›è¿™ä¸ªparent mount
 struct mount *__lookup_mnt(struct vfsmount *mnt, struct dentry *dentry,
-			      int dir)//dir:__lookup_mnt()´«½øÀ´ÊÇ1
+			      int dir)//dir:__lookup_mnt()ä¼ è¿›æ¥æ˜¯1
 {
-    //ÒÔvfsmountºÍ¹ÒÔØµãÄ¿Â¼dentryÕÒµ½mount hashÁ´±íÍ·£¬commit_tree()°Ñmount¼ÓÈë¸ÃÁ´±í£¬
-    //ÓÃµÄ¼üÖµÒ²ÊÇ(¸¸mount½á¹¹µÄvfsmount³ÉÔ±+¸ÃmountµÄ¹ÒÔØµãdentry),ËùÒÔ¸Ãº¯Êı´«ÈëµÄvfsmount£¬ÊÇ¸¸mountµÄvfsmount
+    //ä»¥vfsmountå’ŒæŒ‚è½½ç‚¹ç›®å½•dentryæ‰¾åˆ°mount hashé“¾è¡¨å¤´ï¼Œcommit_tree()æŠŠmountåŠ å…¥è¯¥é“¾è¡¨ï¼Œ
+    //ç”¨çš„é”®å€¼ä¹Ÿæ˜¯(çˆ¶mountç»“æ„çš„vfsmountæˆå‘˜+è¯¥mountçš„æŒ‚è½½ç‚¹dentry),æ‰€ä»¥è¯¥å‡½æ•°ä¼ å…¥çš„vfsmountï¼Œæ˜¯çˆ¶mountçš„vfsmount
 	struct list_head *head = mount_hashtable + hash(mnt, dentry);
 	struct list_head *tmp = head;
 	struct mount *p, *found = NULL;
 
 	for (;;) {
-        //Èç¹ûdirÎª1£¬ÏòÁ´±íºóËÑË÷£¬·ñÔòÏòÁ´±íÇ°ËÑË÷
+        //å¦‚æœdirä¸º1ï¼Œå‘é“¾è¡¨åæœç´¢ï¼Œå¦åˆ™å‘é“¾è¡¨å‰æœç´¢
 		tmp = dir ? tmp->next : tmp->prev;
 		p = NULL;
 
-        //ÕâÀïÓ¦¸ÃÊÇÕÒµ½Á´±íÎ²ÁË°É£¬Ã»ÓĞÕÒµ½Æ¥ÅäµÄ
+        //è¿™é‡Œåº”è¯¥æ˜¯æ‰¾åˆ°é“¾è¡¨å°¾äº†å§ï¼Œæ²¡æœ‰æ‰¾åˆ°åŒ¹é…çš„
 		if (tmp == head)
 			break;
-        //ÓÉmnt_hashÕÒµ½mount
+        //ç”±mnt_hashæ‰¾åˆ°mount
 		p = list_entry(tmp, struct mount, mnt_hash);
 
-        //ÕâÊÇËµhashÁ´±íÉÏµÄmountµÄmnt_parentÓëµ±Ç°´«ÈëµÄvfsmountµÄmountÒ»ÖÂ£¬²¢ÇÒÕâ¸ömountµÄ¹ÒÔØµãÄ¿Â¼dentryÓë´«ÈëµÄÒ»ÖÂ
+        //è¿™æ˜¯è¯´hashé“¾è¡¨ä¸Šçš„mountçš„mnt_parentä¸å½“å‰ä¼ å…¥çš„vfsmountçš„mountä¸€è‡´ï¼Œå¹¶ä¸”è¿™ä¸ªmountçš„æŒ‚è½½ç‚¹ç›®å½•dentryä¸ä¼ å…¥çš„ä¸€è‡´
 		if (&p->mnt_parent->mnt == mnt && p->mnt_mountpoint == dentry) {
 			found = p;
 			break;
@@ -622,16 +622,16 @@ struct mount *__lookup_mnt(struct vfsmount *mnt, struct dentry *dentry,
  *
  * lookup_mnt takes a reference to the found vfsmount.
  */
-//±ÈÈç±¾´Îmount /dev/sda0 /mnt,¶øÖ®Ç°ÒÑ¾­ÓĞsda1¡¢sda2¡¢sda3¹ÒÔØµ½ÁË/mmt£¬__lookup_mnt()ÕâÀï±ßÒÀ´ÎÕÒµ½sda1¡¢sda2¡¢sda3µÄmount²¢·µ»Ø
-//¸øchild_mnt,×îºóÒ»´ÎÊÇ·µ»ØNULL£¬´ËÊ±²Å¿ªÊ¼´¦Àímount /dev/sda0 /mntµÄmount
+//æ¯”å¦‚æœ¬æ¬¡mount /dev/sda0 /mnt,è€Œä¹‹å‰å·²ç»æœ‰sda1ã€sda2ã€sda3æŒ‚è½½åˆ°äº†/mmtï¼Œ__lookup_mnt()è¿™é‡Œè¾¹ä¾æ¬¡æ‰¾åˆ°sda1ã€sda2ã€sda3çš„mountå¹¶è¿”å›
+//ç»™child_mnt,æœ€åä¸€æ¬¡æ˜¯è¿”å›NULLï¼Œæ­¤æ—¶æ‰å¼€å§‹å¤„ç†mount /dev/sda0 /mntçš„mount
 struct vfsmount *lookup_mnt(struct path *path)
 {
 	struct mount *child_mnt;
 
 	br_read_lock(&vfsmount_lock);
-//ÔÚmount hashÁ´±íÖĞÕÒµ½mountµÄmnt_parent£¬Èç¹ûÕâ¸öparent mountÓë´«ÈëµÄpath->mntµÄmountÊÇÍ¬Ò»¸ö£¬²¢ÇÒparent mountµÄmnt_mountpoint
-//Óë´«ÈëµÄ¹ÒÔØµãÄ¿Â¼path->dentryÊÇÍ¬Ò»¸ö£¬ÄÇ¾Í·µ»ØÕâ¸öparent mount¡£ÕâÑù¿´À´µÄ»°£¬ËÑË÷sda1¡¢sda2¡¢sda3¹ÒÔØµ½/mnt/µÄmount½á¹¹
-//Êµ¼ÊÊÇËÑË÷µÄmount hashÁ´±íÖĞÕÒµ½mountµÄmnt_parentÑ½
+//åœ¨mount hashé“¾è¡¨ä¸­æ‰¾åˆ°mountçš„mnt_parentï¼Œå¦‚æœè¿™ä¸ªparent mountä¸ä¼ å…¥çš„path->mntçš„mountæ˜¯åŒä¸€ä¸ªï¼Œå¹¶ä¸”parent mountçš„mnt_mountpoint
+//ä¸ä¼ å…¥çš„æŒ‚è½½ç‚¹ç›®å½•path->dentryæ˜¯åŒä¸€ä¸ªï¼Œé‚£å°±è¿”å›è¿™ä¸ªparent mountã€‚è¿™æ ·çœ‹æ¥çš„è¯ï¼Œæœç´¢sda1ã€sda2ã€sda3æŒ‚è½½åˆ°/mnt/çš„mountç»“æ„
+//å®é™…æ˜¯æœç´¢çš„mount hashé“¾è¡¨ä¸­æ‰¾åˆ°mountçš„mnt_parentå‘€
 	child_mnt = __lookup_mnt(path->mnt, path->dentry, 1);
 	if (child_mnt) {
 		mnt_add_count(child_mnt, 1);
@@ -645,11 +645,11 @@ struct vfsmount *lookup_mnt(struct path *path)
 
 static struct mountpoint *new_mountpoint(struct dentry *dentry)
 {
-    //ÏÔÈ»£¬ÓÖÊÇÒ»¸öhashÁ´±í£¬»ùÓÚ¹ÒÔØµãÄ¿Â¼dentry
+    //æ˜¾ç„¶ï¼Œåˆæ˜¯ä¸€ä¸ªhashé“¾è¡¨ï¼ŒåŸºäºæŒ‚è½½ç‚¹ç›®å½•dentry
 	struct list_head *chain = mountpoint_hashtable + hash(NULL, dentry);
 	struct mountpoint *mp;
     
-    //ÏÈÔÚhashÁ´±íÖĞ²éÕÒÒÑÓĞµÄmountpoint£¬ÊÇ·ñËüµÄ¹ÒÔØµãÄ¿Â¼dentryÓë´«ÈëµÄdentryÏàµÈ
+    //å…ˆåœ¨hashé“¾è¡¨ä¸­æŸ¥æ‰¾å·²æœ‰çš„mountpointï¼Œæ˜¯å¦å®ƒçš„æŒ‚è½½ç‚¹ç›®å½•dentryä¸ä¼ å…¥çš„dentryç›¸ç­‰
 	list_for_each_entry(mp, chain, m_hash) {
 	    
 		if (mp->m_dentry == dentry) {
@@ -660,7 +660,7 @@ static struct mountpoint *new_mountpoint(struct dentry *dentry)
 			return mp;
 		}
 	}
-    //ÕÒ²»µ½¾Í·ÖÅäÒ»¸öĞÂµÄmp
+    //æ‰¾ä¸åˆ°å°±åˆ†é…ä¸€ä¸ªæ–°çš„mp
 	mp = kmalloc(sizeof(struct mountpoint), GFP_KERNEL);
 	if (!mp)
 		return ERR_PTR(-ENOMEM);
@@ -673,7 +673,7 @@ static struct mountpoint *new_mountpoint(struct dentry *dentry)
 	}
 	dentry->d_flags |= DCACHE_MOUNTED;
 	spin_unlock(&dentry->d_lock);
-    //¹ÒÔØµãÄ¿Â¼dentry
+    //æŒ‚è½½ç‚¹ç›®å½•dentry
 	mp->m_dentry = dentry;
 	mp->m_count = 1;
 	list_add(&mp->m_hash, chain);
@@ -737,79 +737,79 @@ static void detach_mnt(struct mount *mnt, struct path *old_path)
 /*
  * vfsmount lock must be held for write
  */
-//Ö÷ÒªÉèÖÃ±¾´ÎĞÂÉú³ÉµÄ¹ÒÔØÔ´mount->mnt_mountpointÎª±¾´Î¹ÒÔØµãÄ¿Â¼µÄdentry
-void mnt_set_mountpoint(struct mount *mnt,//dest_mnt  ¹ÒÔØµãÄ¿Â¼ËùÔÚµÄÎÄ¼şÏµÍ³µÄmount½á¹¹
+//ä¸»è¦è®¾ç½®æœ¬æ¬¡æ–°ç”Ÿæˆçš„æŒ‚è½½æºmount->mnt_mountpointä¸ºæœ¬æ¬¡æŒ‚è½½ç‚¹ç›®å½•çš„dentry
+void mnt_set_mountpoint(struct mount *mnt,//dest_mnt  æŒ‚è½½ç‚¹ç›®å½•æ‰€åœ¨çš„æ–‡ä»¶ç³»ç»Ÿçš„mountç»“æ„
 			struct mountpoint *mp,//dest_mp
-			struct mount *child_mnt)//child_mnt ¹ÒÔØÔ´£¬¾ÍÊÇ±¾´ÎmountĞÂÉú³ÉµÄ
+			struct mount *child_mnt)//child_mnt æŒ‚è½½æºï¼Œå°±æ˜¯æœ¬æ¬¡mountæ–°ç”Ÿæˆçš„
 {
 	mp->m_count++;
 	mnt_add_count(mnt, 1);	/* essentially, that's mntget */
-    //ÉèÖÃÎª¹ÒÔØµãÄ¿Â¼dentry
+    //è®¾ç½®ä¸ºæŒ‚è½½ç‚¹ç›®å½•dentry
 	child_mnt->mnt_mountpoint = dget(mp->m_dentry);
-    //mnt_parent¾¹È»Îª¹ÒµãÄ¿Â¼ËùÔÚÎÄ¼şÏµÍ³µÄmount
+    //mnt_parentç«Ÿç„¶ä¸ºæŒ‚ç‚¹ç›®å½•æ‰€åœ¨æ–‡ä»¶ç³»ç»Ÿçš„mount
 	child_mnt->mnt_parent = mnt;
-    //ÉèÖÃÎª¹ÒÔØµãmountpoint
+    //è®¾ç½®ä¸ºæŒ‚è½½ç‚¹mountpoint
 	child_mnt->mnt_mp = mp;
 }
 
 /*
  * vfsmount lock must be held for write
  */
-//mntÊÇ±¾´Î¹ÒÔØµÄ¹ÒÔØÔ´ĞÂÉú³ÉµÄmount£¬ÉèÖÃ¹ÒÔØµãÄ¿Â¼µÈµÈ£¬²¢°ÑmntÌí¼Óµ½mnt_hash£¬mnt_childÁ´±í¡£parentÊÇ¹ÒÔØµãÄ¿Â¼ËùÊôÎÄ¼şÏµÍ³mount
+//mntæ˜¯æœ¬æ¬¡æŒ‚è½½çš„æŒ‚è½½æºæ–°ç”Ÿæˆçš„mountï¼Œè®¾ç½®æŒ‚è½½ç‚¹ç›®å½•ç­‰ç­‰ï¼Œå¹¶æŠŠmntæ·»åŠ åˆ°mnt_hashï¼Œmnt_childé“¾è¡¨ã€‚parentæ˜¯æŒ‚è½½ç‚¹ç›®å½•æ‰€å±æ–‡ä»¶ç³»ç»Ÿmount
 static void attach_mnt(struct mount *mnt,
 			struct mount *parent,
 			struct mountpoint *mp)
 {
-    //Ö÷ÒªÉèÖÃ±¾´ÎĞÂÉú³ÉµÄ¹ÒÔØÔ´mnt->mnt_mountpointÎª±¾´Î¹ÒÔØµãÄ¿Â¼µÄdentry
+    //ä¸»è¦è®¾ç½®æœ¬æ¬¡æ–°ç”Ÿæˆçš„æŒ‚è½½æºmnt->mnt_mountpointä¸ºæœ¬æ¬¡æŒ‚è½½ç‚¹ç›®å½•çš„dentry
 	mnt_set_mountpoint(parent, mp, mnt);
-    //±¾´ÎĞÂÉú³ÉµÄ¹ÒÔØÔ´mntÌí¼Óµ½mount_hashtable±í
+    //æœ¬æ¬¡æ–°ç”Ÿæˆçš„æŒ‚è½½æºmntæ·»åŠ åˆ°mount_hashtableè¡¨
 	list_add_tail(&mnt->mnt_hash, mount_hashtable +
 			hash(&parent->mnt, mp->m_dentry));
-    //±¾´ÎĞÂÉú³ÉµÄ¹ÒÔØÔ´mntÌí¼Óµ½¹ÒÔØµãÄ¿Â¼ËùÔÚÎÄ¼şÏµÍ³mountµÄmnt_mountsÁ´±í¡£
-  /*¹ØÓÚ¸¸×ÓmountµÄÀí½â£¬Ã¿Ò»´Î¹ÒÔØ£¬¶¼»áÕë¶Ô¹ÒÔØÔ´Éú³ÉÒ»¸ömount½á¹¹£¬¼´source mount£¬¶øÕë¶Ô¹ÒÔØµãÄ¿Â¼Ëù´¦ÎÄ¼şÏµÍ³µÄdest mount£¬
-    ¾ÍÊÇ±¾´Î¹ÒÔÚµÄ¸¸mount¡£source mountÊÇ×Ómount,dest mountÊÇ¸¸mount£¬source mnt->mnt_childÁ´½Óµ½dest mountµÄparent->mnt_mounts¡£
-    ¾ÙÀı£¬dest mountÊÇsda3 ¹ÒÔÚµ½¸ùÄ¿Â¼'/'Éú³ÉµÄ£¬È»ºósda5¹ÒÔØµ½/homeÄ¿Â¼£¬Õâ´ÎÉú³ÉµÄmount£¬¼´souce mount£¬Óësda3µÄdest mountÊÇ¸¸×Ó¹ØÏµ¡£ */
+    //æœ¬æ¬¡æ–°ç”Ÿæˆçš„æŒ‚è½½æºmntæ·»åŠ åˆ°æŒ‚è½½ç‚¹ç›®å½•æ‰€åœ¨æ–‡ä»¶ç³»ç»Ÿmountçš„mnt_mountsé“¾è¡¨ã€‚
+  /*å…³äºçˆ¶å­mountçš„ç†è§£ï¼Œæ¯ä¸€æ¬¡æŒ‚è½½ï¼Œéƒ½ä¼šé’ˆå¯¹æŒ‚è½½æºç”Ÿæˆä¸€ä¸ªmountç»“æ„ï¼Œå³source mountï¼Œè€Œé’ˆå¯¹æŒ‚è½½ç‚¹ç›®å½•æ‰€å¤„æ–‡ä»¶ç³»ç»Ÿçš„dest mountï¼Œ
+    å°±æ˜¯æœ¬æ¬¡æŒ‚åœ¨çš„çˆ¶mountã€‚source mountæ˜¯å­mount,dest mountæ˜¯çˆ¶mountï¼Œsource mnt->mnt_childé“¾æ¥åˆ°dest mountçš„parent->mnt_mountsã€‚
+    ä¸¾ä¾‹ï¼Œdest mountæ˜¯sda3 æŒ‚åœ¨åˆ°æ ¹ç›®å½•'/'ç”Ÿæˆçš„ï¼Œç„¶åsda5æŒ‚è½½åˆ°/homeç›®å½•ï¼Œè¿™æ¬¡ç”Ÿæˆçš„mountï¼Œå³souce mountï¼Œä¸sda3çš„dest mountæ˜¯çˆ¶å­å…³ç³»ã€‚ */
 	list_add_tail(&mnt->mnt_child, &parent->mnt_mounts);
 }
 
 /*
  * vfsmount lock must be held for write
  */
-//°Ñmount½á¹¹Ìí¼Óµ½¸÷¸öÁ´±í£¬ÉèÖÃmountµÄÎÄ¼şÏµÍ³ÃüÃû¿Õ¼äÎª¸¸mountµÄÃüÃû¿Õ¼ä
+//æŠŠmountç»“æ„æ·»åŠ åˆ°å„ä¸ªé“¾è¡¨ï¼Œè®¾ç½®mountçš„æ–‡ä»¶ç³»ç»Ÿå‘½åç©ºé—´ä¸ºçˆ¶mountçš„å‘½åç©ºé—´
 static void commit_tree(struct mount *mnt)
 {
-    //mntµÄ¸¸mount£¬ÕâÊÇmntµÄ¹ÒÔØµãÄ¿Â¼ËùÔÚµÄÎÄ¼şÏµÍ³mount
+    //mntçš„çˆ¶mountï¼Œè¿™æ˜¯mntçš„æŒ‚è½½ç‚¹ç›®å½•æ‰€åœ¨çš„æ–‡ä»¶ç³»ç»Ÿmount
 	struct mount *parent = mnt->mnt_parent;
 	struct mount *m;
 	LIST_HEAD(head);
-    //ÎÄ¼şÏµÍ³ÃüÃû¿Õ¼ä£¬À´×Ô¸¸mount
+    //æ–‡ä»¶ç³»ç»Ÿå‘½åç©ºé—´ï¼Œæ¥è‡ªçˆ¶mount
 	struct mnt_namespace *n = parent->mnt_ns;
 
 	BUG_ON(parent == mnt);
-    //°ÑmntÌí¼Óµ½headÁ´±í£¬
+    //æŠŠmntæ·»åŠ åˆ°headé“¾è¡¨ï¼Œ
 	list_add_tail(&head, &mnt->mnt_list);
     
-    //ÉèÖÃmountµÄÃüÃû¿Õ¼ä£¬ÎªÊ²Ã´ÒªÑ­»·ÉèÖÃÄØ??????²»¾ÍÊÇÒ»¸ömount½á¹¹?¿´Õâ¸öÑ­»·µÄÒâË¼ÊÇ£¬ÒÔ¸ÃmountÎªÁ´±íÍ·£¬ÓĞ¶à¸ömount½á¹¹
-    //Í¨¹ıÆämnt_list½á¹¹Á´ÈëÕâ¸öÁ´±í£¬Õâ¸öÑ­»·ÊÇÉèÖÃËùÓĞÕâ¸öÁ´±íÉÏµÄmountµÄÃüÃû¿Õ¼äÎª¸¸mountµÄÃüÃû¿Õ¼ä
+    //è®¾ç½®mountçš„å‘½åç©ºé—´ï¼Œä¸ºä»€ä¹ˆè¦å¾ªç¯è®¾ç½®å‘¢??????ä¸å°±æ˜¯ä¸€ä¸ªmountç»“æ„?çœ‹è¿™ä¸ªå¾ªç¯çš„æ„æ€æ˜¯ï¼Œä»¥è¯¥mountä¸ºé“¾è¡¨å¤´ï¼Œæœ‰å¤šä¸ªmountç»“æ„
+    //é€šè¿‡å…¶mnt_listç»“æ„é“¾å…¥è¿™ä¸ªé“¾è¡¨ï¼Œè¿™ä¸ªå¾ªç¯æ˜¯è®¾ç½®æ‰€æœ‰è¿™ä¸ªé“¾è¡¨ä¸Šçš„mountçš„å‘½åç©ºé—´ä¸ºçˆ¶mountçš„å‘½åç©ºé—´
 	list_for_each_entry(m, &head, mnt_list)
 		m->mnt_ns = n;
 
-    //°Ñmount½á¹¹Ìí¼Óµ½¸¸mountµÄmnt_nsµÄlistÁ´±í£¬±¾´ÎµÄmount½á¹¹ÔÚheadÁ´±íÉÏ
+    //æŠŠmountç»“æ„æ·»åŠ åˆ°çˆ¶mountçš„mnt_nsçš„listé“¾è¡¨ï¼Œæœ¬æ¬¡çš„mountç»“æ„åœ¨headé“¾è¡¨ä¸Š
 	list_splice(&head, n->list.prev);
 
-    //¿¿mnt_hash°Ñµ±Ç°µÄmount½á¹¹Á´Èëmount hashÁ´±í£¬²¢ÇÒÁ´Èëhash±íµÄ¼üÖµÊÇ(¸¸mount½á¹¹µÄvfsmount³ÉÔ±+¸ÃmountµÄ¹ÒÔØµãdentry)
+    //é mnt_hashæŠŠå½“å‰çš„mountç»“æ„é“¾å…¥mount hashé“¾è¡¨ï¼Œå¹¶ä¸”é“¾å…¥hashè¡¨çš„é”®å€¼æ˜¯(çˆ¶mountç»“æ„çš„vfsmountæˆå‘˜+è¯¥mountçš„æŒ‚è½½ç‚¹dentry)
 	list_add_tail(&mnt->mnt_hash, mount_hashtable +
 				hash(&parent->mnt, mnt->mnt_mountpoint));
-    //¿¿mnt_child°Ñmount½á¹¹Ìí¼Óµ½mountµÄmnt_parentµÄmnt_mountsÁ´±í
+    //é mnt_childæŠŠmountç»“æ„æ·»åŠ åˆ°mountçš„mnt_parentçš„mnt_mountsé“¾è¡¨
 	list_add_tail(&mnt->mnt_child, &parent->mnt_mounts);
 	touch_mnt_namespace(n);
 }
-//È¡³öp->mnt_mountsÁ´±íÉÏµÄÏÂÒ»¸ö×Ómount½á¹¹
-static struct mount *next_mnt(struct mount *p, struct mount *root)//root:invent_group_ids´«¹ıÀ´µÄÊÇNULL
+//å–å‡ºp->mnt_mountsé“¾è¡¨ä¸Šçš„ä¸‹ä¸€ä¸ªå­mountç»“æ„
+static struct mount *next_mnt(struct mount *p, struct mount *root)//root:invent_group_idsä¼ è¿‡æ¥çš„æ˜¯NULL
 {
-    //ÏÂÒ»¸ömount
+    //ä¸‹ä¸€ä¸ªmount
 	struct list_head *next = p->mnt_mounts.next;
-    //ÏÂÒ»¸ömountºÍµ±Ç°Ö¸ÏòµÄmount½á¹¹ÊÇÍ¬Ò»¸ö??????ÕâÊÇÉ¶ÒâË¼£¬Ó¦¸ÃÊÇÌØÊâÇé¿ö°É
+    //ä¸‹ä¸€ä¸ªmountå’Œå½“å‰æŒ‡å‘çš„mountç»“æ„æ˜¯åŒä¸€ä¸ª??????è¿™æ˜¯å•¥æ„æ€ï¼Œåº”è¯¥æ˜¯ç‰¹æ®Šæƒ…å†µå§
 	if (next == &p->mnt_mounts) {
 		while (1) {
 			if (p == root)
@@ -817,11 +817,11 @@ static struct mount *next_mnt(struct mount *p, struct mount *root)//root:invent_
 			next = p->mnt_child.next;
 			if (next != &p->mnt_parent->mnt_mounts)
 				break;
-            //ÒÀ´ÎÈ¡³ömnt_parent¸¸mount
+            //ä¾æ¬¡å–å‡ºmnt_parentçˆ¶mount
 			p = p->mnt_parent;
 		}
 	}
-    //¸ù¾İnext·µ»Ø¶ÔÓ¦µÄmount½á¹¹
+    //æ ¹æ®nextè¿”å›å¯¹åº”çš„mountç»“æ„
 	return list_entry(next, struct mount, mnt_child);
 }
 
@@ -836,10 +836,10 @@ static struct mount *skip_mnt_tree(struct mount *p)
 }
 
 /*
- ²éÕÒµ½/dev/mmcblk0p5µÄdentry¡¢mnt¡¢inode½á¹¹£¬²¢ÓÉinodeµÃµ½¿éÉè±¸µÄbdev£¬´´½¨superblock
- ½á¹¹²¢³õÊ¼»¯Æä³ÉÔ±¡£È»ºó¶ÁÈ¡ext4ÎÄ¼şÏµÍ³flashÖĞµÄ³¬¼¶¿ìÊı¾İ£¬²¢·ÖÎö³¬¼¶¿ìÊı¾İ£¬¸ø
- ext4_super_block¡¢ext4_sb_info¡¢super_block¸³Öµ¡£µÃµ½ext4ÎÄ¼şÏµÍ³µÄroot inode£¬
- ÒÔ"/"Ä¿Â¼Ãû×Ö·ÖÅä²¢³õÊ¼»¯root dentry£¬²¢¶Ôvfsmont³õÊ¼»¯
+ æŸ¥æ‰¾åˆ°/dev/mmcblk0p5çš„dentryã€mntã€inodeç»“æ„ï¼Œå¹¶ç”±inodeå¾—åˆ°å—è®¾å¤‡çš„bdevï¼Œåˆ›å»ºsuperblock
+ ç»“æ„å¹¶åˆå§‹åŒ–å…¶æˆå‘˜ã€‚ç„¶åè¯»å–ext4æ–‡ä»¶ç³»ç»Ÿflashä¸­çš„è¶…çº§å¿«æ•°æ®ï¼Œå¹¶åˆ†æè¶…çº§å¿«æ•°æ®ï¼Œç»™
+ ext4_super_blockã€ext4_sb_infoã€super_blockèµ‹å€¼ã€‚å¾—åˆ°ext4æ–‡ä»¶ç³»ç»Ÿçš„root inodeï¼Œ
+ ä»¥"/"ç›®å½•åå­—åˆ†é…å¹¶åˆå§‹åŒ–root dentryï¼Œå¹¶å¯¹vfsmontåˆå§‹åŒ–
  */
 
 struct vfsmount *
@@ -850,19 +850,19 @@ vfs_kern_mount(struct file_system_type *type, int flags, const char *name, void 
 
 	if (!type)
 		return ERR_PTR(-ENODEV);
-   //·ÖÅämnt½á¹¹
+   //åˆ†é…mntç»“æ„
 	mnt = alloc_vfsmnt(name);
 	if (!mnt)
 		return ERR_PTR(-ENOMEM);
 
 	if (flags & MS_KERNMOUNT)
 		mnt->mnt.mnt_flags = MNT_INTERNAL;
-    //ºËĞÄ²Ù×÷
+    //æ ¸å¿ƒæ“ä½œ
       /*
-     ²éÕÒµ½/dev/mmcblk0p5µÄdentry¡¢mnt¡¢inode½á¹¹£¬²¢ÓÉinodeµÃµ½¿éÉè±¸µÄbdev£¬´´½¨superblock
-     ½á¹¹²¢³õÊ¼»¯Æä³ÉÔ±¡£È»ºó¶ÁÈ¡ext4ÎÄ¼şÏµÍ³flashÖĞµÄ³¬¼¶¿ìÊı¾İ£¬²¢·ÖÎö³¬¼¶¿ìÊı¾İ£¬¸ø
-     ext4_super_block¡¢ext4_sb_info¡¢super_block¸³Öµ¡£µÃµ½ext4ÎÄ¼şÏµÍ³µÄroot inode£¬
-     ÒÔ"/"Ä¿Â¼Ãû×Ö·ÖÅä²¢³õÊ¼»¯root dentry£¬²¢¶Ôvfsmont³õÊ¼»¯
+     æŸ¥æ‰¾åˆ°/dev/mmcblk0p5çš„dentryã€mntã€inodeç»“æ„ï¼Œå¹¶ç”±inodeå¾—åˆ°å—è®¾å¤‡çš„bdevï¼Œåˆ›å»ºsuperblock
+     ç»“æ„å¹¶åˆå§‹åŒ–å…¶æˆå‘˜ã€‚ç„¶åè¯»å–ext4æ–‡ä»¶ç³»ç»Ÿflashä¸­çš„è¶…çº§å¿«æ•°æ®ï¼Œå¹¶åˆ†æè¶…çº§å¿«æ•°æ®ï¼Œç»™
+     ext4_super_blockã€ext4_sb_infoã€super_blockèµ‹å€¼ã€‚å¾—åˆ°ext4æ–‡ä»¶ç³»ç»Ÿçš„root inodeï¼Œ
+     ä»¥"/"ç›®å½•åå­—åˆ†é…å¹¶åˆå§‹åŒ–root dentryï¼Œå¹¶å¯¹vfsmontåˆå§‹åŒ–
      */
 	root = mount_fs(type, flags, name, data);
 	if (IS_ERR(root)) {
@@ -870,7 +870,7 @@ vfs_kern_mount(struct file_system_type *type, int flags, const char *name, void 
 		return ERR_CAST(root);
 	}
 
-    //Õâ¾ÍÊÇext4ÎÄ¼şÏµÍ³¹ÜµÀroot dentry£¬ÓÉ´Ë¿ÉÒÔµÃµ½root inode
+    //è¿™å°±æ˜¯ext4æ–‡ä»¶ç³»ç»Ÿç®¡é“root dentryï¼Œç”±æ­¤å¯ä»¥å¾—åˆ°root inode
 	mnt->mnt.mnt_root = root;
 	mnt->mnt.mnt_sb = root->d_sb;
 	mnt->mnt_mountpoint = mnt->mnt.mnt_root;
@@ -882,29 +882,29 @@ vfs_kern_mount(struct file_system_type *type, int flags, const char *name, void 
 }
 EXPORT_SYMBOL_GPL(vfs_kern_mount);
 
-/*¿ËÂ¡´´½¨±¾´Î¹ÒÔØµÄmount½á¹¹£¬¼´±¾´ÎµÄsource mount£¬´ó²¿·Ö³ÉÔ±¸´ÖÆÁËoldµÄ£¬oldÊÇmount bindÔ´Ä¿Â¼ËùÔÚÎÄ¼şÏµÍ³µÄmount½á¹¹*/
-//¼ÙÉèÔ´Ä¿Â¼/home£¬ÔòoldÊÇ/home/ËùÔÚÎÄ¼şÏµÍ³¹ÒÔØÉú³ÉµÄstruct mount£¬old_path.dentryÊÇ/home¹ÒÔØÔ´µÄ¡£Èç¹û/home/Ä¿Â¼ÒÑ¾­ÓĞ¿éÉè±¸¹ÒÔØÁË£¬
-//ÔòÒª×ª»»³ÉÖ®Ç°¹ÒÔØµÄ¿éÉè±¸µÄmount½á¹¹£¬¸³Óèold£¬È»ºóÊÇËü¸ùÄ¿Â¼dentry±£´æµ½old_path.dentry¡£mountºÍÄ¿Â¼dentryÅÙ¸ùÎÊµ×µ½×îºóµÄ¿éÉè±¸£¬ÖÕ¼«mountºÍdentry
+/*å…‹éš†åˆ›å»ºæœ¬æ¬¡æŒ‚è½½çš„mountç»“æ„ï¼Œå³æœ¬æ¬¡çš„source mountï¼Œå¤§éƒ¨åˆ†æˆå‘˜å¤åˆ¶äº†oldçš„ï¼Œoldæ˜¯mount bindæºç›®å½•æ‰€åœ¨æ–‡ä»¶ç³»ç»Ÿçš„mountç»“æ„*/
+//å‡è®¾æºç›®å½•/homeï¼Œåˆ™oldæ˜¯/home/æ‰€åœ¨æ–‡ä»¶ç³»ç»ŸæŒ‚è½½ç”Ÿæˆçš„struct mountï¼Œold_path.dentryæ˜¯/homeæŒ‚è½½æºçš„ã€‚å¦‚æœ/home/ç›®å½•å·²ç»æœ‰å—è®¾å¤‡æŒ‚è½½äº†ï¼Œ
+//åˆ™è¦è½¬æ¢æˆä¹‹å‰æŒ‚è½½çš„å—è®¾å¤‡çš„mountç»“æ„ï¼Œèµ‹äºˆoldï¼Œç„¶åæ˜¯å®ƒæ ¹ç›®å½•dentryä¿å­˜åˆ°old_path.dentryã€‚mountå’Œç›®å½•dentryåˆ¨æ ¹é—®åº•åˆ°æœ€åçš„å—è®¾å¤‡ï¼Œç»ˆæmountå’Œdentry
 static struct mount *clone_mnt(struct mount *old, struct dentry *root,
-					int flag)//old ÊÇmount --bind /home/ /home/test Ô´Ä¿Â¼/homeµÄÖÕ¼«mount£¬ÊÇ±¾´ÎµÄ¿ËÂ¡Ä¸Ìå£¬¿ËÂ¡Éú³É±¾´Î¹ÒÔØµÄsource mount
-					         //rootÊÇ/homeÄ¿Â¼ÖÕ¼«dentry£¬ÖÕ¼«µÄÒâË¼ÊÇÈç¹û¸ÃÄ¿Â¼¿ÉÄÜÓĞ¶à¸ö¿éÉè±¸¹ÒÔØ£¬Òª±éÀúµ½×îºóÒ»¸ö¿éÉè±¸µÄ¸ùÄ¿Â¼
-{                            //·ñÔò£¬Ö»ÊÇ/homeÄ¿Â¼µÄdentry
+					int flag)//old æ˜¯mount --bind /home/ /home/test æºç›®å½•/homeçš„ç»ˆæmountï¼Œæ˜¯æœ¬æ¬¡çš„å…‹éš†æ¯ä½“ï¼Œå…‹éš†ç”Ÿæˆæœ¬æ¬¡æŒ‚è½½çš„source mount
+					         //rootæ˜¯/homeç›®å½•ç»ˆædentryï¼Œç»ˆæçš„æ„æ€æ˜¯å¦‚æœè¯¥ç›®å½•å¯èƒ½æœ‰å¤šä¸ªå—è®¾å¤‡æŒ‚è½½ï¼Œè¦éå†åˆ°æœ€åä¸€ä¸ªå—è®¾å¤‡çš„æ ¹ç›®å½•
+{                            //å¦åˆ™ï¼Œåªæ˜¯/homeç›®å½•çš„dentry
 	struct super_block *sb = old->mnt.mnt_sb;
 	struct mount *mnt;
 	int err;
-    //Îª±¾´Î¹ÒÔØ·ÖÅäÒ»¸öĞÂµÄmount£¬²¢¸³ÓèmntµÄmnt_devnameÎªold->mnt_devname.
-    /*mnt¾ÍÊÇ±¾´ÎµÄ¿ËÂ¡mount£¬¼´±¾´Î¹ÒÔØµÄsource mount*/
+    //ä¸ºæœ¬æ¬¡æŒ‚è½½åˆ†é…ä¸€ä¸ªæ–°çš„mountï¼Œå¹¶èµ‹äºˆmntçš„mnt_devnameä¸ºold->mnt_devname.
+    /*mntå°±æ˜¯æœ¬æ¬¡çš„å…‹éš†mountï¼Œå³æœ¬æ¬¡æŒ‚è½½çš„source mount*/
 	mnt = alloc_vfsmnt(old->mnt_devname);
 	if (!mnt)
 		return ERR_PTR(-ENOMEM);
 
-    //Èç¹û±¾´ÎµÄ¹ÒÔØÊÇslave»òÕßprivateÊôĞÔ
+    //å¦‚æœæœ¬æ¬¡çš„æŒ‚è½½æ˜¯slaveæˆ–è€…privateå±æ€§
 	if (flag & (CL_SLAVE | CL_PRIVATE | CL_SHARED_TO_SLAVE))
 		mnt->mnt_group_id = 0; // not a peer of original 
-	else/*³ä·ÖËµÃ÷±¾´Îmount bindµÄĞÂÉú³ÉµÄsource mount¼´mnt£¬group idÀ´×Ômount bind²Ù×÷Ô´Ä¿Â¼ËùÔÚÖÕ¼«ÎÄ¼şÏµÍ³mountµÄgroup id*/
+	else/*å……åˆ†è¯´æ˜æœ¬æ¬¡mount bindçš„æ–°ç”Ÿæˆçš„source mountå³mntï¼Œgroup idæ¥è‡ªmount bindæ“ä½œæºç›®å½•æ‰€åœ¨ç»ˆææ–‡ä»¶ç³»ç»Ÿmountçš„group id*/
 		mnt->mnt_group_id = old->mnt_group_id;
 
-    //Ö»ÓĞmountÊÇshareÊôĞÔ²¢ÇÒÃ»ÓĞgroup idÊ±²Å»á·ÖÅäĞÂµÄgroup id¡£Ä¬ÈÏµÄmount¶¼ÊÇsharedÊôĞÔ£¬Ò»°ãmount²Ù×÷µÄsoucer mount²»»áÔÚÕâÀï·ÖÅä
+    //åªæœ‰mountæ˜¯shareå±æ€§å¹¶ä¸”æ²¡æœ‰group idæ—¶æ‰ä¼šåˆ†é…æ–°çš„group idã€‚é»˜è®¤çš„mountéƒ½æ˜¯sharedå±æ€§ï¼Œä¸€èˆ¬mountæ“ä½œçš„soucer mountä¸ä¼šåœ¨è¿™é‡Œåˆ†é…
 	if ((flag & CL_MAKE_SHARED) && !mnt->mnt_group_id) {
 		err = mnt_alloc_group_id(mnt);
 		if (err)
@@ -930,17 +930,17 @@ static struct mount *clone_mnt(struct mount *old, struct dentry *root,
 	}
 
 	atomic_inc(&sb->s_active);
-    /*±¾´Î¹ÒÔØ¿ËÂ¡Éú³ÉµÄmount£¬¼´mntµÄ³¬¼¶¿ìÊÇ¿ËÂ¡Ä¸ÌåµÄ*/
+    /*æœ¬æ¬¡æŒ‚è½½å…‹éš†ç”Ÿæˆçš„mountï¼Œå³mntçš„è¶…çº§å¿«æ˜¯å…‹éš†æ¯ä½“çš„*/
 	mnt->mnt.mnt_sb = sb;
     
-    //±¾´Î¹ÒÔØÔ´µÄ¸ùÄ¿Â¼dentry£¬mount --bindÄ£Ê½ÏÂ£¬¸ùÄ¿Â¼¿É²»Ò»¶¨ÊÇ¿éÉè±¸µÄ¸ùÄ¿Â¼£¬¶øÊÇ¹ÒÔØÔ´µÄÄÇ¸öÄ¿Â¼¡£±ÈÈç
-    //mount --bind  /home/test/test2  /home/test,´ËÊ±¹ÒÔØÔ´Ä¿Â¼dentryÊÇ/home/test/test2µÄ.Èç¹ûÖ®Ç°ÒÑ¾­ÓĞ¿éÉè±¸sda3¹ÒÔØµ½/home/£¬
-    //´ËÊ±µÄÔ´Ä¿Â¼Êµ¼ÊÊÇsda3ÎÄ¼şÏµÍ³ÀïµÄ/test/test2Ä¿Â¼µÄdentry,ÕâÓ¦¸ÃÊÇ¾ÍÊÇcat /proc/self/mountinfo¿´µ½µÚ4ÁĞµÄ¹ÒÔØÔ´²»ÊÇ'/'µÄÔ­Òò°É
-    /*×ÜÖ®£¬mount bind ²Ù×÷Éú³ÉµÄsource mount£¬¼´mntµÄmnt_root£¬¿ÉÄÜÖ»ÊÇmount bindÔ´Ä¿Â¼dentry*/
+    //æœ¬æ¬¡æŒ‚è½½æºçš„æ ¹ç›®å½•dentryï¼Œmount --bindæ¨¡å¼ä¸‹ï¼Œæ ¹ç›®å½•å¯ä¸ä¸€å®šæ˜¯å—è®¾å¤‡çš„æ ¹ç›®å½•ï¼Œè€Œæ˜¯æŒ‚è½½æºçš„é‚£ä¸ªç›®å½•ã€‚æ¯”å¦‚
+    //mount --bind  /home/test/test2  /home/test,æ­¤æ—¶æŒ‚è½½æºç›®å½•dentryæ˜¯/home/test/test2çš„.å¦‚æœä¹‹å‰å·²ç»æœ‰å—è®¾å¤‡sda3æŒ‚è½½åˆ°/home/ï¼Œ
+    //æ­¤æ—¶çš„æºç›®å½•å®é™…æ˜¯sda3æ–‡ä»¶ç³»ç»Ÿé‡Œçš„/test/test2ç›®å½•çš„dentry,è¿™åº”è¯¥æ˜¯å°±æ˜¯cat /proc/self/mountinfoçœ‹åˆ°ç¬¬4åˆ—çš„æŒ‚è½½æºä¸æ˜¯'/'çš„åŸå› å§
+    /*æ€»ä¹‹ï¼Œmount bind æ“ä½œç”Ÿæˆçš„source mountï¼Œå³mntçš„mnt_rootï¼Œå¯èƒ½åªæ˜¯mount bindæºç›®å½•dentry*/
 	mnt->mnt.mnt_root = dget(root);
     
-	mnt->mnt_mountpoint = mnt->mnt.mnt_root;//³õÊ¼¹ÒÔØµãÄ¿Â¼ÏÈ¸³Öµ³Émnt_root£¬ºóĞø»áÔÙ¸Ä
-	mnt->mnt_parent = mnt;//mnt_parentÒ²ÊÇÔİÊ±¸³ÖµÎª×Ô¼º£¬ºóĞøÔÙ¸Ä
+	mnt->mnt_mountpoint = mnt->mnt.mnt_root;//åˆå§‹æŒ‚è½½ç‚¹ç›®å½•å…ˆèµ‹å€¼æˆmnt_rootï¼Œåç»­ä¼šå†æ”¹
+	mnt->mnt_parent = mnt;//mnt_parentä¹Ÿæ˜¯æš‚æ—¶èµ‹å€¼ä¸ºè‡ªå·±ï¼Œåç»­å†æ”¹
 	
 	br_write_lock(&vfsmount_lock);
 	list_add_tail(&mnt->mnt_instance, &sb->s_mounts);
@@ -949,32 +949,32 @@ static struct mount *clone_mnt(struct mount *old, struct dentry *root,
 
 	if ((flag & CL_SLAVE) ||
 	    ((flag & CL_SHARED_TO_SLAVE) && IS_MNT_SHARED(old))) {
-	    /*Èç¹û¹ÒÔØÊôĞÔslave£¬±¾´Î¹ÒÔØµÄsource mountÍ¨¹ıÆämnt_slaveÁ´½Óµ½¿ËÂ¡Ä¸Ìåmount½á¹¹µÄmnt_slave_list*/
+	    /*å¦‚æœæŒ‚è½½å±æ€§slaveï¼Œæœ¬æ¬¡æŒ‚è½½çš„source mounté€šè¿‡å…¶mnt_slaveé“¾æ¥åˆ°å…‹éš†æ¯ä½“mountç»“æ„çš„mnt_slave_list*/
 		list_add(&mnt->mnt_slave, &old->mnt_slave_list);
 
-        /*mntµÄmnt_masterÖ¸Ïò¿ËÂ¡Ä¸ÌåµÄmount½á¹¹*/
+        /*mntçš„mnt_masteræŒ‡å‘å…‹éš†æ¯ä½“çš„mountç»“æ„*/
 		mnt->mnt_master = old;
 		CLEAR_MNT_SHARED(mnt);
-    //Èç¹û¹ÒÔØÃ»ÓĞprivateÊôĞÔ£¬¼´share»òÕßÃ»ÓĞÖ¸mountÊôĞÔ
+    //å¦‚æœæŒ‚è½½æ²¡æœ‰privateå±æ€§ï¼Œå³shareæˆ–è€…æ²¡æœ‰æŒ‡mountå±æ€§
 	} else if (!(flag & CL_PRIVATE)) {
 	
-	 //±¾´Î¹ÒÔØÖ¸¶¨sharedÊôĞÔ¡£»ò¹ÒÔØÔ´µÄmount(¿ËÂ¡Ä¸Ìå)ÊÇsharedÊôĞÔ£¬Õâ¾ÍÊÇmountÊ±Ã»ÓĞÖ¸¶¨ÊôĞÔ£¬ÔòÄ¬ÈÏ¾ÍÊÇshared£¬ÒòÎªËüµÄ¿ËÂ¡Ä¸ÌåÊÇshared
+	 //æœ¬æ¬¡æŒ‚è½½æŒ‡å®šsharedå±æ€§ã€‚æˆ–æŒ‚è½½æºçš„mount(å…‹éš†æ¯ä½“)æ˜¯sharedå±æ€§ï¼Œè¿™å°±æ˜¯mountæ—¶æ²¡æœ‰æŒ‡å®šå±æ€§ï¼Œåˆ™é»˜è®¤å°±æ˜¯sharedï¼Œå› ä¸ºå®ƒçš„å…‹éš†æ¯ä½“æ˜¯shared
 		if ((flag & CL_MAKE_SHARED) || IS_MNT_SHARED(old))
-        /*°Ñ±¾´Î¹ÒÔØµÄsource mountÍ¨¹ıÆämnt_shareÁ´½Óµ½¿ËÂ¡Ä¸ÌåµÄmnt_shareÁ´±í*/
+        /*æŠŠæœ¬æ¬¡æŒ‚è½½çš„source mounté€šè¿‡å…¶mnt_shareé“¾æ¥åˆ°å…‹éš†æ¯ä½“çš„mnt_shareé“¾è¡¨*/
 			list_add(&mnt->mnt_share, &old->mnt_share);
 			
-        //Èç¹û±¾´Îmount bindÃ»ÓĞÖ¸¶¨mountÊôĞÔ£¬µ«ÊÇmount bindÔ´Ä¿Â¼µÄmount¼´¿ËÂ¡Ä¸ÌåÊÇslaveÊôĞÔ£¬Ôò±¾´Î¹ÒÔØµÄsource mountÌí¼Óµ½
-        //¿ËÂ¡Ä¸Ìåmount½á¹¹µÄmnt_slaveÁ´±í¡£ÕâÑù±¾´ÎµÄsource mountºÍ¿ËÂ¡Ä¿Â¼mount¾ÍÊôÓÚÍ¬Ò»¸ömount slave×é£¬²»ÊÇ¸¸×Ó¹ØÏµ
-        /*Èç¹û¿ËÂ¡Ä¸ÌåslaveÊôĞÔ¶ø±¾´ÎmountÃ»ÓĞÖ¸¶¨ÊôĞÔ£¬Ôò±¾´Îmount»á±»Ìí¼Óµ½Óë¿ËÂ¡Ä¸ÌåÍ¬Ò»¸ömount salve×éÁ´±í*/
+        //å¦‚æœæœ¬æ¬¡mount bindæ²¡æœ‰æŒ‡å®šmountå±æ€§ï¼Œä½†æ˜¯mount bindæºç›®å½•çš„mountå³å…‹éš†æ¯ä½“æ˜¯slaveå±æ€§ï¼Œåˆ™æœ¬æ¬¡æŒ‚è½½çš„source mountæ·»åŠ åˆ°
+        //å…‹éš†æ¯ä½“mountç»“æ„çš„mnt_slaveé“¾è¡¨ã€‚è¿™æ ·æœ¬æ¬¡çš„source mountå’Œå…‹éš†ç›®å½•mountå°±å±äºåŒä¸€ä¸ªmount slaveç»„ï¼Œä¸æ˜¯çˆ¶å­å…³ç³»
+        /*å¦‚æœå…‹éš†æ¯ä½“slaveå±æ€§è€Œæœ¬æ¬¡mountæ²¡æœ‰æŒ‡å®šå±æ€§ï¼Œåˆ™æœ¬æ¬¡mountä¼šè¢«æ·»åŠ åˆ°ä¸å…‹éš†æ¯ä½“åŒä¸€ä¸ªmount salveç»„é“¾è¡¨*/
 		if (IS_MNT_SLAVE(old))
-			list_add(&mnt->mnt_slave, &old->mnt_slave);//°Ñ±¾´ÎµÄmountÁ´½Óµ½mnt_slaveÁ´±í
+			list_add(&mnt->mnt_slave, &old->mnt_slave);//æŠŠæœ¬æ¬¡çš„mounté“¾æ¥åˆ°mnt_slaveé“¾è¡¨
 			
-	    //Ä¬ÈÏÉèÖÃsource mountµÄmnt_masterÓë¿ËÂ¡Ä¸ÌåµÄold->mnt_masterÒ»ÖÂ£¬±íÊ¾Á½¸ömount¶¼ÊÇÒ»¸ömount slave×éµÄ
-	    //¾ÍÊÇËµ£¬mountÖ¸¶¨shareÊôĞÔ£¬Æämount->mnt_master²»»áÎªNULL???????????????£¬²»ÊÇ°É£¬Ó¦¸ÃÓĞµØ·½ÇåNULLµÄ°É???????
+	    //é»˜è®¤è®¾ç½®source mountçš„mnt_masterä¸å…‹éš†æ¯ä½“çš„old->mnt_masterä¸€è‡´ï¼Œè¡¨ç¤ºä¸¤ä¸ªmountéƒ½æ˜¯ä¸€ä¸ªmount slaveç»„çš„
+	    //å°±æ˜¯è¯´ï¼ŒmountæŒ‡å®šshareå±æ€§ï¼Œå…¶mount->mnt_masterä¸ä¼šä¸ºNULL???????????????ï¼Œä¸æ˜¯å§ï¼Œåº”è¯¥æœ‰åœ°æ–¹æ¸…NULLçš„å§???????
 		mnt->mnt_master = old->mnt_master;
 	}
     
-    //ÉèÖÃmountµÄsharedÊôĞÔ
+    //è®¾ç½®mountçš„sharedå±æ€§
 	if (flag & CL_MAKE_SHARED)
 		set_mnt_shared(mnt);
 
@@ -1492,49 +1492,49 @@ static bool mnt_ns_loop(struct path *path)
 	ei = get_proc_ns(inode);
 	if (ei->ns_ops != &mntns_operations)
 		return false;
-    //µ±Ç°ÎÄ¼şµÄÃüÃû¿Õ¼ä
+    //å½“å‰æ–‡ä»¶çš„å‘½åç©ºé—´
 	mnt_ns = ei->ns;
-    //current->nsproxy->mnt_nsµ±Ç°½ø³ÌµÄÃüÃû¿Õ¼ä
+    //current->nsproxy->mnt_nså½“å‰è¿›ç¨‹çš„å‘½åç©ºé—´
 	return current->nsproxy->mnt_ns->seq >= mnt_ns->seq;
 }
 /*
-mntÊÇ¹ÒÔØµãÄ¿Â¼ËùÔÚÎÄ¼şÏµÍ³µÄmount½á¹¹£¬dentryÊÇ¹ÒÔØµãÄ¿Â¼dentry¡£×¢Òâ£¬ÒÑ¾­×ª»»³É¹ÒÔØÔ´¿éÉè±¸µÄ¡£±ÈÈç£¬sda1¹ÒÔØµ½/home/Ä¿Â¼£¬Ôò´ËÊ±
-mntÊÇsda1¹ÒÔØµ½/home/Ä¿Â¼Éú³ÉµÄ£¬dentryÊÇsda1¿éÉè±¸ÎÄ¼şÏµÍ³µÄ¸ùÄ¿Â¼¡£½Ó×Åsda2¹ÒÔØ´ı/home/test2Ä¿Â¼£¬¹ÒÔØÊ±Éú³Émount2,¹ÒÔØµãdentry2¡£
-sda3¹ÒÔØµ½/home/test3Ä¿Â¼£¬¹ÒÔØÊ±Éú³Émount3,¹ÒÔØµãdentry2¡£mount2ºÍmount3ÓëmntÊÇ¸¸×Ó¹ØÏµ£¬ÒòÎªmount2ºÍmount3µÄ¹ÒÔØµãÄ¿Â¼ÊÇ/home/Ä¿Â¼ÏÂµÄ
-test2ºÍtest3Ä¿Â¼£¬×¼È·ËµÊÇsda1¿éÉè±¸ÏÂµÄtest2ºÍtest3Ä¿Â¼¡£È»ºó£¬sda5¹ÒÔÚµ½/home/test2/test5Ä¿Â¼£¬Éú³Émount5,¹ÒÔØµãdentry5¡£sda6¹ÒÔØµ½
-/home/test3/test6Ä¿Â¼£¬Éú³Émount6£¬¹ÒÔØµãdentry6¡£Ôòmount5ºÍmount2ÊÇ¸¸×Ó¹ØÏµ£¬mount6ºÍmount3ÊÇ¸¸×Ó¹ØÏµ¡£*/
+mntæ˜¯æŒ‚è½½ç‚¹ç›®å½•æ‰€åœ¨æ–‡ä»¶ç³»ç»Ÿçš„mountç»“æ„ï¼Œdentryæ˜¯æŒ‚è½½ç‚¹ç›®å½•dentryã€‚æ³¨æ„ï¼Œå·²ç»è½¬æ¢æˆæŒ‚è½½æºå—è®¾å¤‡çš„ã€‚æ¯”å¦‚ï¼Œsda1æŒ‚è½½åˆ°/home/ç›®å½•ï¼Œåˆ™æ­¤æ—¶
+mntæ˜¯sda1æŒ‚è½½åˆ°/home/ç›®å½•ç”Ÿæˆçš„ï¼Œdentryæ˜¯sda1å—è®¾å¤‡æ–‡ä»¶ç³»ç»Ÿçš„æ ¹ç›®å½•ã€‚æ¥ç€sda2æŒ‚è½½å¾…/home/test2ç›®å½•ï¼ŒæŒ‚è½½æ—¶ç”Ÿæˆmount2,æŒ‚è½½ç‚¹dentry2ã€‚
+sda3æŒ‚è½½åˆ°/home/test3ç›®å½•ï¼ŒæŒ‚è½½æ—¶ç”Ÿæˆmount3,æŒ‚è½½ç‚¹dentry2ã€‚mount2å’Œmount3ä¸mntæ˜¯çˆ¶å­å…³ç³»ï¼Œå› ä¸ºmount2å’Œmount3çš„æŒ‚è½½ç‚¹ç›®å½•æ˜¯/home/ç›®å½•ä¸‹çš„
+test2å’Œtest3ç›®å½•ï¼Œå‡†ç¡®è¯´æ˜¯sda1å—è®¾å¤‡ä¸‹çš„test2å’Œtest3ç›®å½•ã€‚ç„¶åï¼Œsda5æŒ‚åœ¨åˆ°/home/test2/test5ç›®å½•ï¼Œç”Ÿæˆmount5,æŒ‚è½½ç‚¹dentry5ã€‚sda6æŒ‚è½½åˆ°
+/home/test3/test6ç›®å½•ï¼Œç”Ÿæˆmount6ï¼ŒæŒ‚è½½ç‚¹dentry6ã€‚åˆ™mount5å’Œmount2æ˜¯çˆ¶å­å…³ç³»ï¼Œmount6å’Œmount3æ˜¯çˆ¶å­å…³ç³»ã€‚*/
 
 
-/*Ö»ÊÇq=res=clone_mnt()¿ËÂ¡Ò»¸ömount£¬È»ºóq->mnt_mountpoint = mnt->mnt_mountpointÉèÖÃ¿ËÂ¡µÄmountµÄmnt_mountpointÎª¿ËÂ¡Ä¸Ìå
-µÄmnt_mountpoint£¬×îºó·µ»Ø¿ËÂ¡µÄmount¡£list_for_each_entry()ÄÇ¶Î´úÂë¾ÍÃ»ÓĞÖ´ĞĞµ½*/
+/*åªæ˜¯q=res=clone_mnt()å…‹éš†ä¸€ä¸ªmountï¼Œç„¶åq->mnt_mountpoint = mnt->mnt_mountpointè®¾ç½®å…‹éš†çš„mountçš„mnt_mountpointä¸ºå…‹éš†æ¯ä½“
+çš„mnt_mountpointï¼Œæœ€åè¿”å›å…‹éš†çš„mountã€‚list_for_each_entry()é‚£æ®µä»£ç å°±æ²¡æœ‰æ‰§è¡Œåˆ°*/
 struct mount *copy_tree(struct mount *mnt, struct dentry *dentry,
-					int flag)//mntÊÇ¿ËÂ¡Ä¸Ìå£¬dentryÊÇ¿ËÂ¡Ä¸Ìåmount¹ÒÔØÔ´Ä¿Â¼dentry£¬²»Ò»¶¨ÊÇ¿éÉè±¸¸ùÄ¿Â¼dentry£¬mount bind²Ù×÷ÊÇ¹ÒÔØÔ´Ä¿Â¼dentry
+					int flag)//mntæ˜¯å…‹éš†æ¯ä½“ï¼Œdentryæ˜¯å…‹éš†æ¯ä½“mountæŒ‚è½½æºç›®å½•dentryï¼Œä¸ä¸€å®šæ˜¯å—è®¾å¤‡æ ¹ç›®å½•dentryï¼Œmount bindæ“ä½œæ˜¯æŒ‚è½½æºç›®å½•dentry
 {
 	struct mount *res, *p, *q, *r, *parent;
 
 	if (!(flag & CL_COPY_ALL) && IS_MNT_UNBINDABLE(mnt))
 		return ERR_PTR(-EINVAL);
 
-    //´´½¨ĞÂµÄmount²¢¶Ô´ó²¿·Ö³ÉÔ±³õÊ¼»¯²¢·µ»Ø¸øresºÍp£¬ºÃ¶à³ÉÔ±ĞÅÏ¢¸´ÖÆÁËmntµÄ¡£
+    //åˆ›å»ºæ–°çš„mountå¹¶å¯¹å¤§éƒ¨åˆ†æˆå‘˜åˆå§‹åŒ–å¹¶è¿”å›ç»™reså’Œpï¼Œå¥½å¤šæˆå‘˜ä¿¡æ¯å¤åˆ¶äº†mntçš„ã€‚
 	res = q = clone_mnt(mnt, dentry, flag);
 	if (IS_ERR(q))
 		return q;
-    //¸³Öµ¹ÒÔØµãdentry
+    //èµ‹å€¼æŒ‚è½½ç‚¹dentry
 	q->mnt_mountpoint = mnt->mnt_mountpoint;
 
-    //pÊÇ×îÔ­Ê¼µÄ
+    //pæ˜¯æœ€åŸå§‹çš„
 	p = mnt;
 
-    /*ÏÂ±ßÕâ¸öÊµ¼Ê²âÊÔ·¢ÏÖ£¬¾ÍÃ»ÓĞÖ´ĞĞ¹ı£¬mount bindÒ²²âÊÔ¹ı£¬Ò»Ñù¡£Ê²Ã´Çé¿öÏÂ»áÖ´ĞĞµ½?????????????*/
-    //±éÀúmnt->mnt_mountsÁ´±íÉÏµÄmounte½á¹¹£¬Õâ¸öÁ´±íÉÏµÄmountÓ¦¸Ã¶¼ÊÇmntµÄ×Ómount½á¹¹
+    /*ä¸‹è¾¹è¿™ä¸ªå®é™…æµ‹è¯•å‘ç°ï¼Œå°±æ²¡æœ‰æ‰§è¡Œè¿‡ï¼Œmount bindä¹Ÿæµ‹è¯•è¿‡ï¼Œä¸€æ ·ã€‚ä»€ä¹ˆæƒ…å†µä¸‹ä¼šæ‰§è¡Œåˆ°?????????????*/
+    //éå†mnt->mnt_mountsé“¾è¡¨ä¸Šçš„mounteç»“æ„ï¼Œè¿™ä¸ªé“¾è¡¨ä¸Šçš„mountåº”è¯¥éƒ½æ˜¯mntçš„å­mountç»“æ„
 	list_for_each_entry(r, &mnt->mnt_mounts, mnt_child) {
 		struct mount *s;
         
-        //is_subdir:ÅĞ¶Ïr->mnt_mountpointÊÇ·ñÊÇdentryµÄ×ÓÄ¿Â¼£¬ÊÇÔò·µ»Ø1£¬if²»³ÉÁ¢
+        //is_subdir:åˆ¤æ–­r->mnt_mountpointæ˜¯å¦æ˜¯dentryçš„å­ç›®å½•ï¼Œæ˜¯åˆ™è¿”å›1ï¼Œifä¸æˆç«‹
 		if (!is_subdir(r->mnt_mountpoint, dentry))
 			continue;
 
-        //ÒÔrÎªÔ´Í·£¬±éÀúr->mnt_mountsÁ´±íÉÏ×Ómount½á¹¹
+        //ä»¥rä¸ºæºå¤´ï¼Œéå†r->mnt_mountsé“¾è¡¨ä¸Šå­mountç»“æ„
 		for (s = r; s; s = next_mnt(s, r)) {
             //
 			if (!(flag & CL_COPY_ALL) && IS_MNT_UNBINDABLE(s)) {
@@ -1547,18 +1547,18 @@ struct mount *copy_tree(struct mount *mnt, struct dentry *dentry,
 				q = q->mnt_parent;
 			}
 			p = s;
-            //ÏÔÈ»parent±¾´ÎforÑ­»·Ô´Í·
+            //æ˜¾ç„¶parentæœ¬æ¬¡forå¾ªç¯æºå¤´
 			parent = q;
             
-            //´´½¨ĞÂµÄmount²¢¶Ô´ó²¿·Ö³ÉÔ±³õÊ¼»¯²¢·µ»Ø¸øq£¬ºÃ¶à³ÉÔ±ĞÅÏ¢¸´ÖÆÁËpµÄ¡£
+            //åˆ›å»ºæ–°çš„mountå¹¶å¯¹å¤§éƒ¨åˆ†æˆå‘˜åˆå§‹åŒ–å¹¶è¿”å›ç»™qï¼Œå¥½å¤šæˆå‘˜ä¿¡æ¯å¤åˆ¶äº†pçš„ã€‚
 			q = clone_mnt(p, p->mnt.mnt_root, flag);
 			if (IS_ERR(q))
 				goto out;
 			br_write_lock(&vfsmount_lock);
-            //´´½¨µÄĞÂmount¼´q¿¿mnt_listÌí¼Óµ½¸ÃÁ´±í
+            //åˆ›å»ºçš„æ–°mountå³qé mnt_listæ·»åŠ åˆ°è¯¥é“¾è¡¨
 			list_add_tail(&q->mnt_list, &res->mnt_list);
-          //q×÷Îª¹ÒÔØÔ´mount£¬parentÊÇ¹ÒÔØµãÄ¿Â¼µÄmount£¬q×÷Îª×Ómount£¬parent×÷Îª¸¸mount£¬°Ñq->mnt_childÌí¼Óµ½parent->mnt_mountsÁ´±í¡£
-          //Áîq->mnt_mountpoint=p->mnt_mp->m_dentryÉèÖÃ±¾´Î¹ÒÔØÔ´mountµÄ¹ÒÔØµãdentry
+          //qä½œä¸ºæŒ‚è½½æºmountï¼Œparentæ˜¯æŒ‚è½½ç‚¹ç›®å½•çš„mountï¼Œqä½œä¸ºå­mountï¼Œparentä½œä¸ºçˆ¶mountï¼ŒæŠŠq->mnt_childæ·»åŠ åˆ°parent->mnt_mountsé“¾è¡¨ã€‚
+          //ä»¤q->mnt_mountpoint=p->mnt_mp->m_dentryè®¾ç½®æœ¬æ¬¡æŒ‚è½½æºmountçš„æŒ‚è½½ç‚¹dentry
 			attach_mnt(q, parent, p->mnt_mp);
 			br_write_unlock(&vfsmount_lock);
 		}
@@ -1620,15 +1620,15 @@ static void cleanup_group_ids(struct mount *mnt, struct mount *end)
 			mnt_release_group_id(p);
 	}
 }
-//±éÀúsource_mntÊ÷ÏÂµÄmount½á¹¹£¬Èç¹ûÕâĞ©mount²»Ö§³ÖsharedÊôĞÔ²¢ÇÒÃ»ÓĞmount group id£¬ÄÇ·ÖÅäÒ»¸ömount group id
+//éå†source_mntæ ‘ä¸‹çš„mountç»“æ„ï¼Œå¦‚æœè¿™äº›mountä¸æ”¯æŒsharedå±æ€§å¹¶ä¸”æ²¡æœ‰mount group idï¼Œé‚£åˆ†é…ä¸€ä¸ªmount group id
 static int invent_group_ids(struct mount *mnt, bool recurse)//recurse:true
 {
 	struct mount *p;
-    //±éÀúmntÏÂmountÊ÷???
+    //éå†mntä¸‹mountæ ‘???
 	for (p = mnt; p; p = recurse ? next_mnt(p, mnt) : NULL) {
-        //Èç¹ûpÃ»ÓĞmount group id²¢ÇÒ²»Ö§³Ö¹²Ïí
+        //å¦‚æœpæ²¡æœ‰mount group idå¹¶ä¸”ä¸æ”¯æŒå…±äº«
 		if (!p->mnt_group_id && !IS_MNT_SHARED(p)) {
-            //·ÖÅämount group id¸³Öµ¸ømnt->mnt_group_id
+            //åˆ†é…mount group idèµ‹å€¼ç»™mnt->mnt_group_id
 			int err = mnt_alloc_group_id(p);
 			if (err) {
 				cleanup_group_ids(mnt, p);
@@ -1706,24 +1706,24 @@ static int invent_group_ids(struct mount *mnt, bool recurse)//recurse:true
 static int attach_recursive_mnt(struct mount *source_mnt,
 			struct mount *dest_mnt,
 			struct mountpoint *dest_mp,
-			struct path *parent_path)//Ò»°ãparent_pathÎªNULL
+			struct path *parent_path)//ä¸€èˆ¬parent_pathä¸ºNULL
 {
-    //tree_list Á´±í
+    //tree_list é“¾è¡¨
 	LIST_HEAD(tree_list);
 	struct mount *child, *p;
 	int err;
 
-	if (IS_MNT_SHARED(dest_mnt)) {//Ò»°ãmountÄ¬ÈÏ¶¼ÊÇsharedÊôĞÔ
-	    //±éÀúsource_mntÊ÷ÏÂµÄmount½á¹¹£¬Èç¹ûÕâĞ©mount²»Ö§³ÖsharedÊôĞÔ²¢ÇÒÃ»ÓĞmount group id£¬ÄÇ·ÖÅäÒ»¸ömount group id
+	if (IS_MNT_SHARED(dest_mnt)) {//ä¸€èˆ¬mounté»˜è®¤éƒ½æ˜¯sharedå±æ€§
+	    //éå†source_mntæ ‘ä¸‹çš„mountç»“æ„ï¼Œå¦‚æœè¿™äº›mountä¸æ”¯æŒsharedå±æ€§å¹¶ä¸”æ²¡æœ‰mount group idï¼Œé‚£åˆ†é…ä¸€ä¸ªmount group id
 		err = invent_group_ids(source_mnt, true);
 		if (err)
 			goto out;
 	}
-    //±éÀúdest mountÊ÷ÏÂµÄslave  mount×é»òÕßshare mount×éµÄËùÓĞmount£¬Ã¿¸öÕâÖÖmount×÷Îªdest mount^, Í¬Ê±ÒÔsource mountÎª¿ËÂ¡Ä¸Ìå
-    //¿ËÂ¡Éú³ÉÒ»¸ömount£¬×÷Îªsource mount^£¬dest mount^ºÍsource mount^¹¹³É¸¸×Ó¹ØÏµ£¬¶şÕß²»ÊÇ±¾´Îmount ¹ÒÔØµÄÔ­Ê¼source mountºÍdest mount
-    //Ö»ÊÇÖĞÍ¾Éú³ÉµÄ£¬ÓĞÇø±ğ¡£Õâ¸ö¾ÍÊÇ´«²¥mount:±¾´ÎÓëdest mountÍ¬Ò»¸öslave »òÕßshare mount×éµÄmount£¬Òª×÷Îªdest mount^£¬±¾´Îmount¹ÒÔØµÄ
-    //Ô­Ê¼source mountÒª×÷Îª¿ËÂ¡Ä¸Ìå£¬Ò»Ò»Îªdest mount^ÃÇ¿ËÂ¡Éú³ÉÒ»¸ösource mount^£¬Õâ¾ÍÊÇmount×é´«²¥mountµÄÔ­Àí¡£¿ËÂ¡Éú³ÉµÄmount
-    //Ìí¼Óµ½tree_listÁ´±í£¬ÏÂ±ßÖ´ĞĞcommit_tree()ÔÙ°ÑÕâĞ©mountÁ´±íÌí¼Óµ½¸÷¸ömount½á¹¹ÓĞ¹ØµÄÁ´±í¡£
+    //éå†dest mountæ ‘ä¸‹çš„slave  mountç»„æˆ–è€…share mountç»„çš„æ‰€æœ‰mountï¼Œæ¯ä¸ªè¿™ç§mountä½œä¸ºdest mount^, åŒæ—¶ä»¥source mountä¸ºå…‹éš†æ¯ä½“
+    //å…‹éš†ç”Ÿæˆä¸€ä¸ªmountï¼Œä½œä¸ºsource mount^ï¼Œdest mount^å’Œsource mount^æ„æˆçˆ¶å­å…³ç³»ï¼ŒäºŒè€…ä¸æ˜¯æœ¬æ¬¡mount æŒ‚è½½çš„åŸå§‹source mountå’Œdest mount
+    //åªæ˜¯ä¸­é€”ç”Ÿæˆçš„ï¼Œæœ‰åŒºåˆ«ã€‚è¿™ä¸ªå°±æ˜¯ä¼ æ’­mount:æœ¬æ¬¡ä¸dest mountåŒä¸€ä¸ªslave æˆ–è€…share mountç»„çš„mountï¼Œè¦ä½œä¸ºdest mount^ï¼Œæœ¬æ¬¡mountæŒ‚è½½çš„
+    //åŸå§‹source mountè¦ä½œä¸ºå…‹éš†æ¯ä½“ï¼Œä¸€ä¸€ä¸ºdest mount^ä»¬å…‹éš†ç”Ÿæˆä¸€ä¸ªsource mount^ï¼Œè¿™å°±æ˜¯mountç»„ä¼ æ’­mountçš„åŸç†ã€‚å…‹éš†ç”Ÿæˆçš„mount
+    //æ·»åŠ åˆ°tree_listé“¾è¡¨ï¼Œä¸‹è¾¹æ‰§è¡Œcommit_tree()å†æŠŠè¿™äº›mounté“¾è¡¨æ·»åŠ åˆ°å„ä¸ªmountç»“æ„æœ‰å…³çš„é“¾è¡¨ã€‚
 	err = propagate_mnt(dest_mnt, dest_mp, source_mnt, &tree_list);
 	if (err)
 		goto out_cleanup_ids;
@@ -1734,20 +1734,20 @@ static int attach_recursive_mnt(struct mount *source_mnt,
 		for (p = source_mnt; p; p = next_mnt(p, source_mnt))
 			set_mnt_shared(p);
 	}
-	if (parent_path) {//Ò»°ãparent_pathÎªNULL
+	if (parent_path) {//ä¸€èˆ¬parent_pathä¸ºNULL
 		detach_mnt(source_mnt, parent_path);
 		attach_mnt(source_mnt, dest_mnt, dest_mp);
 		touch_mnt_namespace(source_mnt->mnt_ns);
 	} else {
-	    //ÉèÖÃsource_mntµÄ¹ÒÔØµãÄ¿Â¼dentry¡¢mnt_parent¾¹È»Îª¹ÒµãÄ¿Â¼ËùÔÚÎÄ¼şÏµÍ³µÄmount£¬¼´dest_mnt£¬»¹ÓĞÉèÖÃmountpoint
+	    //è®¾ç½®source_mntçš„æŒ‚è½½ç‚¹ç›®å½•dentryã€mnt_parentç«Ÿç„¶ä¸ºæŒ‚ç‚¹ç›®å½•æ‰€åœ¨æ–‡ä»¶ç³»ç»Ÿçš„mountï¼Œå³dest_mntï¼Œè¿˜æœ‰è®¾ç½®mountpoint
 		mnt_set_mountpoint(dest_mnt, dest_mp, source_mnt);
-        //°Ñsource_mntÕâ¸ömount½á¹¹Ìí¼Óµ½¸÷¸öÁ´±í£¬ÉèÖÃmountµÄÎÄ¼şÏµÍ³ÃüÃû¿Õ¼äÎª¸¸mountµÄÃüÃû¿Õ¼ä
+        //æŠŠsource_mntè¿™ä¸ªmountç»“æ„æ·»åŠ åˆ°å„ä¸ªé“¾è¡¨ï¼Œè®¾ç½®mountçš„æ–‡ä»¶ç³»ç»Ÿå‘½åç©ºé—´ä¸ºçˆ¶mountçš„å‘½åç©ºé—´
 		commit_tree(source_mnt);
 	}
 
 	list_for_each_entry_safe(child, p, &tree_list, mnt_hash) {
 		list_del_init(&child->mnt_hash);
-        //°ÑchildÕâ¸ömount½á¹¹Ìí¼Óµ½¸÷¸öÁ´±í£¬ÉèÖÃmountµÄÎÄ¼şÏµÍ³ÃüÃû¿Õ¼äÎª¸¸mountµÄÃüÃû¿Õ¼ä
+        //æŠŠchildè¿™ä¸ªmountç»“æ„æ·»åŠ åˆ°å„ä¸ªé“¾è¡¨ï¼Œè®¾ç½®mountçš„æ–‡ä»¶ç³»ç»Ÿå‘½åç©ºé—´ä¸ºçˆ¶mountçš„å‘½åç©ºé—´
 		commit_tree(child);
 	}
 	br_write_unlock(&vfsmount_lock);
@@ -1760,13 +1760,13 @@ static int attach_recursive_mnt(struct mount *source_mnt,
  out:
 	return err;
 }
-//path´ú±íÁË¹ÒÔØµãÄ¿Â¼£¬±ÈÈç±¾´Î/dev/sda0¿éÉè±¸Òª¹ÒÔØµ½µÄ/mntÄ¿Â¼£¬±éÀú/mnt»ñÈ¡¹ÒÔØµãÄ¿Â¼µÄvfsmountºÍ¸ùÄ¿Â¼dentry¡£
-//Èç¹ûÖ®Ç°sda1£¬sda2£¬sda3Â½Ğø¹ÒÔØµ½ÁË/mnt£¬ËùÒÔÒª±éÀúsda1¡¢sda2¡¢sda3ÕÒµ½×îºóÒ»´Î¹ÒÔØµ½/mntµÄsda3¿éÉè±¸mount½á¹¹µÄvfsmount
-//ºÍ¸ùÄ¿Â¼dentry£¬È»ºó¸³Óèmountpoint²¢·µ»Ø¡£Èç¹û/mntÄ¿Â¼Ö®Ç°Ã»ÓĞ¹ÒÔØ¿éÉè±¸£¬ÔòÊÇÕÒµ½/mntÄ¿Â¼Ô­Ê¼µÄdentryµÄ¸³Óèmountpoint²¢·µ»Ø
+//pathä»£è¡¨äº†æŒ‚è½½ç‚¹ç›®å½•ï¼Œæ¯”å¦‚æœ¬æ¬¡/dev/sda0å—è®¾å¤‡è¦æŒ‚è½½åˆ°çš„/mntç›®å½•ï¼Œéå†/mntè·å–æŒ‚è½½ç‚¹ç›®å½•çš„vfsmountå’Œæ ¹ç›®å½•dentryã€‚
+//å¦‚æœä¹‹å‰sda1ï¼Œsda2ï¼Œsda3é™†ç»­æŒ‚è½½åˆ°äº†/mntï¼Œæ‰€ä»¥è¦éå†sda1ã€sda2ã€sda3æ‰¾åˆ°æœ€åä¸€æ¬¡æŒ‚è½½åˆ°/mntçš„sda3å—è®¾å¤‡mountç»“æ„çš„vfsmount
+//å’Œæ ¹ç›®å½•dentryï¼Œç„¶åèµ‹äºˆmountpointå¹¶è¿”å›ã€‚å¦‚æœ/mntç›®å½•ä¹‹å‰æ²¡æœ‰æŒ‚è½½å—è®¾å¤‡ï¼Œåˆ™æ˜¯æ‰¾åˆ°/mntç›®å½•åŸå§‹çš„dentryçš„èµ‹äºˆmountpointå¹¶è¿”å›
 static struct mountpoint *lock_mount(struct path *path)
 {
 	struct vfsmount *mnt;
-    //µÃµ½¹ÒÔØµãµÄdentry
+    //å¾—åˆ°æŒ‚è½½ç‚¹çš„dentry
 	struct dentry *dentry = path->dentry;
 retry:
 	mutex_lock(&dentry->d_inode->i_mutex);
@@ -1775,13 +1775,13 @@ retry:
 		return ERR_PTR(-ENOENT);
 	}
 	namespace_lock();
-//±ÈÈç±¾´Îmount /dev/sda0 /mnt,¶øÖ®Ç°ÒÑ¾­ÓĞsda1¡¢sda2¡¢sda3ÒÀ´Î¹ÒÔØµ½ÁË/mmt£¬__lookup_mnt()ÕâÀï±ßÒÀ´ÎÕÒµ½sda1¡¢sda2¡¢sda3µÄmount²¢·µ»Ø
-//mount½á¹¹µÄvfsmount¸ømnt£¬ÕâÑùÏÂ±ßÖ´ĞĞgoto retry½Ó×ÅÑ­»·£¬Ö±µ½×îºóÒ»´ÎÊÇ·µ»ØNULL£¬´ËÊ±²Å¿ªÊ¼´¦Àímount /dev/sda0 /mntµÄmount
+//æ¯”å¦‚æœ¬æ¬¡mount /dev/sda0 /mnt,è€Œä¹‹å‰å·²ç»æœ‰sda1ã€sda2ã€sda3ä¾æ¬¡æŒ‚è½½åˆ°äº†/mmtï¼Œ__lookup_mnt()è¿™é‡Œè¾¹ä¾æ¬¡æ‰¾åˆ°sda1ã€sda2ã€sda3çš„mountå¹¶è¿”å›
+//mountç»“æ„çš„vfsmountç»™mntï¼Œè¿™æ ·ä¸‹è¾¹æ‰§è¡Œgoto retryæ¥ç€å¾ªç¯ï¼Œç›´åˆ°æœ€åä¸€æ¬¡æ˜¯è¿”å›NULLï¼Œæ­¤æ—¶æ‰å¼€å§‹å¤„ç†mount /dev/sda0 /mntçš„mount
 	mnt = lookup_mnt(path);
-    //Èç¹ûmnt²»ÎªNULL£¬ÏÂ±ß»áÖ´ĞĞgoto retry¼ÌĞøÑ­»·£¬Ö±µ½lookup_mnt·µ»ØNULL if²Å³ÉÁ¢
+    //å¦‚æœmntä¸ä¸ºNULLï¼Œä¸‹è¾¹ä¼šæ‰§è¡Œgoto retryç»§ç»­å¾ªç¯ï¼Œç›´åˆ°lookup_mntè¿”å›NULL ifæ‰æˆç«‹
 	if (likely(!mnt)) {
-        //Îª±¾´Îmount·ÖÅäÒ»¸öĞÂµÄmountpoint£¬È»ºómp->m_dentry = dentry£¬Èç¹û/mntÄ¿Â¼Ö®Ç°Ã»ÓĞ¹ÒÔØ¿éÉè±¸£¬Ôòdentry¾ÍÊÇ/mntÄ¿Â¼µÄ
-        //ÏÖÔÚsda1¡¢sda2¡¢sda3ÒÀ´Î¹ÒÔØµ½ÁË/mmt£¬´ËÊ±dentryÊÇsda3¿éÉè±¸µÄ¸ùÄ¿Â¼dentry
+        //ä¸ºæœ¬æ¬¡mountåˆ†é…ä¸€ä¸ªæ–°çš„mountpointï¼Œç„¶åmp->m_dentry = dentryï¼Œå¦‚æœ/mntç›®å½•ä¹‹å‰æ²¡æœ‰æŒ‚è½½å—è®¾å¤‡ï¼Œåˆ™dentryå°±æ˜¯/mntç›®å½•çš„
+        //ç°åœ¨sda1ã€sda2ã€sda3ä¾æ¬¡æŒ‚è½½åˆ°äº†/mmtï¼Œæ­¤æ—¶dentryæ˜¯sda3å—è®¾å¤‡çš„æ ¹ç›®å½•dentry
 		struct mountpoint *mp = new_mountpoint(dentry);
 		if (IS_ERR(mp)) {
 			namespace_unlock();
@@ -1793,11 +1793,11 @@ retry:
 	namespace_unlock();
 	mutex_unlock(&path->dentry->d_inode->i_mutex);
 	path_put(path);
-    //path->mntÒÀ´Î±£´æsda1¡¢sda2¡¢sda3¹ÒÔØµ½/mntÄ¿Â¼Ê±µÄvfsmount
+    //path->mntä¾æ¬¡ä¿å­˜sda1ã€sda2ã€sda3æŒ‚è½½åˆ°/mntç›®å½•æ—¶çš„vfsmount
 	path->mnt = mnt;
-    //dentryºÍpath->dentry¶¼±£´æmnt->mnt_root£¬¼´ÒÀ´ÎÊÇsda1¡¢sda2¡¢sda3¿éÉè±¸µÄ¸ùÄ¿Â¼dentry,×îºóÒ»´ÎÊÇsda3¿éÉè±¸µÄ¸ùÄ¿Â¼dentry
+    //dentryå’Œpath->dentryéƒ½ä¿å­˜mnt->mnt_rootï¼Œå³ä¾æ¬¡æ˜¯sda1ã€sda2ã€sda3å—è®¾å¤‡çš„æ ¹ç›®å½•dentry,æœ€åä¸€æ¬¡æ˜¯sda3å—è®¾å¤‡çš„æ ¹ç›®å½•dentry
 	dentry = path->dentry = dget(mnt->mnt_root);
-    //µ÷µ½retryÑ­»·
+    //è°ƒåˆ°retryå¾ªç¯
 	goto retry;
 }
 
@@ -1876,7 +1876,7 @@ static int do_change_type(struct path *path, int flag)
 /*
  * do loopback mount.
  */
-//mount --bind /home/  /home/test  path´ú±í/home/test¹ÒÔØµãÄ¿Â¼ £¬old_nameÊÇ/home/ ¹ÒÔØÔ´Ä¿Â¼
+//mount --bind /home/  /home/test  pathä»£è¡¨/home/testæŒ‚è½½ç‚¹ç›®å½• ï¼Œold_nameæ˜¯/home/ æŒ‚è½½æºç›®å½•
 static int do_loopback(struct path *path, const char *old_name,
 				int recurse)
 {
@@ -1886,27 +1886,27 @@ static int do_loopback(struct path *path, const char *old_name,
 	int err;
 	if (!old_name || !*old_name)
 		return -EINVAL;
-    //Ì½²â/home/¹ÒÔØÔ´£¬µÃµ½¸ÃÄ¿Â¼µÄËùÔÚÎÄ¼şÏµÍ³µÄvfsmountºÍÄ¿Â¼dentryĞÅÏ¢±£´æµ½old_path¡£Èç¹û/home/Ä¿Â¼ÒÑ¾­ÓĞ¿éÉè±¸¹ÒÔØÁË
-    //ÔòÒª°ÑvfsmountºÍdentry×ª³É¹ÒÔØµÄ¿éÉè±¸ÎÄ¼şÏµÍ³µÄvfsmountºÍ¸ùÄ¿Â¼dentry±£´æµ½old_path¡£¹ÒÔØÔ´µÄÄ¿Â¼Ò²ÒªÅÙ¸ùÎÊµ×
+    //æ¢æµ‹/home/æŒ‚è½½æºï¼Œå¾—åˆ°è¯¥ç›®å½•çš„æ‰€åœ¨æ–‡ä»¶ç³»ç»Ÿçš„vfsmountå’Œç›®å½•dentryä¿¡æ¯ä¿å­˜åˆ°old_pathã€‚å¦‚æœ/home/ç›®å½•å·²ç»æœ‰å—è®¾å¤‡æŒ‚è½½äº†
+    //åˆ™è¦æŠŠvfsmountå’Œdentryè½¬æˆæŒ‚è½½çš„å—è®¾å¤‡æ–‡ä»¶ç³»ç»Ÿçš„vfsmountå’Œæ ¹ç›®å½•dentryä¿å­˜åˆ°old_pathã€‚æŒ‚è½½æºçš„ç›®å½•ä¹Ÿè¦åˆ¨æ ¹é—®åº•
 	err = kern_path(old_name, LOOKUP_FOLLOW|LOOKUP_AUTOMOUNT, &old_path);
 	if (err)
 		return err;
 
 	err = -EINVAL;
-    //±È½ÏÃüÃû¿Õ¼ä
+    //æ¯”è¾ƒå‘½åç©ºé—´
 	if (mnt_ns_loop(&old_path))
 		goto out; 
-    //±éÀú/home/test»ñÈ¡¹ÒÔØµãÄ¿Â¼£¬ÓÉÓÚ¸ÃÄ¿Â¼Ö®Ç°¿ÉÄÜÓĞÆäËû¿éÉè±¸¹ÒÔØ£¬ËùÒÔÒª±éÀúÕÒµ½×îºóÒ»´Î¹ÒÔØµÄ¿éÉè±¸µÄvfsmountºÍ¸ùÄ¿Â¼dentry
- /*lock_mount()ÑéÖ¤ÏÂÀ´¾ÍÃ»Ê²Ã´ÓÃ£¬ÒòÎªpath.mntºÍpath.dentry¾ÍÒÑ¾­ÊÇ¹ÒÔØµãÄ¿Â¼µÄÖÕ¼«mountºÍdentry¡£ÏÔÈ»ÔÚÇ°±ßdo_mount->path_init()
- º¯ÊıÖĞµÃµ½path.mntºÍpath.dentryÒÑ¾­ÊÇ¹ÒÔØµãÄ¿Â¼µÄ×îºóÒ»´Î¹ÒÔØµÄÎÄ¼şÏµÍ³(¿éÉè±¸»òÕßtmpfsµÈ)£¬ËùÒÔlock_mount()->lookup_mnt()->__lookup_mnt()
- £¬__lookup_mnt()Ö±½Ó·µ»ØNULL£¬¼´Ã»ÓĞmount£¬lock_mount()µÄ×÷ÓÃ½ö½öÊÇmp->dentry=path.dentryÉèÖÃ±¾´ÎµÄ¹ÒÔØµãÄ¿Â¼dentry¾Í·µ»ØÁË¡£*/
+    //éå†/home/testè·å–æŒ‚è½½ç‚¹ç›®å½•ï¼Œç”±äºè¯¥ç›®å½•ä¹‹å‰å¯èƒ½æœ‰å…¶ä»–å—è®¾å¤‡æŒ‚è½½ï¼Œæ‰€ä»¥è¦éå†æ‰¾åˆ°æœ€åä¸€æ¬¡æŒ‚è½½çš„å—è®¾å¤‡çš„vfsmountå’Œæ ¹ç›®å½•dentry
+ /*lock_mount()éªŒè¯ä¸‹æ¥å°±æ²¡ä»€ä¹ˆç”¨ï¼Œå› ä¸ºpath.mntå’Œpath.dentryå°±å·²ç»æ˜¯æŒ‚è½½ç‚¹ç›®å½•çš„ç»ˆæmountå’Œdentryã€‚æ˜¾ç„¶åœ¨å‰è¾¹do_mount->path_init()
+ å‡½æ•°ä¸­å¾—åˆ°path.mntå’Œpath.dentryå·²ç»æ˜¯æŒ‚è½½ç‚¹ç›®å½•çš„æœ€åä¸€æ¬¡æŒ‚è½½çš„æ–‡ä»¶ç³»ç»Ÿ(å—è®¾å¤‡æˆ–è€…tmpfsç­‰)ï¼Œæ‰€ä»¥lock_mount()->lookup_mnt()->__lookup_mnt()
+ ï¼Œ__lookup_mnt()ç›´æ¥è¿”å›NULLï¼Œå³æ²¡æœ‰mountï¼Œlock_mount()çš„ä½œç”¨ä»…ä»…æ˜¯mp->dentry=path.dentryè®¾ç½®æœ¬æ¬¡çš„æŒ‚è½½ç‚¹ç›®å½•dentryå°±è¿”å›äº†ã€‚*/
 	mp = lock_mount(path);
 	err = PTR_ERR(mp);
 	if (IS_ERR(mp))
 		goto out;
-    // /home/ ¹ÒÔØÔ´Ä¿Â¼Ëù´¦ÎÄ¼şÏµÍ³µÄstruct mount£¬Õâ¸ömountÊÇÖ®Ç°µÄ¹ÒÔØÉú³ÉµÄ
+    // /home/ æŒ‚è½½æºç›®å½•æ‰€å¤„æ–‡ä»¶ç³»ç»Ÿçš„struct mountï¼Œè¿™ä¸ªmountæ˜¯ä¹‹å‰çš„æŒ‚è½½ç”Ÿæˆçš„
 	old = real_mount(old_path.mnt);
-    // /home/test ¹ÒÔØµãÄ¿Â¼Ëù´¦ÎÄ¼şÏµÍ³µÄstruct mount£¬Õâ¸ömountÊÇÖ®Ç°µÄ¹ÒÔØÉú³ÉµÄ
+    // /home/test æŒ‚è½½ç‚¹ç›®å½•æ‰€å¤„æ–‡ä»¶ç³»ç»Ÿçš„struct mountï¼Œè¿™ä¸ªmountæ˜¯ä¹‹å‰çš„æŒ‚è½½ç”Ÿæˆçš„
 	parent = real_mount(path->mnt);
 
 	err = -EINVAL;
@@ -1918,16 +1918,16 @@ static int do_loopback(struct path *path, const char *old_name,
 
 	if (recurse)
 		mnt = copy_tree(old, old_path.dentry, 0);
-	else/*¿ËÂ¡´´½¨±¾´Î¹ÒÔØµÄmount½á¹¹£¬¼´±¾´ÎµÄsource mount£¬´ó²¿·Ö³ÉÔ±¸´ÖÆÁËoldµÄ£¬oldÊÇmount bindÔ´Ä¿Â¼ËùÔÚÎÄ¼şÏµÍ³µÄmount½á¹¹*/
-//¼ÙÉèÔ´Ä¿Â¼/home£¬ÔòoldÊÇ/home/ËùÔÚÎÄ¼şÏµÍ³¹ÒÔØÉú³ÉµÄstruct mount£¬old_path.dentryÊÇ/home¹ÒÔØÔ´µÄ¡£Èç¹û/home/Ä¿Â¼ÒÑ¾­ÓĞ¿éÉè±¸¹ÒÔØÁË£¬
-//ÔòÒª×ª»»³ÉÖ®Ç°¹ÒÔØµÄ¿éÉè±¸µÄmount½á¹¹£¬¸³Óèold£¬È»ºóÊÇËü¸ùÄ¿Â¼dentry±£´æµ½old_path.dentry¡£mountºÍÄ¿Â¼dentryÅÙ¸ùÎÊµ×µ½×îºóµÄ¿éÉè±¸
+	else/*å…‹éš†åˆ›å»ºæœ¬æ¬¡æŒ‚è½½çš„mountç»“æ„ï¼Œå³æœ¬æ¬¡çš„source mountï¼Œå¤§éƒ¨åˆ†æˆå‘˜å¤åˆ¶äº†oldçš„ï¼Œoldæ˜¯mount bindæºç›®å½•æ‰€åœ¨æ–‡ä»¶ç³»ç»Ÿçš„mountç»“æ„*/
+//å‡è®¾æºç›®å½•/homeï¼Œåˆ™oldæ˜¯/home/æ‰€åœ¨æ–‡ä»¶ç³»ç»ŸæŒ‚è½½ç”Ÿæˆçš„struct mountï¼Œold_path.dentryæ˜¯/homeæŒ‚è½½æºçš„ã€‚å¦‚æœ/home/ç›®å½•å·²ç»æœ‰å—è®¾å¤‡æŒ‚è½½äº†ï¼Œ
+//åˆ™è¦è½¬æ¢æˆä¹‹å‰æŒ‚è½½çš„å—è®¾å¤‡çš„mountç»“æ„ï¼Œèµ‹äºˆoldï¼Œç„¶åæ˜¯å®ƒæ ¹ç›®å½•dentryä¿å­˜åˆ°old_path.dentryã€‚mountå’Œç›®å½•dentryåˆ¨æ ¹é—®åº•åˆ°æœ€åçš„å—è®¾å¤‡
 		mnt = clone_mnt(old, old_path.dentry, 0);
 
 	if (IS_ERR(mnt)) {
 		err = PTR_ERR(mnt);
 		goto out2;
 	}
-    //mnt:±¾´Îmount²Ù×÷´´½¨source mount£¬parent dest mount£¬mp¹ÒÔØµã
+    //mnt:æœ¬æ¬¡mountæ“ä½œåˆ›å»ºsource mountï¼Œparent dest mountï¼ŒmpæŒ‚è½½ç‚¹
 	err = graft_tree(mnt, parent, mp);
 	if (err) {
 		br_write_lock(&vfsmount_lock);
@@ -2138,7 +2138,7 @@ static struct vfsmount *fs_set_subtype(struct vfsmount *mnt, const char *fstype)
 /*
  * add a mount into a namespace's mount tree
  */
-//pathÊÇ°²×°µãµÄ£¬newmntÊÇ¹ÒÔØÔ´¿éÉè±¸
+//pathæ˜¯å®‰è£…ç‚¹çš„ï¼Œnewmntæ˜¯æŒ‚è½½æºå—è®¾å¤‡
 static int do_add_mount(struct mount *newmnt, struct path *path, int mnt_flags)
 {
 	struct mountpoint *mp;
@@ -2146,14 +2146,14 @@ static int do_add_mount(struct mount *newmnt, struct path *path, int mnt_flags)
 	int err;
 
 	mnt_flags &= ~(MNT_SHARED | MNT_WRITE_HOLD | MNT_INTERNAL);
-    //µÃµ½¹ÒÔØµãÄ¿Â¼µÄstruct mountpoint *mp
-    /*lock_mount()ÑéÖ¤ÏÂÀ´¾ÍÃ»Ê²Ã´ÓÃ£¬ÒòÎªpath.mntºÍpath.dentry¾ÍÒÑ¾­ÊÇ¹ÒÔØµãÄ¿Â¼µÄÖÕ¼«mountºÍdentry¡£ÏÔÈ»ÔÚÇ°±ßdo_mount->path_init()
-    º¯ÊıÖĞµÃµ½path.mntºÍpath.dentryÒÑ¾­ÊÇ¹ÒÔØµãÄ¿Â¼µÄ×îºóÒ»´Î¹ÒÔØµÄÎÄ¼şÏµÍ³(¿éÉè±¸»òÕßtmpfsµÈ)£¬ËùÒÔlock_mount()->lookup_mnt()->__lookup_mnt()
-    £¬__lookup_mnt()Ö±½Ó·µ»ØNULL£¬¼´Ã»ÓĞmount£¬lock_mount()µÄ×÷ÓÃ½ö½öÊÇmp->dentry=path.dentryÉèÖÃ±¾´ÎµÄ¹ÒÔØµãÄ¿Â¼dentry¾Í·µ»ØÁË¡£*/
+    //å¾—åˆ°æŒ‚è½½ç‚¹ç›®å½•çš„struct mountpoint *mp
+    /*lock_mount()éªŒè¯ä¸‹æ¥å°±æ²¡ä»€ä¹ˆç”¨ï¼Œå› ä¸ºpath.mntå’Œpath.dentryå°±å·²ç»æ˜¯æŒ‚è½½ç‚¹ç›®å½•çš„ç»ˆæmountå’Œdentryã€‚æ˜¾ç„¶åœ¨å‰è¾¹do_mount->path_init()
+    å‡½æ•°ä¸­å¾—åˆ°path.mntå’Œpath.dentryå·²ç»æ˜¯æŒ‚è½½ç‚¹ç›®å½•çš„æœ€åä¸€æ¬¡æŒ‚è½½çš„æ–‡ä»¶ç³»ç»Ÿ(å—è®¾å¤‡æˆ–è€…tmpfsç­‰)ï¼Œæ‰€ä»¥lock_mount()->lookup_mnt()->__lookup_mnt()
+    ï¼Œ__lookup_mnt()ç›´æ¥è¿”å›NULLï¼Œå³æ²¡æœ‰mountï¼Œlock_mount()çš„ä½œç”¨ä»…ä»…æ˜¯mp->dentry=path.dentryè®¾ç½®æœ¬æ¬¡çš„æŒ‚è½½ç‚¹ç›®å½•dentryå°±è¿”å›äº†ã€‚*/
 	mp = lock_mount(path);
 	if (IS_ERR(mp))
 		return PTR_ERR(mp);
-    //¹ÒÔØµãÄ¿Â¼Ëù´¦ÎÄ¼şÏµÍ³µÄmount½á¹¹
+    //æŒ‚è½½ç‚¹ç›®å½•æ‰€å¤„æ–‡ä»¶ç³»ç»Ÿçš„mountç»“æ„
 	parent = real_mount(path->mnt);
 	err = -EINVAL;
 	if (unlikely(!check_mnt(parent))) {
@@ -2167,11 +2167,11 @@ static int do_add_mount(struct mount *newmnt, struct path *path, int mnt_flags)
 
 	/* Refuse the same filesystem on the same mount point */
 	err = -EBUSY;
-    //path->mnt->mnt_sb:¹ÒÔØµãÄ¿Â¼ËùÔÚÎÄ¼şÏµÍ³µÄ³¬¼¶¿ì  newmnt->mnt.mnt_sb ¹ÒÔØÔ´¿éÉè±¸ËùÔÚÎÄ¼şÏµÍ³µÄ³¬¼¶¿é
-    //path->mnt->mnt_root:¹ÒÔØµãÄ¿Â¼ËùÔÚÎÄ¼şÏµÍ³µÄ¸ùÄ¿Â¼   path->dentry ¹ÒÔØµãÄ¿Â¼dentry¡£
+    //path->mnt->mnt_sb:æŒ‚è½½ç‚¹ç›®å½•æ‰€åœ¨æ–‡ä»¶ç³»ç»Ÿçš„è¶…çº§å¿«  newmnt->mnt.mnt_sb æŒ‚è½½æºå—è®¾å¤‡æ‰€åœ¨æ–‡ä»¶ç³»ç»Ÿçš„è¶…çº§å—
+    //path->mnt->mnt_root:æŒ‚è½½ç‚¹ç›®å½•æ‰€åœ¨æ–‡ä»¶ç³»ç»Ÿçš„æ ¹ç›®å½•   path->dentry æŒ‚è½½ç‚¹ç›®å½•dentryã€‚
     
-    //ÒòÎª¹ÒÔØµãÄ¿Â¼±éÀúÊ±£¬»á×ª»»³É¹ÒÔØÔ´µÄ¿éÉè±¸µÄ£¬ËùÒÔpath->mntÆäÊµ´ú±í¹ÒÔØÔ´µÄ¿éÉè±¸£¬newmnt->mnt Ò²ÊÇ¹ÒÔØÔ´µÄ¡£
-    //²¢ÇÒpath->mnt->mnt_root==path->dentryÔòËµÃ÷¡£±¾´Î¹ÒÔÚµãÄ¿Â¼¾ÍÊÇ¹ÒÔØÔ´¿éÉè±¸µÄ¸ùÄ¿Â¼£¬Õâ¾ÍÊÇËµÍ¬Ò»¸ö¿éÉè±¸ÓÖ¹ÒÔØµ½Í¬Ò»¸ö¿éÉè±¸
+    //å› ä¸ºæŒ‚è½½ç‚¹ç›®å½•éå†æ—¶ï¼Œä¼šè½¬æ¢æˆæŒ‚è½½æºçš„å—è®¾å¤‡çš„ï¼Œæ‰€ä»¥path->mntå…¶å®ä»£è¡¨æŒ‚è½½æºçš„å—è®¾å¤‡ï¼Œnewmnt->mnt ä¹Ÿæ˜¯æŒ‚è½½æºçš„ã€‚
+    //å¹¶ä¸”path->mnt->mnt_root==path->dentryåˆ™è¯´æ˜ã€‚æœ¬æ¬¡æŒ‚åœ¨ç‚¹ç›®å½•å°±æ˜¯æŒ‚è½½æºå—è®¾å¤‡çš„æ ¹ç›®å½•ï¼Œè¿™å°±æ˜¯è¯´åŒä¸€ä¸ªå—è®¾å¤‡åˆæŒ‚è½½åˆ°åŒä¸€ä¸ªå—è®¾å¤‡
 	if (path->mnt->mnt_sb == newmnt->mnt.mnt_sb &&
 	    path->mnt->mnt_root == path->dentry)
 		goto unlock;
@@ -2181,7 +2181,7 @@ static int do_add_mount(struct mount *newmnt, struct path *path, int mnt_flags)
 		goto unlock;
 
 	newmnt->mnt.mnt_flags = mnt_flags;
-    //newmnt:¿éÉè±¸ext4ÎÄ¼şÏµÍ³µÄmount½á¹¹  parent:¹ÒÔØµãÎÄ¼şÏµÍ³µÄmount,mp¹ÒÔØµãÄ¿Â¼µÄmp
+    //newmnt:å—è®¾å¤‡ext4æ–‡ä»¶ç³»ç»Ÿçš„mountç»“æ„  parent:æŒ‚è½½ç‚¹æ–‡ä»¶ç³»ç»Ÿçš„mount,mpæŒ‚è½½ç‚¹ç›®å½•çš„mp
 	err = graft_tree(newmnt, parent, mp);
 
 unlock:
@@ -2193,7 +2193,7 @@ unlock:
  * create a new mount for userspace and request it to be added into the
  * namespace's tree
  */
-//pathÊÇ¹ÒÔØµãµãÄ¿Â¼
+//pathæ˜¯æŒ‚è½½ç‚¹ç‚¹ç›®å½•
 static int do_new_mount(struct path *path, const char *fstype, int flags,
 			int mnt_flags, const char *name, void *data)
 {
@@ -2223,10 +2223,10 @@ static int do_new_mount(struct path *path, const char *fstype, int flags,
 		}
 	}
     /*
-     ²éÕÒµ½/dev/mmcblk0p5µÄdentry¡¢mnt¡¢inode½á¹¹£¬²¢ÓÉinodeµÃµ½¿éÉè±¸µÄbdev£¬´´½¨superblock
-     ½á¹¹²¢³õÊ¼»¯Æä³ÉÔ±¡£È»ºó¶ÁÈ¡ext4ÎÄ¼şÏµÍ³flashÖĞµÄ³¬¼¶¿ìÊı¾İ£¬²¢·ÖÎö³¬¼¶¿ìÊı¾İ£¬¸ø
-     ext4_super_block¡¢ext4_sb_info¡¢super_block¸³Öµ¡£µÃµ½ext4ÎÄ¼şÏµÍ³µÄroot inode£¬
-     ÒÔ"/"Ä¿Â¼Ãû×Ö·ÖÅä²¢³õÊ¼»¯root dentry£¬²¢¶Ôvfsmont³õÊ¼»¯
+     æŸ¥æ‰¾åˆ°/dev/mmcblk0p5çš„dentryã€mntã€inodeç»“æ„ï¼Œå¹¶ç”±inodeå¾—åˆ°å—è®¾å¤‡çš„bdevï¼Œåˆ›å»ºsuperblock
+     ç»“æ„å¹¶åˆå§‹åŒ–å…¶æˆå‘˜ã€‚ç„¶åè¯»å–ext4æ–‡ä»¶ç³»ç»Ÿflashä¸­çš„è¶…çº§å¿«æ•°æ®ï¼Œå¹¶åˆ†æè¶…çº§å¿«æ•°æ®ï¼Œç»™
+     ext4_super_blockã€ext4_sb_infoã€super_blockèµ‹å€¼ã€‚å¾—åˆ°ext4æ–‡ä»¶ç³»ç»Ÿçš„root inodeï¼Œ
+     ä»¥"/"ç›®å½•åå­—åˆ†é…å¹¶åˆå§‹åŒ–root dentryï¼Œå¹¶å¯¹vfsmontåˆå§‹åŒ–
      */
 	mnt = vfs_kern_mount(type, flags, name, data);
 	if (!IS_ERR(mnt) && (type->fs_flags & FS_HAS_SUBTYPE) &&
@@ -2511,10 +2511,10 @@ long do_mount(const char *dev_name, const char *dir_name,
 		((char *)data_page)[PAGE_SIZE - 1] = 0;
 
 	/* ... and get the mountpoint */
-    /*µÃµ½°²×°µãµÄdentryµÈĞÅÏ¢£¬±ÈÈç£¬mount /dev/mmcblk0p5 /home/config/,¾ÍÊÇµÃµ½
-      /home/configµÄdentryĞÅÏ¢£¬Õâ¸ö¹ı³ÌÓëopenÀàËÆ£¬×îÖÕºËĞÄ»¹ÊÇµ÷ÓÃpath_initºÍ
-      link_path_walkÁ½¸öº¯Êı£¬¸ù¾İdir_nameÎÄ¼şÂ·¾¶Ãû²éÕÒÄ¿Â¼£¬×îÖÕµÃµ½/home/config/
-      µÄdentryºÍvfsmountĞÅÏ¢±£´æµ½path½á¹¹*/
+    /*å¾—åˆ°å®‰è£…ç‚¹çš„dentryç­‰ä¿¡æ¯ï¼Œæ¯”å¦‚ï¼Œmount /dev/mmcblk0p5 /home/config/,å°±æ˜¯å¾—åˆ°
+      /home/configçš„dentryä¿¡æ¯ï¼Œè¿™ä¸ªè¿‡ç¨‹ä¸openç±»ä¼¼ï¼Œæœ€ç»ˆæ ¸å¿ƒè¿˜æ˜¯è°ƒç”¨path_initå’Œ
+      link_path_walkä¸¤ä¸ªå‡½æ•°ï¼Œæ ¹æ®dir_nameæ–‡ä»¶è·¯å¾„åæŸ¥æ‰¾ç›®å½•ï¼Œæœ€ç»ˆå¾—åˆ°/home/config/
+      çš„dentryå’Œvfsmountä¿¡æ¯ä¿å­˜åˆ°pathç»“æ„*/
 	retval = kern_path(dir_name, LOOKUP_FOLLOW, &path);
 	if (retval)
 		return retval;
@@ -2567,7 +2567,7 @@ long do_mount(const char *dev_name, const char *dir_name,
 		retval = do_change_type(&path, flags);
 	else if (flags & MS_MOVE)
 		retval = do_move_mount(&path, dev_name);
-	else//path.dentryÊÇ/home/configµÄ£¬dev_nameÊÇ/dev/mmcblk0p4µÄ
+	else//path.dentryæ˜¯/home/configçš„ï¼Œdev_nameæ˜¯/dev/mmcblk0p4çš„
 		retval = do_new_mount(&path, type_page, flags, mnt_flags,
 				      dev_name, data_page);
 dput_out:
