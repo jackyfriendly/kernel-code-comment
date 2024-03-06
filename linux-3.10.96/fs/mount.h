@@ -6,7 +6,7 @@ struct mnt_namespace {
 	atomic_t		count;
 	unsigned int		proc_inum;
 	struct mount *	root;
-    //Ã²ËÆÊôÓÚÒ»¸öÃüÃû¿Õ¼äµÄÎÄ¼şÏµÍ³µÄstruct mount½á¹¹Ìå¶¼Á´½ÓÔÚÕâ¸öÁ´±í£¬²»Í¬ÃüÃû¿Õ¼ä±Ë´Ë¿´²»µ½¶ÔÓ¦ÃüÃû¿Õ¼äµÄÎÄ¼şÏµÍ³mount½á¹¹
+    //è²Œä¼¼å±äºä¸€ä¸ªå‘½åç©ºé—´çš„æ–‡ä»¶ç³»ç»Ÿçš„struct mountç»“æ„ä½“éƒ½é“¾æ¥åœ¨è¿™ä¸ªé“¾è¡¨ï¼Œä¸åŒå‘½åç©ºé—´å½¼æ­¤çœ‹ä¸åˆ°å¯¹åº”å‘½åç©ºé—´çš„æ–‡ä»¶ç³»ç»Ÿmountç»“æ„
 	struct list_head	list;
 	struct user_namespace	*user_ns;
 	u64			seq;	/* Sequence number to prevent loops */
@@ -19,27 +19,27 @@ struct mnt_pcp {
 	int mnt_writers;
 };
 
-//¿éÉè±¸µÄ¹ÒÔØµãÄ¿Â¼
+//å—è®¾å¤‡çš„æŒ‚è½½ç‚¹ç›®å½•
 struct mountpoint {
 	struct list_head m_hash;
-	struct dentry *m_dentry;//¹ÒµãµãÄ¿Â¼dentry
+	struct dentry *m_dentry;//æŒ‚ç‚¹ç‚¹ç›®å½•dentry
 	int m_count;
 };
-/*¼ûattach_mnt().¹ØÓÚ¸¸×ÓmountµÄÀí½â£¬Ã¿Ò»´Î¹ÒÔØ£¬¶¼»áÕë¶Ô¹ÒÔØÔ´Éú³ÉÒ»¸ömount½á¹¹£¬¼´source mount£¬¶øÕë¶Ô¹ÒÔØµãÄ¿Â¼Ëù´¦ÎÄ¼şÏµÍ³µÄ
-dest mount£¬¾ÍÊÇsource mountµÄ¸¸mount¡£source mountÊÇ×Ómount,dest mountÊÇ¸¸mount£¬source mnt->mnt_childÁ´½Óµ½dest mountµÄparent->mnt_mounts¡£
-¾ÙÀı£¬dest mountÊÇsda3 ¹ÒÔÚµ½¸ùÄ¿Â¼'/'Éú³ÉµÄ£¬È»ºósda5¹ÒÔØµ½/homeÄ¿Â¼£¬Õâ´ÎÉú³ÉµÄmount£¬¼´souce mount£¬Óësda3µÄdest mountÊÇ¸¸×Ó¹ØÏµ¡£ */
+/*è§attach_mnt().å…³äºçˆ¶å­mountçš„ç†è§£ï¼Œæ¯ä¸€æ¬¡æŒ‚è½½ï¼Œéƒ½ä¼šé’ˆå¯¹æŒ‚è½½æºç”Ÿæˆä¸€ä¸ªmountç»“æ„ï¼Œå³source mountï¼Œè€Œé’ˆå¯¹æŒ‚è½½ç‚¹ç›®å½•æ‰€å¤„æ–‡ä»¶ç³»ç»Ÿçš„
+dest mountï¼Œå°±æ˜¯source mountçš„çˆ¶mountã€‚source mountæ˜¯å­mount,dest mountæ˜¯çˆ¶mountï¼Œsource mnt->mnt_childé“¾æ¥åˆ°dest mountçš„parent->mnt_mountsã€‚
+ä¸¾ä¾‹ï¼Œdest mountæ˜¯sda3 æŒ‚åœ¨åˆ°æ ¹ç›®å½•'/'ç”Ÿæˆçš„ï¼Œç„¶åsda5æŒ‚è½½åˆ°/homeç›®å½•ï¼Œè¿™æ¬¡ç”Ÿæˆçš„mountï¼Œå³souce mountï¼Œä¸sda3çš„dest mountæ˜¯çˆ¶å­å…³ç³»ã€‚ */
 
-//Ã¿Ò»¸ö¹ÒÔØµÄ¿éÉè±¸¶¼ÒªÉú³ÉÒ»¸ömount½á¹¹Ìå£¬Ã¿Ò»´Î¹ÒÔØ¶¼»áÉú³ÉµÄÒ»¸ömount½á¹¹
+//æ¯ä¸€ä¸ªæŒ‚è½½çš„å—è®¾å¤‡éƒ½è¦ç”Ÿæˆä¸€ä¸ªmountç»“æ„ä½“ï¼Œæ¯ä¸€æ¬¡æŒ‚è½½éƒ½ä¼šç”Ÿæˆçš„ä¸€ä¸ªmountç»“æ„
 struct mount {
-    //mount¿¿mnt_hashÁ´Èëmount hashÁ´±í£¬__lookup_mnt()ÊÇ´Ó¸Ãmount hashÁ´±íËÑË÷mount½á¹¹¡£commit_tree()ºÍattach_mnt()ÖĞ¿¿
-    //mnt_hash°ÑmountÁ´Èëmount hashÁ´±í£¬²¢ÇÒÁ´Èëhash±íµÄ¼üÖµÊÇ(¸¸mount½á¹¹µÄvfsmount³ÉÔ±+¸ÃmountµÄ¹ÒÔØµãdentry)
+    //mounté mnt_hashé“¾å…¥mount hashé“¾è¡¨ï¼Œ__lookup_mnt()æ˜¯ä»è¯¥mount hashé“¾è¡¨æœç´¢mountç»“æ„ã€‚commit_tree()å’Œattach_mnt()ä¸­é 
+    //mnt_hashæŠŠmounté“¾å…¥mount hashé“¾è¡¨ï¼Œå¹¶ä¸”é“¾å…¥hashè¡¨çš„é”®å€¼æ˜¯(çˆ¶mountç»“æ„çš„vfsmountæˆå‘˜+è¯¥mountçš„æŒ‚è½½ç‚¹dentry)
 	struct list_head mnt_hash;
-    //¸¸mount,attach_recursive_mnt->mnt_set_mountpoint(),¾¹È»ÉèÖÃÎª¹ÒµãÄ¿Â¼ËùÔÚÎÄ¼şÏµÍ³µÄmount£¬
-    //Ò²ËµÒ²ÊÇ£¬¹ÒÔØÔ´µÄmountµÄ¸¸mountÊÇ¹ÒÔØµãÄ¿Â¼ËùÔÚµÄÎÄ¼şÏµÍ³µÄmount½á¹¹
+    //çˆ¶mount,attach_recursive_mnt->mnt_set_mountpoint(),ç«Ÿç„¶è®¾ç½®ä¸ºæŒ‚ç‚¹ç›®å½•æ‰€åœ¨æ–‡ä»¶ç³»ç»Ÿçš„mountï¼Œ
+    //ä¹Ÿè¯´ä¹Ÿæ˜¯ï¼ŒæŒ‚è½½æºçš„mountçš„çˆ¶mountæ˜¯æŒ‚è½½ç‚¹ç›®å½•æ‰€åœ¨çš„æ–‡ä»¶ç³»ç»Ÿçš„mountç»“æ„
 	struct mount *mnt_parent;
-    //¹ÒÔØµãdentry£¬attach_recursive_mnt->mnt_set_mountpoint()ÉèÖÃÎª¹ÒÔØµãÄ¿Â¼dentry
+    //æŒ‚è½½ç‚¹dentryï¼Œattach_recursive_mnt->mnt_set_mountpoint()è®¾ç½®ä¸ºæŒ‚è½½ç‚¹ç›®å½•dentry
 	struct dentry *mnt_mountpoint;
-    //°üº¬¿éÉè±¸µÄ¸ùÄ¿Â¼dentry
+    //åŒ…å«å—è®¾å¤‡çš„æ ¹ç›®å½•dentry
 	struct vfsmount mnt;
 #ifdef CONFIG_SMP
 	struct mnt_pcp __percpu *mnt_pcp;
@@ -47,45 +47,45 @@ struct mount {
 	int mnt_count;
 	int mnt_writers;
 #endif
-    //commit_tree()¿¿mnt_child°Ñmount½á¹¹Ìí¼Óµ½mountµÄparent mountµÄmnt_mountsÁ´±í£¬ËùÒÔÕâ¸ö¿´×ÅÊÇmountµÄ×Ómount½á¹¹±£´æµÄÁ´±í
+    //commit_tree()é mnt_childæŠŠmountç»“æ„æ·»åŠ åˆ°mountçš„parent mountçš„mnt_mountsé“¾è¡¨ï¼Œæ‰€ä»¥è¿™ä¸ªçœ‹ç€æ˜¯mountçš„å­mountç»“æ„ä¿å­˜çš„é“¾è¡¨
 	struct list_head mnt_mounts;	/* list of children, anchored here */
-    //next_mnt()Àï¸ù¾İmnt_child·µ»ØÆämount½á¹¹£¬commit_tree()ºÍattach_mnt()¿¿mnt_child°Ñmount½á¹¹Ìí¼Óµ½mountµÄmnt_parentµÄmnt_mountsÁ´±í
+    //next_mnt()é‡Œæ ¹æ®mnt_childè¿”å›å…¶mountç»“æ„ï¼Œcommit_tree()å’Œattach_mnt()é mnt_childæŠŠmountç»“æ„æ·»åŠ åˆ°mountçš„mnt_parentçš„mnt_mountsé“¾è¡¨
 	struct list_head mnt_child;	/* and going through their mnt_child */
 	struct list_head mnt_instance;	/* mount instance on sb->s_mounts */
    
 	const char *mnt_devname;	/* Name of device e.g. /dev/dsk/hda1 */
-    //copy_tree()´´½¨µÄĞÂmount²¢¿¿mnt_listÌí¼Óµ½¸ÃÁ´±í£¬¸ã²»¶®ÓĞÊ²Ã´ÓÃ?
+    //copy_tree()åˆ›å»ºçš„æ–°mountå¹¶é mnt_listæ·»åŠ åˆ°è¯¥é“¾è¡¨ï¼Œæä¸æ‡‚æœ‰ä»€ä¹ˆç”¨?
 	struct list_head mnt_list;
 	struct list_head mnt_expire;	/* link in fs-specific expiry list */
-    //clone_mnt()°Ñ±¾´Î¹ÒÔØµÄsource mountÍ¨¹ıÆämnt_shareÁ´½Óµ½¿ËÂ¡Ä¸ÌåµÄmnt_shareÁ´±í
+    //clone_mnt()æŠŠæœ¬æ¬¡æŒ‚è½½çš„source mounté€šè¿‡å…¶mnt_shareé“¾æ¥åˆ°å…‹éš†æ¯ä½“çš„mnt_shareé“¾è¡¨
 	struct list_head mnt_share;	/* circular list of shared mounts */
-    //clone_mnt()ÖĞ£¬°Ñ±¾´Î¹ÒÔØslaveÊôĞÔµÄsource mount½á¹¹Á´½Óµ½¿ËÂ¡Ä¸ÌåmountµÄmnt_slave_listÁ´±í¡£mount½á¹¹µÄmnt_slave_listÁ´±í
-    //ÊÇ±£´æ×Óslave mountµÄ£¬·²ÊÇÕÕ×ÅÒ»¸ömount½á¹¹¿ËÂ¡Éú³ÉµÄmount£¬¶¼Ìí¼Óµ½¿ËÂ¡Ä¸ÌåµÄmnt_slave_listÁ´±í£¬¿ËÂ¡µÄmountÊÇÄ¸ÌåµÄ×Óslave mount
+    //clone_mnt()ä¸­ï¼ŒæŠŠæœ¬æ¬¡æŒ‚è½½slaveå±æ€§çš„source mountç»“æ„é“¾æ¥åˆ°å…‹éš†æ¯ä½“mountçš„mnt_slave_listé“¾è¡¨ã€‚mountç»“æ„çš„mnt_slave_listé“¾è¡¨
+    //æ˜¯ä¿å­˜å­slave mountçš„ï¼Œå‡¡æ˜¯ç…§ç€ä¸€ä¸ªmountç»“æ„å…‹éš†ç”Ÿæˆçš„mountï¼Œéƒ½æ·»åŠ åˆ°å…‹éš†æ¯ä½“çš„mnt_slave_listé“¾è¡¨ï¼Œå…‹éš†çš„mountæ˜¯æ¯ä½“çš„å­slave mount
 	struct list_head mnt_slave_list;/* list of slave mounts */
-    // 1 clone_mnt()ÖĞ£¬°Ñ±¾´Î¹ÒÔØsource slaveÊôĞÔµÄmount½á¹¹Á´½Óµ½¿ËÂ¡Ä¸ÌåmountµÄmnt_slave_listÁ´±í
-    /* 2 clone_mnt()ÖĞ£¬¿ËÂ¡Ä¸ÌåÊÇslaveÊôĞÔ¶ø±¾´Îsource mountÃ»ÓĞÖ¸¶¨ÊôĞÔ£¬Ôòsource mount±»Ìí¼Óµ½Óë¿ËÂ¡Ä¸ÌåÍ¬Ò»¸ömount salve×éÁ´±í
-       ¾ßÌåÌí¼ÓĞÎÊ½ÊÇ£¬source mount½á¹¹¿¿Æämnt_slaveÌí¼Óµ½¿ËÂ¡Ä¸ÌåµÄmnt_slaveÁ´±í¡£source mountºÍ¿ËÂ¡Ä¸Ìå¿¿¸÷×ÔµÄmnt_slave¹¹³ÉÁ´±í,
-       ¶şÕßÊÇÍ¬Ò»¸ömount slave×é³ÉÔ±¡£Èç¹ûsource mount¿¿Æämnt_slaveÌí¼Óµ½¿ËÂ¡Ä¸ÌåµÄmnt_slave_listÁ´±í£¬Ôò¶şÕßÊÇ¸¸×Ó¹ØÏµ£¬²»ÊÇÍ¬×é¹ØÏµ¡£
+    // 1 clone_mnt()ä¸­ï¼ŒæŠŠæœ¬æ¬¡æŒ‚è½½source slaveå±æ€§çš„mountç»“æ„é“¾æ¥åˆ°å…‹éš†æ¯ä½“mountçš„mnt_slave_listé“¾è¡¨
+    /* 2 clone_mnt()ä¸­ï¼Œå…‹éš†æ¯ä½“æ˜¯slaveå±æ€§è€Œæœ¬æ¬¡source mountæ²¡æœ‰æŒ‡å®šå±æ€§ï¼Œåˆ™source mountè¢«æ·»åŠ åˆ°ä¸å…‹éš†æ¯ä½“åŒä¸€ä¸ªmount salveç»„é“¾è¡¨
+       å…·ä½“æ·»åŠ å½¢å¼æ˜¯ï¼Œsource mountç»“æ„é å…¶mnt_slaveæ·»åŠ åˆ°å…‹éš†æ¯ä½“çš„mnt_slaveé“¾è¡¨ã€‚source mountå’Œå…‹éš†æ¯ä½“é å„è‡ªçš„mnt_slaveæ„æˆé“¾è¡¨,
+       äºŒè€…æ˜¯åŒä¸€ä¸ªmount slaveç»„æˆå‘˜ã€‚å¦‚æœsource mounté å…¶mnt_slaveæ·»åŠ åˆ°å…‹éš†æ¯ä½“çš„mnt_slave_listé“¾è¡¨ï¼Œåˆ™äºŒè€…æ˜¯çˆ¶å­å…³ç³»ï¼Œä¸æ˜¯åŒç»„å…³ç³»ã€‚
        */
 	struct list_head mnt_slave;	/* slave list entry */
-    /* 1 clone_mnt()ÖĞ£¬±¾´Î¹ÒÔØÊÇslaveÊôĞÔ£¬¿ËÂ¡Éú³ÉµÄsource mount^£¬¼´mnt£¬Æämnt_masterÖ¸Ïò¿ËÂ¡Ä¸ÌåµÄmount½á¹¹
-    // 2 clone_mnt()ÖĞ£¬±¾´Î¹ÒÔØÃ»ÓĞÖ¸¶¨mountÊôĞÔ£¬¶ø¿ËÂ¡Ä¸ÌåÓÖÊÇslaveÊôĞÔ£¬Ôòsouece mountµÄmnt_master¾ÍÊÇ¿ËÂ¡Ä¸ÌåµÄmount->mnt_master£¬
-    //¶şÕßÊôÓÚÍ¬Ò»¸ömount slave×é
-       3 Õı³£mount /dev/sda3 /homeÕâÑùÉú³ÉµÄmountÆämnt_masterÊÇNULL£¬mount bindµÄshareÊôĞÔµÄmountÆämnt_masterÊÇNULL
+    /* 1 clone_mnt()ä¸­ï¼Œæœ¬æ¬¡æŒ‚è½½æ˜¯slaveå±æ€§ï¼Œå…‹éš†ç”Ÿæˆçš„source mount^ï¼Œå³mntï¼Œå…¶mnt_masteræŒ‡å‘å…‹éš†æ¯ä½“çš„mountç»“æ„
+    // 2 clone_mnt()ä¸­ï¼Œæœ¬æ¬¡æŒ‚è½½æ²¡æœ‰æŒ‡å®šmountå±æ€§ï¼Œè€Œå…‹éš†æ¯ä½“åˆæ˜¯slaveå±æ€§ï¼Œåˆ™souece mountçš„mnt_masterå°±æ˜¯å…‹éš†æ¯ä½“çš„mount->mnt_masterï¼Œ
+    //äºŒè€…å±äºåŒä¸€ä¸ªmount slaveç»„
+       3 æ­£å¸¸mount /dev/sda3 /homeè¿™æ ·ç”Ÿæˆçš„mountå…¶mnt_masteræ˜¯NULLï¼Œmount bindçš„shareå±æ€§çš„mountå…¶mnt_masteræ˜¯NULL
      */
 	struct mount *mnt_master;	/* slave is on master->mnt_slave_list */
-    //mountËùÊôÃüÃû¿Õ¼ä£¬commit_tree()ÖĞ°Ñmount½á¹¹Ìí¼Óµ½¸¸mountµÄmnt_nsµÄlistÁ´±í
+    //mountæ‰€å±å‘½åç©ºé—´ï¼Œcommit_tree()ä¸­æŠŠmountç»“æ„æ·»åŠ åˆ°çˆ¶mountçš„mnt_nsçš„listé“¾è¡¨
 	struct mnt_namespace *mnt_ns;	/* containing namespace */
-    //¹ÒÔØµã½á¹¹£¬°üº¬¹ÒÔØµãdentry£¬attach_recursive_mnt->mnt_set_mountpoint()ÖĞÉèÖÃ
+    //æŒ‚è½½ç‚¹ç»“æ„ï¼ŒåŒ…å«æŒ‚è½½ç‚¹dentryï¼Œattach_recursive_mnt->mnt_set_mountpoint()ä¸­è®¾ç½®
 	struct mountpoint *mnt_mp;	/* where is it mounted */
 #ifdef CONFIG_FSNOTIFY
 	struct hlist_head mnt_fsnotify_marks;
 	__u32 mnt_fsnotify_mask;
 #endif
-    //mount id, alloc_vfsmnt£¬ mnt_alloc_id()ÖĞ·ÖÅä
+    //mount id, alloc_vfsmntï¼Œ mnt_alloc_id()ä¸­åˆ†é…
 	int mnt_id;			/* mount identifier */
-    //mount group id£¬Ò»¸ömount×éÀï£¬ËùÓĞµÄmount½á¹¹µÄmnt_group_idÒ»Ñù.¾ÍÊÇ¿¿Õâ¸öÅĞ¶ÏÁ½¸ömountÊÇ·ñÊôÓÚÍ¬Ò»¸öpeer group
-    //do_loopback()->clone_mnt() ÖĞ¸³Öµ
+    //mount group idï¼Œä¸€ä¸ªmountç»„é‡Œï¼Œæ‰€æœ‰çš„mountç»“æ„çš„mnt_group_idä¸€æ ·.å°±æ˜¯é è¿™ä¸ªåˆ¤æ–­ä¸¤ä¸ªmountæ˜¯å¦å±äºåŒä¸€ä¸ªpeer group
+    //do_loopback()->clone_mnt() ä¸­èµ‹å€¼
 	int mnt_group_id;		/* peer group identifier */
 	int mnt_expiry_mark;		/* true if marked for expiry */
 	int mnt_pinned;
@@ -116,12 +116,12 @@ static inline void get_mnt_ns(struct mnt_namespace *ns)
 {
 	atomic_inc(&ns->count);
 }
-//´ó²¿·Ö³ÉÔ±ÔÚmounts_open_common()»òÕßshow_mountinfo()ÖĞ¸³Öµ
+//å¤§éƒ¨åˆ†æˆå‘˜åœ¨mounts_open_common()æˆ–è€…show_mountinfo()ä¸­èµ‹å€¼
 struct proc_mounts {
 	struct seq_file m;
-	struct mnt_namespace *ns;//ÃüÃû¿Õ¼ä£¬À´×Ôµ±Ç°½ø³ÌtaskµÄstruct nsproxyµÄstruct mnt_namespace³ÉÔ±
-	struct path root;	//Ö¸Ïòµ±Ç°½ø³ÌËùÊôµÄ¸ùÎÄ¼şÏµÍ³
-	int (*show)(struct seq_file *, struct vfsmount *);//mounts_open_common¸³ÖµÎªshow_vfsmnt
+	struct mnt_namespace *ns;//å‘½åç©ºé—´ï¼Œæ¥è‡ªå½“å‰è¿›ç¨‹taskçš„struct nsproxyçš„struct mnt_namespaceæˆå‘˜
+	struct path root;	//æŒ‡å‘å½“å‰è¿›ç¨‹æ‰€å±çš„æ ¹æ–‡ä»¶ç³»ç»Ÿ
+	int (*show)(struct seq_file *, struct vfsmount *);//mounts_open_commonèµ‹å€¼ä¸ºshow_vfsmnt
 };
 
 #define proc_mounts(p) (container_of((p), struct proc_mounts, m))
