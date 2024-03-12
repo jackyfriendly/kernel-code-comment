@@ -99,24 +99,24 @@ extern unsigned int full_name_hash(const unsigned char *, unsigned int);
 #  define DNAME_INLINE_LEN 40 /* 128 bytes */
 # endif
 #endif
-//d_add->d_rehash()º¯Êı  dentryÓë¸¸dentryÔÚÔÓ´Õ±íÖĞ½¨Á¢ÁªÏµ£¬dentryÓëinode½¨Á¢ÁªÏµÒ²ÊÇÔÚd_add
+//d_add->d_rehash()å‡½æ•°  dentryä¸çˆ¶dentryåœ¨æ‚å‡‘è¡¨ä¸­å»ºç«‹è”ç³»ï¼Œdentryä¸inodeå»ºç«‹è”ç³»ä¹Ÿæ˜¯åœ¨d_add
 struct dentry {
-    //Èç¹ûÉèÖÃÁËDCACHE_MOUNTED ±íÊ¾Î»£¬±íÊ¾¸ÃdentryÊÇÒ»¸ö¹ÒÔØµã£¬´ËÊ±µÃÍ¨¹ımount ºÍvfsmount½á¹¹
-    //ÕÒµ½ÕæÊµÄ¿Â¼µÄdentry
+    //å¦‚æœè®¾ç½®äº†DCACHE_MOUNTED è¡¨ç¤ºä½ï¼Œè¡¨ç¤ºè¯¥dentryæ˜¯ä¸€ä¸ªæŒ‚è½½ç‚¹ï¼Œæ­¤æ—¶å¾—é€šè¿‡mount å’Œvfsmountç»“æ„
+    //æ‰¾åˆ°çœŸå®ç›®å½•çš„dentry
 	/* RCU lookup touched fields */
 	unsigned int d_flags;		/* protected by d_lock */
 	seqcount_t d_seq;		/* per dentry seqlock */
-    //Ã¿¸ödentry½á¹¹¶¼Í¨¹ı¶ÓÁĞÍ·d_hashÁ´ÈëÔÓ´Õ±ídentry_hashtableµÄÄ³¸ö¶ÓÁĞ
-	struct hlist_bl_node d_hash;	/* lookup hash list *///__d_allocÖĞ³õÊ¼»¯
-    //Ö¸Ïò¸¸Ä¿Â¼£¬ÔÚdentry´´½¨Ê±¸³Öµ£¬¿´d_alloc()
+    //æ¯ä¸ªdentryç»“æ„éƒ½é€šè¿‡é˜Ÿåˆ—å¤´d_hashé“¾å…¥æ‚å‡‘è¡¨dentry_hashtableçš„æŸä¸ªé˜Ÿåˆ—
+	struct hlist_bl_node d_hash;	/* lookup hash list *///__d_allocä¸­åˆå§‹åŒ–
+    //æŒ‡å‘çˆ¶ç›®å½•ï¼Œåœ¨dentryåˆ›å»ºæ—¶èµ‹å€¼ï¼Œçœ‹d_alloc()
 	struct dentry *d_parent;	/* parent directory */
-    //¸ÃÄ¿Â¼»òÕßÎÄ¼şµÄhashÖµ£¬ÓĞÊ±Ã¿¸ödentryµÄd_name->nameÈ·Êµ"/"£¬ÕâÊÇÒòÎª¸ÃdentryÊÇ¸ö¹ÒÔØµã
-    //ÔÚdentry´´½¨Ê±¸³Öµ£¬__lookup_hash->lookup_dcache->d_alloc->__d_alloc¸³ÖµÎªdennry->d_name.name=dname
+    //è¯¥ç›®å½•æˆ–è€…æ–‡ä»¶çš„hashå€¼ï¼Œæœ‰æ—¶æ¯ä¸ªdentryçš„d_name->nameç¡®å®"/"ï¼Œè¿™æ˜¯å› ä¸ºè¯¥dentryæ˜¯ä¸ªæŒ‚è½½ç‚¹
+    //åœ¨dentryåˆ›å»ºæ—¶èµ‹å€¼ï¼Œ__lookup_hash->lookup_dcache->d_alloc->__d_allocèµ‹å€¼ä¸ºdennry->d_name.name=dname
 	struct qstr d_name;
-    //¾ÍÊÇ¶ÔÓ¦µÄinode½á¹¹£¬Ò»¸ödentryÖ»ÓĞÒ»¸öinode£¬µ«ÊÇÒ»¸öinode¿ÉÒÔÓĞ¶à¸ödentry
+    //å°±æ˜¯å¯¹åº”çš„inodeç»“æ„ï¼Œä¸€ä¸ªdentryåªæœ‰ä¸€ä¸ªinodeï¼Œä½†æ˜¯ä¸€ä¸ªinodeå¯ä»¥æœ‰å¤šä¸ªdentry
 	struct inode *d_inode;		/* Where the name belongs to - NULL is
 					 * negative */
-    //Õâ¸öÓĞÊ±´òÓ¡Ò²ÊÇdentryµÄÃû×Ö£¬¸³ÖµºÍÊ¹ÓÃ¹ı³ÌĞèÒªÔÙÑĞ¾¿Ò»ÏÂ
+    //è¿™ä¸ªæœ‰æ—¶æ‰“å°ä¹Ÿæ˜¯dentryçš„åå­—ï¼Œèµ‹å€¼å’Œä½¿ç”¨è¿‡ç¨‹éœ€è¦å†ç ”ç©¶ä¸€ä¸‹
 	unsigned char d_iname[DNAME_INLINE_LEN];	/* small names */
 
 	/* Ref lookup also touches following */
@@ -125,21 +125,21 @@ struct dentry {
 	const struct dentry_operations *d_op;
 	struct super_block *d_sb;	/* The root of the dentry tree */
 	unsigned long d_time;		/* used by d_revalidate */
-    //cgroupÇé¿ö£¬µ±dentry´ú±íÄ¿Â¼Ê±£¬Ö¸Ïò¸ÃÄ¿Â¼¶ÔÓ¦µÄstruct cgroup½á¹¹£¬µ±dentry´ú±í¿ØÖÆÎÄ¼ş£¬Ö¸Ïò¿ØÖÆÎÄ¼ş¶ÔÓ¦µÄstruct cfent½á¹¹
+    //cgroupæƒ…å†µï¼Œå½“dentryä»£è¡¨ç›®å½•æ—¶ï¼ŒæŒ‡å‘è¯¥ç›®å½•å¯¹åº”çš„struct cgroupç»“æ„ï¼Œå½“dentryä»£è¡¨æ§åˆ¶æ–‡ä»¶ï¼ŒæŒ‡å‘æ§åˆ¶æ–‡ä»¶å¯¹åº”çš„struct cfentç»“æ„
     //
 	void *d_fsdata;			/* fs-specific data */
 
 	struct list_head d_lru;		/* LRU list */
-    //×ÓÄ¿Â¼»òÕß×ÓÎÄ¼şµÄdentryÍ¨¹ıd_childÁ´Èë¸¸Ä¿Â¼dentryµÄd_subdirs
+    //å­ç›®å½•æˆ–è€…å­æ–‡ä»¶çš„dentryé€šè¿‡d_childé“¾å…¥çˆ¶ç›®å½•dentryçš„d_subdirs
 	struct list_head d_child;	/* child of parent list */
-    //×ÓÄ¿Â¼»òÕß×ÓÎÄ¼şµÄdentryÍ¨¹ıd_childÁ´Èë¸¸Ä¿Â¼dentryµÄd_subdirs
+    //å­ç›®å½•æˆ–è€…å­æ–‡ä»¶çš„dentryé€šè¿‡d_childé“¾å…¥çˆ¶ç›®å½•dentryçš„d_subdirs
 	struct list_head d_subdirs;	/* our children */
 	/*
 	 * d_alias and d_rcu can share memory
 	 */
 	union {
-        //Í¨¹ıd_alids¹ÒÈë¶ÔÓ¦µÄinodeÁ´±í
-		struct hlist_node d_alias;	/* inode alias list *///__d_allocÖĞ·ÖÅä
+        //é€šè¿‡d_alidsæŒ‚å…¥å¯¹åº”çš„inodeé“¾è¡¨
+		struct hlist_node d_alias;	/* inode alias list *///__d_allocä¸­åˆ†é…
 	 	struct rcu_head d_rcu;
 	} d_u;
 };
@@ -278,7 +278,7 @@ extern void d_rehash(struct dentry *);
  * This adds the entry to the hash queues and initializes @inode.
  * The entry was actually filled in earlier during d_alloc().
  */
-//½¨Á¢dentryºÍinodeÁªÏµ£¬Ìí¼Óµ½¸÷×ÔµÄÁ´±í
+//å»ºç«‹dentryå’Œinodeè”ç³»ï¼Œæ·»åŠ åˆ°å„è‡ªçš„é“¾è¡¨
 static inline void d_add(struct dentry *entry, struct inode *inode)
 {
 	d_instantiate(entry, inode);
