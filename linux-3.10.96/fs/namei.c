@@ -1336,13 +1336,13 @@ static struct dentry *lookup_real(struct inode *dir, struct dentry *dentry,
 		dput(dentry);
 		return ERR_PTR(-ENOENT);
 	}
-    /*   µ÷ÓÃÎÄ¼şÏµÍ³µÄinode_operationµÄlookupº¯Êı£¬ext4_dir_inode_operationsÀïµÄº¯Êı£¬
-       ¸ù¾İdirºÍdentry->d_nameÕÒµ½·µ»Ø´ıËÑË÷ÎÄ¼ş»òÄ¿Â¼µÄ¼ÇÂ¼¿ìbh£¬´´½¨¡¢¸³Öµ¡¢ËÑË÷µ½ÎÄ¼ş»ò
-       Ä¿Â¼µÄinode£¬»¹¶Ôdentry¸³Öµ£¬½¨Á¢dentryºÍinodeµÄÁªÏµ¡£
-          ext4ÎÄ¼şÏµÍ³µÄext4_lookupº¯Êı£¬tmpfsÎÄ¼şÏµÍ³µÄsimple_lookup()£¬tmpfsÎÄ¼şÏµÍ³ÓÃµÄ»¹Í¦¶à
-       £¬¹²ÏíÄÚ´æshmem£¬udev¡£±ÈÈçmountÃüÁîºóÏÔÊ¾£¬udev udev on /dev type tmpfs£»±ÈÈç/home/app,
-       tmpfs on /home/app type tmpfs¡£simple_lookupº¯Êı»ù±¾Ã»×öÉ¶£¬Ö±½Ó·µ»Ø£¬ÕâÑù¾ÍÊÇ·µ»Ø
-       ¸Õ¸Õ´´½¨µÄÎÄ¼ş»òÕßÄ¿Â¼dentry¼´¿É
+    /*   è°ƒç”¨æ–‡ä»¶ç³»ç»Ÿçš„inode_operationçš„lookupå‡½æ•°ï¼Œext4_dir_inode_operationsé‡Œçš„å‡½æ•°ï¼Œ
+       æ ¹æ®dirå’Œdentry->d_nameæ‰¾åˆ°è¿”å›å¾…æœç´¢æ–‡ä»¶æˆ–ç›®å½•çš„è®°å½•å¿«bhï¼Œåˆ›å»ºã€èµ‹å€¼ã€æœç´¢åˆ°æ–‡ä»¶æˆ–
+       ç›®å½•çš„inodeï¼Œè¿˜å¯¹dentryèµ‹å€¼ï¼Œå»ºç«‹dentryå’Œinodeçš„è”ç³»ã€‚
+          ext4æ–‡ä»¶ç³»ç»Ÿçš„ext4_lookupå‡½æ•°ï¼Œtmpfsæ–‡ä»¶ç³»ç»Ÿçš„simple_lookup()ï¼Œtmpfsæ–‡ä»¶ç³»ç»Ÿç”¨çš„è¿˜æŒºå¤š
+       ï¼Œå…±äº«å†…å­˜shmemï¼Œudevã€‚æ¯”å¦‚mountå‘½ä»¤åæ˜¾ç¤ºï¼Œudev udev on /dev type tmpfsï¼›æ¯”å¦‚/home/app,
+       tmpfs on /home/app type tmpfsã€‚simple_lookupå‡½æ•°åŸºæœ¬æ²¡åšå•¥ï¼Œç›´æ¥è¿”å›ï¼Œè¿™æ ·å°±æ˜¯è¿”å›
+       åˆšåˆšåˆ›å»ºçš„æ–‡ä»¶æˆ–è€…ç›®å½•dentryå³å¯
       */
 	old = dir->i_op->lookup(dir, dentry, flags);//ext4_lookup  simple_lookup
 	if (unlikely(old)) {
@@ -1357,13 +1357,13 @@ static struct dentry *__lookup_hash(struct qstr *name,
 {
 	bool need_lookup;
 	struct dentry *dentry;
-    //nameÊÇ´ıËÑË÷ÎÄ¼ş»òÄ¿Â¼µÄhashÖµ£¬bashÊÇ´ıËÑË÷ÎÄ¼ş»òÄ¿Â¼µÄ¸¸Ä¿Â¼£¬ÕâÊÇÔÚÄÚ´æÖĞ
-    //ÔÙ²éÕÒÒ»´Î£¬ÕÒ²»µ½¾Í·ÖÅäĞÂµÄdentry½á¹¹
+    //nameæ˜¯å¾…æœç´¢æ–‡ä»¶æˆ–ç›®å½•çš„hashå€¼ï¼Œbashæ˜¯å¾…æœç´¢æ–‡ä»¶æˆ–ç›®å½•çš„çˆ¶ç›®å½•ï¼Œè¿™æ˜¯åœ¨å†…å­˜ä¸­
+    //å†æŸ¥æ‰¾ä¸€æ¬¡ï¼Œæ‰¾ä¸åˆ°å°±åˆ†é…æ–°çš„dentryç»“æ„
 	dentry = lookup_dcache(name, base, flags, &need_lookup);
 	if (!need_lookup)
 		return dentry;
-    //´ÓflashÎÄ¼şÏµÍ³¶ÁÈ¡ÎÄ¼ş»òÕßÄ¿Â¼µÄdentryºÍinode½á¹¹µÄĞÅÏ¢£¬²éÕÒÆ¥ÅähashµÄÄ¿Â¼Ïî£¬
-    //dentry->d_nameÊÇ¸ÃÎÄ¼ş»òÕß,Ä¿Â¼Ãû×Ö¶ÔÓ¦µÄhashÖµ
+    //ä»flashæ–‡ä»¶ç³»ç»Ÿè¯»å–æ–‡ä»¶æˆ–è€…ç›®å½•çš„dentryå’Œinodeç»“æ„çš„ä¿¡æ¯ï¼ŒæŸ¥æ‰¾åŒ¹é…hashçš„ç›®å½•é¡¹ï¼Œ
+    //dentry->d_nameæ˜¯è¯¥æ–‡ä»¶æˆ–è€…,ç›®å½•åå­—å¯¹åº”çš„hashå€¼
 	return lookup_real(base->d_inode, dentry, flags);
 }
 
@@ -1372,11 +1372,11 @@ static struct dentry *__lookup_hash(struct qstr *name,
  *  small and for now I'd prefer to have fast path as straight as possible.
  *  It _is_ time-critical.
  */
-//walk_component->lookup_fast¡£nd->path.dentry ÊÇ±¾´ÎËÑË÷µÄÄ¿Â¼»òÕßÎÄ¼şµÄ¸¸dentry£¬nd->lastÊÇ±¾´ÎËÑË÷ÎÄ¼ş»òÄ¿Â¼Ãû×ÖµÄhashÖµ
-//nd->path.mnt ÊÇ±¾´ÎËÑË÷ÎÄ¼ş»òÕßÄ¿Â¼µÄ¸¸Ä¿Â¼µÄvfsmount¡£È»ºó²éÕÒ±¾´ÎÎÄ¼ş»òÕßÄ¿Â¼µÄdentry£¬Èç¹û²éÕÒµÄÊÇÄ¿Â¼£¬²¢ÇÒ¸ÃÄ¿Â¼ÊÇ
-//¹ÒÔØµã£¬ÔòÒª°Ñdentry×ª»»³É¹ÒÔØÔ´µÄ¸ùÄ¿Â¼dentry£¬È»ºópath->dentry = dentry£¬²¢ÇÒ°Ñmnt×ª»»³ÉÊ±¹ÒÔØÔ´ÎÄ¼şÏµÍ³µÄvfsmount
-//²¢ÇÒpath->mnt = mnt¡£È»ºówalk_component()º¯Êı×îºó£¬»¹ÒªÖ´ĞĞpath_to_nameidata(),ÉèÖÃnd->path.mnt = path->mnt 
-//ºÍ nd->path.dentry = path->dentry.ËùÒÔnd->pathµÄÀ´Ô´ÆğÊ¼»¹ÊÇ±¾´ÎËÑË÷µÄÎÄ¼ş»òÕßÄ¿Â¼µÄdentry¡¢Ëù´¦ÎÄ¼şÏµÍ³µÄvfsmount
+//walk_component->lookup_fastã€‚nd->path.dentry æ˜¯æœ¬æ¬¡æœç´¢çš„ç›®å½•æˆ–è€…æ–‡ä»¶çš„çˆ¶dentryï¼Œnd->lastæ˜¯æœ¬æ¬¡æœç´¢æ–‡ä»¶æˆ–ç›®å½•åå­—çš„hashå€¼
+//nd->path.mnt æ˜¯æœ¬æ¬¡æœç´¢æ–‡ä»¶æˆ–è€…ç›®å½•çš„çˆ¶ç›®å½•çš„vfsmountã€‚ç„¶åæŸ¥æ‰¾æœ¬æ¬¡æ–‡ä»¶æˆ–è€…ç›®å½•çš„dentryï¼Œå¦‚æœæŸ¥æ‰¾çš„æ˜¯ç›®å½•ï¼Œå¹¶ä¸”è¯¥ç›®å½•æ˜¯
+//æŒ‚è½½ç‚¹ï¼Œåˆ™è¦æŠŠdentryè½¬æ¢æˆæŒ‚è½½æºçš„æ ¹ç›®å½•dentryï¼Œç„¶åpath->dentry = dentryï¼Œå¹¶ä¸”æŠŠmntè½¬æ¢æˆæ—¶æŒ‚è½½æºæ–‡ä»¶ç³»ç»Ÿçš„vfsmount
+//å¹¶ä¸”path->mnt = mntã€‚ç„¶åwalk_component()å‡½æ•°æœ€åï¼Œè¿˜è¦æ‰§è¡Œpath_to_nameidata(),è®¾ç½®nd->path.mnt = path->mnt 
+//å’Œ nd->path.dentry = path->dentry.æ‰€ä»¥nd->pathçš„æ¥æºèµ·å§‹è¿˜æ˜¯æœ¬æ¬¡æœç´¢çš„æ–‡ä»¶æˆ–è€…ç›®å½•çš„dentryã€æ‰€å¤„æ–‡ä»¶ç³»ç»Ÿçš„vfsmount
 static int lookup_fast(struct nameidata *nd,
 		       struct path *path, struct inode **inode)
 {
@@ -1394,7 +1394,7 @@ static int lookup_fast(struct nameidata *nd,
 	//yes
 	if (nd->flags & LOOKUP_RCU) {
 		unsigned seq;
-        //ÔÚdentry hashÁ´±í²éÕÒdentry£¬»ùÓÚnd->last£¬dentryµÄÄ¿Â¼Ãû×ÖµÄhashÖµ
+        //åœ¨dentry hashé“¾è¡¨æŸ¥æ‰¾dentryï¼ŒåŸºäºnd->lastï¼Œdentryçš„ç›®å½•åå­—çš„hashå€¼
 		dentry = __d_lookup_rcu(parent, &nd->last, &seq, nd->inode);
 		if (!dentry)
 			goto unlazy;
@@ -1426,10 +1426,10 @@ static int lookup_fast(struct nameidata *nd,
 				goto unlazy;
 			}
 		}
-        //path->mntºÍ path->dentry¸³Öµ
+        //path->mntå’Œ path->dentryèµ‹å€¼
 		path->mnt = mnt;
 		path->dentry = dentry;
-        //Èç¹ûdentryÊÇ¹ÒÔØµã£¬Òª°Ñpath->mntºÍ path->dentryÇĞ»»Îª¹ÒÔØÔ´Í·ÎÄ¼şÏµÍ³µÄ
+        //å¦‚æœdentryæ˜¯æŒ‚è½½ç‚¹ï¼Œè¦æŠŠpath->mntå’Œ path->dentryåˆ‡æ¢ä¸ºæŒ‚è½½æºå¤´æ–‡ä»¶ç³»ç»Ÿçš„
 		if (unlikely(!__follow_mount_rcu(nd, path, inode)))
 			goto unlazy;
 		if (unlikely(path->dentry->d_flags & DCACHE_NEED_AUTOMOUNT))
@@ -1484,12 +1484,12 @@ static int lookup_slow(struct nameidata *nd, struct path *path)
 	BUG_ON(nd->inode != parent->d_inode);
 
 	mutex_lock(&parent->d_inode->i_mutex);
-    //·ÖÅäĞÂµÄdentry½á¹¹£¬µ÷ÓÃÎÄ¼şÏµÍ³µÄlookupº¯ÊıÔÚÎÄ¼şÏµÍ³flashÖĞ²éÕÒ
+    //åˆ†é…æ–°çš„dentryç»“æ„ï¼Œè°ƒç”¨æ–‡ä»¶ç³»ç»Ÿçš„lookupå‡½æ•°åœ¨æ–‡ä»¶ç³»ç»Ÿflashä¸­æŸ¥æ‰¾
 	dentry = __lookup_hash(&nd->last, parent, nd->flags);
 	mutex_unlock(&parent->d_inode->i_mutex);
 	if (IS_ERR(dentry))
 		return PTR_ERR(dentry);
-    //ÕÒµ½ºó¸³ÖµmntºÍdentry
+    //æ‰¾åˆ°åèµ‹å€¼mntå’Œdentry
 	path->mnt = nd->path.mnt;
 	path->dentry = dentry;
 	err = follow_managed(path, nd->flags);
@@ -1557,9 +1557,9 @@ static inline int should_follow_link(struct inode *inode, int follow)
 	}
 	return 0;
 }
-//ÕÒµ½¶ÔÓ¦ÎÄ¼ş»òÕßÄ¿Â¼µÄinode¡¢dentry¡¢mnt¸ønd½á¹¹¸³Öµ
-//lookup_fast»òÕßlookup_fastÖĞ£¬path->mnt = nd->path.mnt£¬È»ºóÌ½²âµ½ĞÂµÄÄ¿Â¼dentry£¬path->dentry = dentry
-//×îºóÉèÖÃ nd->path.mnt = path->mnt ºÍ nd->path.dentry = path->dentry;
+//æ‰¾åˆ°å¯¹åº”æ–‡ä»¶æˆ–è€…ç›®å½•çš„inodeã€dentryã€mntç»™ndç»“æ„èµ‹å€¼
+//lookup_fastæˆ–è€…lookup_fastä¸­ï¼Œpath->mnt = nd->path.mntï¼Œç„¶åæ¢æµ‹åˆ°æ–°çš„ç›®å½•dentryï¼Œpath->dentry = dentry
+//æœ€åè®¾ç½® nd->path.mnt = path->mnt å’Œ nd->path.dentry = path->dentry;
 static inline int walk_component(struct nameidata *nd, struct path *path,
 		int follow)
 {
@@ -1572,16 +1572,16 @@ static inline int walk_component(struct nameidata *nd, struct path *path,
 	 */
 	if (unlikely(nd->last_type != LAST_NORM))
 		return handle_dots(nd, nd->last_type);
-    /*1 ¸ù¾İ´ıËÑË÷µÄÎÄ¼ş»òÕßÄ¿Â¼µÄhashÖµ£¬´ÓÄÚ´æµÄdentry hashÁ´±íÕÒµ½¸ÃÎÄ¼ş»òÕßÄ¿Â¼µÄdentry
-       2  Èç¹ûÕÒµ½ÁËdentryÒªÅĞ¶ÏÊÇ·ñÎª¹ÒÔØµã£¬ÊÇµÄ»°¾ÍÒªÇĞ»»µ½¹ÒÔØÔ´Í·µÄdentryºÍmnt£¬ËùÒÔÕâÀï
-          Ïàµ±ÓÚstruct vfsmount mnt½á¹¹»á±ä£¬ÒòÎªÎÄ¼şÏµÍ³±äÁË£¬±äÎª¹ÒÔØÔ´Í·µÄÎÄ¼şÏµÍ³,´ËÊ±
-          ¾Í»á½«path->mnt¸ü¸ÄÎª¹ÒÔØÔ´Í·µÄmnt½á¹¹
+    /*1 æ ¹æ®å¾…æœç´¢çš„æ–‡ä»¶æˆ–è€…ç›®å½•çš„hashå€¼ï¼Œä»å†…å­˜çš„dentry hashé“¾è¡¨æ‰¾åˆ°è¯¥æ–‡ä»¶æˆ–è€…ç›®å½•çš„dentry
+       2  å¦‚æœæ‰¾åˆ°äº†dentryè¦åˆ¤æ–­æ˜¯å¦ä¸ºæŒ‚è½½ç‚¹ï¼Œæ˜¯çš„è¯å°±è¦åˆ‡æ¢åˆ°æŒ‚è½½æºå¤´çš„dentryå’Œmntï¼Œæ‰€ä»¥è¿™é‡Œ
+          ç›¸å½“äºstruct vfsmount mntç»“æ„ä¼šå˜ï¼Œå› ä¸ºæ–‡ä»¶ç³»ç»Ÿå˜äº†ï¼Œå˜ä¸ºæŒ‚è½½æºå¤´çš„æ–‡ä»¶ç³»ç»Ÿ,æ­¤æ—¶
+          å°±ä¼šå°†path->mntæ›´æ”¹ä¸ºæŒ‚è½½æºå¤´çš„mntç»“æ„
       */
 	err = lookup_fast(nd, path, &inode);
 	if (unlikely(err)) {
 		if (err < 0)
 			goto out_err;
-        //ÕÒ²»µ½¾Íµ÷ÓÃÎÄ¼şÏµÍ³µÄlookupº¯Êı²éÕÒ
+        //æ‰¾ä¸åˆ°å°±è°ƒç”¨æ–‡ä»¶ç³»ç»Ÿçš„lookupå‡½æ•°æŸ¥æ‰¾
 		err = lookup_slow(nd, path);
 		if (err < 0)
 			goto out_err;
@@ -1603,7 +1603,7 @@ static inline int walk_component(struct nameidata *nd, struct path *path,
 		BUG_ON(inode != path->dentry->d_inode);
 		return 1;
 	}
-    //ÔÚÕâÀïÉèÖÃ nd->path.mnt = path->mnt ºÍ nd->path.dentry = path->dentry;
+    //åœ¨è¿™é‡Œè®¾ç½® nd->path.mnt = path->mnt å’Œ nd->path.dentry = path->dentry;
 	path_to_nameidata(path, nd);
 	nd->inode = inode;
 	return 0;
@@ -1804,9 +1804,9 @@ static inline unsigned long hash_name(const char *name, unsigned int *hashp)
  * Returns error and drops reference to input namei data on failure.
  */
 
-//¸ù¾İÄ¿Â¼»òÕßÎÄ¼şÃû×ÖµÄhashÖµÑ°ÕÒÎÄ¼ş»òÕßÄ¿Â¼ÏîdentryºÍinode£¬ÏÈÔÚhashÁ´±íÉÏÕÒ£¬ÕÒ²»µ½¾Í
-//µ÷ÓÃÎÄ¼şÏµÍ³µÄµÄlookupº¯ÊıÔÚÎÄ¼şÏµÍ³flashÖĞ²éÕÒ
-/*×¢Òâ£¬/home/app/a.txtµÄ²éÕÒÖ»ÕÒµ½appÄ¿Â¼¾Í·µ»ØÁË£¬a.txtÊÇÔÚÏÂ±ßµÄdo_last²éÕÒ*/
+//æ ¹æ®ç›®å½•æˆ–è€…æ–‡ä»¶åå­—çš„hashå€¼å¯»æ‰¾æ–‡ä»¶æˆ–è€…ç›®å½•é¡¹dentryå’Œinodeï¼Œå…ˆåœ¨hashé“¾è¡¨ä¸Šæ‰¾ï¼Œæ‰¾ä¸åˆ°å°±
+//è°ƒç”¨æ–‡ä»¶ç³»ç»Ÿçš„çš„lookupå‡½æ•°åœ¨æ–‡ä»¶ç³»ç»Ÿflashä¸­æŸ¥æ‰¾
+/*æ³¨æ„ï¼Œ/home/app/a.txtçš„æŸ¥æ‰¾åªæ‰¾åˆ°appç›®å½•å°±è¿”å›äº†ï¼Œa.txtæ˜¯åœ¨ä¸‹è¾¹çš„do_lastæŸ¥æ‰¾*/
 static int link_path_walk(const char *name, struct nameidata *nd)
 {
 	struct path next;
@@ -1817,9 +1817,9 @@ static int link_path_walk(const char *name, struct nameidata *nd)
 	if (!*name)
 		return 0;
 /*
-   Õâ¸öforÑ­»·£¬ÒÀ´ÎÇóµÃ/home/app/a.txt Ã¿¸ö×Ö¶ÎµÄhashÖµ£¬ÔÙ½áºÏ¸¸Ä¿Â¼dentry£¬È»ºóÔÚdentryµÄ
-   hashÔÓ´Õ±íÖĞ¿ªÊ¼ËÑË÷±È½ÏÒÔÕÒµ½¶ÔÓ¦µÄÄ¿Â¼»òÕßÎÄ¼şµÄdentry¡£²»¹ÜÊÇÄÚ´æÖĞµÄdentry£¬»¹ÊÇ´Óflash
-   ÎÄ¼şÏµÍ³¶ÁÈ¡inodeºÍdentryÊı¾İ±È½Ï£¬Ö±µ½ÕÒµ½Æ¥ÅäµÄÃû×ÖµÄdentryºÍinode
+   è¿™ä¸ªforå¾ªç¯ï¼Œä¾æ¬¡æ±‚å¾—/home/app/a.txt æ¯ä¸ªå­—æ®µçš„hashå€¼ï¼Œå†ç»“åˆçˆ¶ç›®å½•dentryï¼Œç„¶ååœ¨dentryçš„
+   hashæ‚å‡‘è¡¨ä¸­å¼€å§‹æœç´¢æ¯”è¾ƒä»¥æ‰¾åˆ°å¯¹åº”çš„ç›®å½•æˆ–è€…æ–‡ä»¶çš„dentryã€‚ä¸ç®¡æ˜¯å†…å­˜ä¸­çš„dentryï¼Œè¿˜æ˜¯ä»flash
+   æ–‡ä»¶ç³»ç»Ÿè¯»å–inodeå’Œdentryæ•°æ®æ¯”è¾ƒï¼Œç›´åˆ°æ‰¾åˆ°åŒ¹é…çš„åå­—çš„dentryå’Œinode
 */
 	/* At this point we know we have a real path component. */
 	for(;;) {
@@ -1830,9 +1830,9 @@ static int link_path_walk(const char *name, struct nameidata *nd)
 		err = may_lookup(nd);
  		if (err)
 			break;
-        //ÇóµÃÎÄ¼ş»òÕßÄ¿Â¼Ãû×ÖµÄ×Ö·û´®µÄhashÖµ£¬º¯ÊıÄÚÎÒ²ÂÒÔ¡®\¡¯»òÕß'\0'Îª½áÊø
+        //æ±‚å¾—æ–‡ä»¶æˆ–è€…ç›®å½•åå­—çš„å­—ç¬¦ä¸²çš„hashå€¼ï¼Œå‡½æ•°å†…æˆ‘çŒœä»¥â€˜\â€™æˆ–è€…'\0'ä¸ºç»“æŸ
 		len = hash_name(name, &this.hash);
-        //hashÖµ±£´æÔÚthis.hashÀï
+        //hashå€¼ä¿å­˜åœ¨this.hashé‡Œ
 		this.name = name;
 		this.len = len;
 
@@ -1848,7 +1848,7 @@ static int link_path_walk(const char *name, struct nameidata *nd)
 			case 1:
 				type = LAST_DOT;
 		}
-         //²»ÊÇ ./a.txt »òÕß../a.txtµÄÇé¿ö
+         //ä¸æ˜¯ ./a.txt æˆ–è€…../a.txtçš„æƒ…å†µ
 		if (likely(type == LAST_NORM)) {
 			struct dentry *parent = nd->path.dentry;
 			nd->flags &= ~LOOKUP_JUMPED;
@@ -1859,18 +1859,18 @@ static int link_path_walk(const char *name, struct nameidata *nd)
 					break;
 			}
 		}
-        //nd->last¾ÍÊÇµ±Ç°ÎÄ¼ş»òÕßÄ¿Â¼×Ö·û´®µÄhashÖµ½á¹¹Ìå
+        //nd->lastå°±æ˜¯å½“å‰æ–‡ä»¶æˆ–è€…ç›®å½•å­—ç¬¦ä¸²çš„hashå€¼ç»“æ„ä½“
 		nd->last = this;
 		nd->last_type = type;
-        //Êµ¼Ê²âÊÔ£¬¾ÍÊÇÔÚÕâÀïreturn£¬´ËÊ±Ö»ÊÇ¼ÆËãÁËa.txtµÄhashÖµ£¬²¢Ã»ÓĞ²éÕÒa.txt
+        //å®é™…æµ‹è¯•ï¼Œå°±æ˜¯åœ¨è¿™é‡Œreturnï¼Œæ­¤æ—¶åªæ˜¯è®¡ç®—äº†a.txtçš„hashå€¼ï¼Œå¹¶æ²¡æœ‰æŸ¥æ‰¾a.txt
 		if (!name[len])
 			return 0;
 		/*
 		 * If it wasn't NUL, we know it was '/'. Skip that
 		 * slash, and continue until no more slashes.
 		 */
-		/* µ±nameÖ¸Ïò/home/app/a.txtÊ×¸ö×Ö·û´®Ê±£¬ÏÂ±ßµÄname+=lenÊ¹nameÖ¸ÏòÕâ¸ö×Ö·û´®½áÊø·û
-           £¬ÏÂÂÖÑ­»·ÉÏ±ßµÄif (!name[len])return 0¾Í»á·µ»Ø*/
+		/* å½“nameæŒ‡å‘/home/app/a.txté¦–ä¸ªå­—ç¬¦ä¸²æ—¶ï¼Œä¸‹è¾¹çš„name+=lenä½¿nameæŒ‡å‘è¿™ä¸ªå­—ç¬¦ä¸²ç»“æŸç¬¦
+           ï¼Œä¸‹è½®å¾ªç¯ä¸Šè¾¹çš„if (!name[len])return 0å°±ä¼šè¿”å›*/
 		do {
 			len++;
 		} while (unlikely(name[len] == '/'));
@@ -1878,12 +1878,12 @@ static int link_path_walk(const char *name, struct nameidata *nd)
 			return 0;
 
 		name += len;
-/*ÏÂ±ßµÄwalk_componentµÚÒ»´ÎÕÒµ½µÄÊÇ/home/app/a.txtÀï"home"Ä¿Â¼µÄdentryºÍinode£¬²¢¸³ÖµÓë
-nd->path.dentryÕâÑùÏÂ´ÎÑ­»·£¬nd->path.dentryÀï±£´æµÄÊÇ"home"Ä¿Â¼µÄdentry¾Í×÷Îª±¾´ÎËÑË÷µÄ¸¸Ä¿Â¼£¬ÆäËûÒÀ´ÎÑ­»·*/
+/*ä¸‹è¾¹çš„walk_componentç¬¬ä¸€æ¬¡æ‰¾åˆ°çš„æ˜¯/home/app/a.txté‡Œ"home"ç›®å½•çš„dentryå’Œinodeï¼Œå¹¶èµ‹å€¼ä¸
+nd->path.dentryè¿™æ ·ä¸‹æ¬¡å¾ªç¯ï¼Œnd->path.dentryé‡Œä¿å­˜çš„æ˜¯"home"ç›®å½•çš„dentryå°±ä½œä¸ºæœ¬æ¬¡æœç´¢çš„çˆ¶ç›®å½•ï¼Œå…¶ä»–ä¾æ¬¡å¾ªç¯*/
 
-       /* ¸ù¾İnd->lastÀïµÄhashÖµÑ°ÕÒÄ¿Â¼£¬ÏÈhashÁ´±í²éÕÒ£¬ÕÒ²»µ½¾Íµ÷ÓÃÎÄ¼şÏµÍ³µÄlookupº¯ÊıÔÚ
-          ÎÄ¼şĞØÌÅ´æ´¢½éÖÊÉÏÕÒ£¬ÕÒµ½¶ÔÓ¦ÎÄ¼ş»òÕßÄ¿Â¼µÄinode¡¢dentry¡¢mnt¸ønd½á¹¹¸³Öµ
-          tmpfsÎÄ¼şÏµÍ³±È½ÏÌØÊâ£¬lookup²éÕÒdentryÊ±£¬Ö±½Ó·µ»Ødentry£¬²»ÓÃ´ÓflashÖĞËÑË÷ÎÄ¼ş*/
+       /* æ ¹æ®nd->lasté‡Œçš„hashå€¼å¯»æ‰¾ç›®å½•ï¼Œå…ˆhashé“¾è¡¨æŸ¥æ‰¾ï¼Œæ‰¾ä¸åˆ°å°±è°ƒç”¨æ–‡ä»¶ç³»ç»Ÿçš„lookupå‡½æ•°åœ¨
+          æ–‡ä»¶èƒ¸è†›å­˜å‚¨ä»‹è´¨ä¸Šæ‰¾ï¼Œæ‰¾åˆ°å¯¹åº”æ–‡ä»¶æˆ–è€…ç›®å½•çš„inodeã€dentryã€mntç»™ndç»“æ„èµ‹å€¼
+          tmpfsæ–‡ä»¶ç³»ç»Ÿæ¯”è¾ƒç‰¹æ®Šï¼ŒlookupæŸ¥æ‰¾dentryæ—¶ï¼Œç›´æ¥è¿”å›dentryï¼Œä¸ç”¨ä»flashä¸­æœç´¢æ–‡ä»¶*/
         err = walk_component(nd, &next, LOOKUP_FOLLOW);
 		if (err < 0)
 			return err;
@@ -1931,22 +1931,22 @@ static int path_init(int dfd, const char *name, unsigned int flags,
 	}
 
 	nd->root.mnt = NULL;
-    //´Ó¸ùÄ¿Â¼¿ªÊ¼ËÑË÷£¬±ÈÈçÊÇ/home/app/a.txt
+    //ä»æ ¹ç›®å½•å¼€å§‹æœç´¢ï¼Œæ¯”å¦‚æ˜¯/home/app/a.txt
 	if (*name=='/') {
 		if (flags & LOOKUP_RCU) {
 			lock_rcu_walk();
 			set_root_rcu(nd);
 		} else {
-		    //ÉèÖÃnd->root¾ÍÊÇµ±Ç°½ø³ÌµÄcurrent->fs->rootµÄ¸ùÄ¿Â¼
+		    //è®¾ç½®nd->rootå°±æ˜¯å½“å‰è¿›ç¨‹çš„current->fs->rootçš„æ ¹ç›®å½•
 		    //nd->root = current->fs->root
 			set_root(nd);
-            //¸ùÄ¿Â¼µÄdentryºÍvfsmountÒıÓÃ¼ÆÊı¼Ó1
+            //æ ¹ç›®å½•çš„dentryå’Œvfsmountå¼•ç”¨è®¡æ•°åŠ 1
 			path_get(&nd->root);
 		}
-        //¼ÇÂ¼Îª¸ùÄ¿Â¼
+        //è®°å½•ä¸ºæ ¹ç›®å½•
 		nd->path = nd->root;
 	}
-    //Õâ±íÊ¾»ùÓÚµ±Ç°Ä¿Â¼ÏÂµÄpathname,¼´ÕâÖÖĞÎÊ½./a.txt
+    //è¿™è¡¨ç¤ºåŸºäºå½“å‰ç›®å½•ä¸‹çš„pathname,å³è¿™ç§å½¢å¼./a.txt
     else if (dfd == AT_FDCWD) {
 		if (flags & LOOKUP_RCU) {
 			struct fs_struct *fs = current->fs;
@@ -1960,7 +1960,7 @@ static int path_init(int dfd, const char *name, unsigned int flags,
 				nd->seq = __read_seqcount_begin(&nd->path.dentry->d_seq);
 			} while (read_seqcount_retry(&fs->seq, seq));
 		} else {
-		    //ÉèÖÃnd->root¾ÍÊÇµ±Ç°½ø³ÌµÄcurrent->fs->pwd£¬¾ÍÊÇµ±Ç°Ä¿Â¼
+		    //è®¾ç½®nd->rootå°±æ˜¯å½“å‰è¿›ç¨‹çš„current->fs->pwdï¼Œå°±æ˜¯å½“å‰ç›®å½•
 			get_fs_pwd(current->fs, &nd->path);
 		}
 	} else {
@@ -1991,7 +1991,7 @@ static int path_init(int dfd, const char *name, unsigned int flags,
 			fdput(f);
 		}
 	}
-    //ÉèÖÃnd->inodeÎªµ±Ç°Ä¿Â¼»òÕß¸ùÄ¿Â¼µÄinode½á¹¹
+    //è®¾ç½®nd->inodeä¸ºå½“å‰ç›®å½•æˆ–è€…æ ¹ç›®å½•çš„inodeç»“æ„
 	nd->inode = nd->path.dentry->d_inode;
 	return 0;
 }
@@ -2028,8 +2028,8 @@ static int path_lookupat(int dfd, const char *name,
 	 * be able to complete).
 	 */
 	 
-    /* ²éÕÒ/dev/mmcblk0p5
-       ÉèÖÃstruct nameidata *nd³ÉÔ±:ËÑË÷ÆğÊ¼Ä¿Â¼µÄinode¡¢nd->path¡¢nd->path->dentry¡¢
+    /* æŸ¥æ‰¾/dev/mmcblk0p5
+       è®¾ç½®struct nameidata *ndæˆå‘˜:æœç´¢èµ·å§‹ç›®å½•çš„inodeã€nd->pathã€nd->path->dentryã€
        nd->path->vfsmount
       */
 	err = path_init(dfd, name, flags | LOOKUP_PARENT, nd, &base);
@@ -2038,15 +2038,15 @@ static int path_lookupat(int dfd, const char *name,
 		return err;
 
 	current->total_link_count = 0;
-    //¸ù¾İÄ¿Â¼»òÕßÎÄ¼şÃû×ÖµÄhashÖµÑ°ÕÒÎÄ¼ş»òÕßÄ¿Â¼ÏîdentryºÍinode£¬ÏÈÔÚhashÁ´±íÉÏÕÒ£¬ÕÒ²»µ½¾Í
-    //µ÷ÓÃÎÄ¼şÏµÍ³µÄµÄlookupº¯ÊıÔÚÎÄ¼şÏµÍ³flashÖĞ²éÕÒ
-    /*×¢Òâ£¬/dev/mmcblk0p5µÄ²éÕÒÖ»ÕÒµ½¸¸Ä¿Â¼Ä¿Â¼¾Í·µ»ØÁË£¬mmcblk0p5ÊÇÔÚÏÂ±ßµÄdo_last²éÕÒ*/
+    //æ ¹æ®ç›®å½•æˆ–è€…æ–‡ä»¶åå­—çš„hashå€¼å¯»æ‰¾æ–‡ä»¶æˆ–è€…ç›®å½•é¡¹dentryå’Œinodeï¼Œå…ˆåœ¨hashé“¾è¡¨ä¸Šæ‰¾ï¼Œæ‰¾ä¸åˆ°å°±
+    //è°ƒç”¨æ–‡ä»¶ç³»ç»Ÿçš„çš„lookupå‡½æ•°åœ¨æ–‡ä»¶ç³»ç»Ÿflashä¸­æŸ¥æ‰¾
+    /*æ³¨æ„ï¼Œ/dev/mmcblk0p5çš„æŸ¥æ‰¾åªæ‰¾åˆ°çˆ¶ç›®å½•ç›®å½•å°±è¿”å›äº†ï¼Œmmcblk0p5æ˜¯åœ¨ä¸‹è¾¹çš„do_lastæŸ¥æ‰¾*/
 	err = link_path_walk(name, nd);
 
-    /*ÓÉÓÚ´ËÊ±ÉèÖÃÁËLOOKUP_PARENT±êÖ¾Î»£¬if²»³ÉÁ¢£¬·ñÔòlookup_last»á²éÕÒmmcblk0p5µÄdentry
-      £¬´ËÊ±nd->lastÊÇmmcblk0p5µÄhashÖµ£¬nd->path.dentryÊÇ¸¸Ä¿Â¼/devµÄ£¬·ûºÏ²éÕÒÌõ¼ş¡£*/
+    /*ç”±äºæ­¤æ—¶è®¾ç½®äº†LOOKUP_PARENTæ ‡å¿—ä½ï¼Œifä¸æˆç«‹ï¼Œå¦åˆ™lookup_lastä¼šæŸ¥æ‰¾mmcblk0p5çš„dentry
+      ï¼Œæ­¤æ—¶nd->lastæ˜¯mmcblk0p5çš„hashå€¼ï¼Œnd->path.dentryæ˜¯çˆ¶ç›®å½•/devçš„ï¼Œç¬¦åˆæŸ¥æ‰¾æ¡ä»¶ã€‚*/
 	if (!err && !(flags & LOOKUP_PARENT)) {
-        //ÕâÀï×îÖÕ²éÕÒÎÄ¼şµÄdentry£¬inode
+        //è¿™é‡Œæœ€ç»ˆæŸ¥æ‰¾æ–‡ä»¶çš„dentryï¼Œinode
 		err = lookup_last(nd, &path);
 		while (err > 0) {
 			void *cookie;
@@ -2183,7 +2183,7 @@ static struct dentry *lookup_hash(struct nameidata *nd)
  * nameidata argument is passed to the filesystem methods and a filesystem
  * using this helper needs to be prepared for that.
  */
-//ÔÚ¸¸Ä¿Â¼baseÏÂ£¬²éÕÒ»òÕßÒ²´´½¨nameÃüÁîµÄÎÄ¼şdentry
+//åœ¨çˆ¶ç›®å½•baseä¸‹ï¼ŒæŸ¥æ‰¾æˆ–è€…ä¹Ÿåˆ›å»ºnameå‘½ä»¤çš„æ–‡ä»¶dentry
 struct dentry *lookup_one_len(const char *name, struct dentry *base, int len)
 {
 	struct qstr this;
@@ -2221,7 +2221,7 @@ struct dentry *lookup_one_len(const char *name, struct dentry *base, int len)
 	err = inode_permission(base->d_inode, MAY_EXEC);
 	if (err)
 		return ERR_PTR(err);
-    //²éÕÒ»òÕß´´½¨nameÎÄ¼ş£¬baseÊÇ¸¸Ä¿Â¼dentry
+    //æŸ¥æ‰¾æˆ–è€…åˆ›å»ºnameæ–‡ä»¶ï¼Œbaseæ˜¯çˆ¶ç›®å½•dentry
 	return __lookup_hash(&this, base, 0);
 }
 
@@ -2769,7 +2769,7 @@ static int do_last(struct nameidata *nd, struct path *path,
 		   struct file *file, const struct open_flags *op,
 		   int *opened, struct filename *name)
 {
-    // /home/app/a.txt µÄappÄ¿Â¼µÄdentry£¬nd->lastÊÇa.txtµÄhashÖµ£¬ÏÂ±ßËÑË÷Õâ¸öÎÄ¼ş
+    // /home/app/a.txt çš„appç›®å½•çš„dentryï¼Œnd->lastæ˜¯a.txtçš„hashå€¼ï¼Œä¸‹è¾¹æœç´¢è¿™ä¸ªæ–‡ä»¶
 	struct dentry *dir = nd->path.dentry;
 	int open_flag = op->open_flag;
 	bool will_truncate = (open_flag & O_TRUNC) != 0;
@@ -2853,7 +2853,7 @@ retry_lookup:
 		 */
 	}
 	mutex_lock(&dir->d_inode->i_mutex);
-    // ÔÚÕâÀï²éÕÒ×îÖÕËÑË÷µÄÎÄ¼ş?????????????  ´´½¨ĞÂÎÄ¼şÊÇÔÚÕâÀï
+    // åœ¨è¿™é‡ŒæŸ¥æ‰¾æœ€ç»ˆæœç´¢çš„æ–‡ä»¶?????????????  åˆ›å»ºæ–°æ–‡ä»¶æ˜¯åœ¨è¿™é‡Œ
 	error = lookup_open(nd, path, file, op, got_write, opened);
 	mutex_unlock(&dir->d_inode->i_mutex);
 
@@ -2963,7 +2963,7 @@ finish_open_created:
 	error = may_open(&nd->path, acc_mode, open_flag);
 	if (error)
 		goto out;
-    //ÕâÀï¶Ôfile->f_path.dentry¡¢file->f_op¡¢f->f_mapping¸³Öµ
+    //è¿™é‡Œå¯¹file->f_path.dentryã€file->f_opã€f->f_mappingèµ‹å€¼
 	file->f_path.mnt = nd->path.mnt;
 	error = finish_open(file, nd->path.dentry, NULL, opened);
 	if (error) {
@@ -3025,15 +3025,15 @@ static struct file *path_openat(int dfd, struct filename *pathname,
 	struct path path;
 	int opened = 0;
 	int error;
-    //´´½¨¿ÕµÄfile½á¹¹
+    //åˆ›å»ºç©ºçš„fileç»“æ„
 	file = get_empty_filp();
 	if (IS_ERR(file))
 		return file;
 
 	file->f_flags = op->open_flag;
 
-    /* ²éÕÒ/home/app/a.txt
-       ÉèÖÃstruct nameidata *nd³ÉÔ±:ËÑË÷ÆğÊ¼Ä¿Â¼µÄinode¡¢nd->path¡¢nd->path->dentry¡¢
+    /* æŸ¥æ‰¾/home/app/a.txt
+       è®¾ç½®struct nameidata *ndæˆå‘˜:æœç´¢èµ·å§‹ç›®å½•çš„inodeã€nd->pathã€nd->path->dentryã€
        nd->path->vfsmount
       */
 	error = path_init(dfd, pathname->name, flags | LOOKUP_PARENT, nd, &base);
@@ -3041,17 +3041,17 @@ static struct file *path_openat(int dfd, struct filename *pathname,
 		goto out;
 
 	current->total_link_count = 0;
-    //¸ù¾İÄ¿Â¼»òÕßÎÄ¼şÃû×ÖµÄhashÖµÑ°ÕÒÎÄ¼ş»òÕßÄ¿Â¼ÏîdentryºÍinode£¬ÏÈÔÚhashÁ´±íÉÏÕÒ£¬ÕÒ²»µ½¾Í
-    //µ÷ÓÃÎÄ¼şÏµÍ³µÄµÄlookupº¯ÊıÔÚÎÄ¼şÏµÍ³flashÖĞ²éÕÒ
-    /*×¢Òâ£¬/home/app/a.txtµÄ²éÕÒÖ»ÕÒµ½appÄ¿Â¼¾Í·µ»ØÁË£¬a.txtÊÇÔÚÏÂ±ßµÄdo_last²éÕÒ*/
+    //æ ¹æ®ç›®å½•æˆ–è€…æ–‡ä»¶åå­—çš„hashå€¼å¯»æ‰¾æ–‡ä»¶æˆ–è€…ç›®å½•é¡¹dentryå’Œinodeï¼Œå…ˆåœ¨hashé“¾è¡¨ä¸Šæ‰¾ï¼Œæ‰¾ä¸åˆ°å°±
+    //è°ƒç”¨æ–‡ä»¶ç³»ç»Ÿçš„çš„lookupå‡½æ•°åœ¨æ–‡ä»¶ç³»ç»Ÿflashä¸­æŸ¥æ‰¾
+    /*æ³¨æ„ï¼Œ/home/app/a.txtçš„æŸ¥æ‰¾åªæ‰¾åˆ°appç›®å½•å°±è¿”å›äº†ï¼Œa.txtæ˜¯åœ¨ä¸‹è¾¹çš„do_lastæŸ¥æ‰¾*/
 	error = link_path_walk(pathname->name, nd);
 	if (unlikely(error))
 		goto out;
     /*
-     1  ²éÕÒ/home/app/a.txt£¬ÉÏ·½Ö»ÊÇÕÒµ½ÁËappÄ¿Â¼µÄdentry£¬nd->dentryÊÇappÄ¿Â¼µÄ£¬nd->lastÊÇ
-        a.txÎÄ¼şµÄhashÖµ£¬×îÖÕÕÒµ½a.txtÊÇÔÚdo_lastº¯ÊıÕÒµ½¡£
-     2  struct file½á¹¹¸³ÖµÔÚÕâÀï
-     3  ´´½¨ĞÂÎÄ¼şÒ²ÔÚÕâÀï
+     1  æŸ¥æ‰¾/home/app/a.txtï¼Œä¸Šæ–¹åªæ˜¯æ‰¾åˆ°äº†appç›®å½•çš„dentryï¼Œnd->dentryæ˜¯appç›®å½•çš„ï¼Œnd->lastæ˜¯
+        a.txæ–‡ä»¶çš„hashå€¼ï¼Œæœ€ç»ˆæ‰¾åˆ°a.txtæ˜¯åœ¨do_lastå‡½æ•°æ‰¾åˆ°ã€‚
+     2  struct fileç»“æ„èµ‹å€¼åœ¨è¿™é‡Œ
+     3  åˆ›å»ºæ–°æ–‡ä»¶ä¹Ÿåœ¨è¿™é‡Œ
       */
 	error = do_last(nd, &path, file, op, &opened, pathname);
 	while (unlikely(error > 0)) { /* trailing symlink */
@@ -3147,9 +3147,9 @@ struct dentry *kern_path_create(int dfd, const char *pathname,
 	 */
 	lookup_flags &= LOOKUP_REVAL;
     /* 
-       ÕÒµ½/dev/mmcblk0p5¸¸Ä¿Â¼µÄinode²¢´æÓÚnd£¬¾ÍÊÇ/devÄ¿Â¼µÄinode£¬/devÊÇtmpfsÎÄ¼şÏµÍ³£¬tmpfsÎÄ¼şÏµÍ³
-     ±È½ÏÌØÊâ£¬²éÕÒÎÄ¼ş»òÄ¿Â¼dentryÊ±£¬Ö±½Ó·µ»Ø»ùÓÚÎÄ¼şÃû×Ö´´½¨µÄdentry¾ÍĞĞÁË£¬²»ÓÃ´ÓflashÖĞËÑË÷ÎÄ¼ş£¬
-     ¿´lookup_slow->__lookup_hash
+       æ‰¾åˆ°/dev/mmcblk0p5çˆ¶ç›®å½•çš„inodeå¹¶å­˜äºndï¼Œå°±æ˜¯/devç›®å½•çš„inodeï¼Œ/devæ˜¯tmpfsæ–‡ä»¶ç³»ç»Ÿï¼Œtmpfsæ–‡ä»¶ç³»ç»Ÿ
+     æ¯”è¾ƒç‰¹æ®Šï¼ŒæŸ¥æ‰¾æ–‡ä»¶æˆ–ç›®å½•dentryæ—¶ï¼Œç›´æ¥è¿”å›åŸºäºæ–‡ä»¶åå­—åˆ›å»ºçš„dentryå°±è¡Œäº†ï¼Œä¸ç”¨ä»flashä¸­æœç´¢æ–‡ä»¶ï¼Œ
+     çœ‹lookup_slow->__lookup_hash
      */
 	error = do_path_lookup(dfd, pathname, LOOKUP_PARENT|lookup_flags, &nd);
 	if (error)
@@ -3170,8 +3170,8 @@ struct dentry *kern_path_create(int dfd, const char *pathname,
 	 * Do the final lookup.
 	 */
 	mutex_lock_nested(&nd.path.dentry->d_inode->i_mutex, I_MUTEX_PARENT);
-    //nd->last´ËÊ±/dev/mmcblk0p5µÄmmblk0p5½ÚµãµÄhashÖµ£¬nd->path.dentryÊÇ¸¸Ä¿Â¼/devµÄ£¬
-    //ÔÚ¸¸Ä¿Â¼Àï²éÕÒmmblk0p5µÄdentry£¬ÕÒ²»µ½¾Í´´½¨Ò»¸ödentry
+    //nd->lastæ­¤æ—¶/dev/mmcblk0p5çš„mmblk0p5èŠ‚ç‚¹çš„hashå€¼ï¼Œnd->path.dentryæ˜¯çˆ¶ç›®å½•/devçš„ï¼Œ
+    //åœ¨çˆ¶ç›®å½•é‡ŒæŸ¥æ‰¾mmblk0p5çš„dentryï¼Œæ‰¾ä¸åˆ°å°±åˆ›å»ºä¸€ä¸ªdentry
 	dentry = lookup_hash(&nd);
 	if (IS_ERR(dentry))
 		goto unlock;
@@ -3250,7 +3250,7 @@ int vfs_mknod(struct inode *dir, struct dentry *dentry, umode_t mode, dev_t dev)
 	error = security_inode_mknod(dir, dentry, mode, dev);
 	if (error)
 		return error;
-    //´´½¨Éè±¸½ÚµãÊÇshmem_mknodº¯Êı£¬ÊôÓÚtmpfsÎÄ¼ş°´ÏµÍ³
+    //åˆ›å»ºè®¾å¤‡èŠ‚ç‚¹æ˜¯shmem_mknodå‡½æ•°ï¼Œå±äºtmpfsæ–‡ä»¶æŒ‰ç³»ç»Ÿ
 	error = dir->i_op->mknod(dir, dentry, mode, dev);//shmem_mknod
 	if (!error)
 		fsnotify_create(dir, dentry);
@@ -3287,9 +3287,9 @@ SYSCALL_DEFINE4(mknodat, int, dfd, const char __user *, filename, umode_t, mode,
 		return error;
 retry:
     /*
-      ¸ù¾İfilename£¬±ÈÈç/dev/mmcblk0p5ËÑË÷µ½¸¸Ä¿Â¼µÄdentry´æÓÚpath.dentry£¬È»ºó´´½¨mmcblk0p5µÄ
-      dentry²¢·µ»ØÕâ¸ödentry¡£ÓÉÓÚ/devÊÇ¹ÒÔØµã£¬udev on /dev type tmpfs£¬ËùÒÔÕâÊÇtmpfsÎÄ¼şÏµÍ³ÉÏ
-      ´´½¨mmcblk0p5,¸ú¿éÉè±¸Ã»¹ØÏµ
+      æ ¹æ®filenameï¼Œæ¯”å¦‚/dev/mmcblk0p5æœç´¢åˆ°çˆ¶ç›®å½•çš„dentryå­˜äºpath.dentryï¼Œç„¶ååˆ›å»ºmmcblk0p5çš„
+      dentryå¹¶è¿”å›è¿™ä¸ªdentryã€‚ç”±äº/devæ˜¯æŒ‚è½½ç‚¹ï¼Œudev on /dev type tmpfsï¼Œæ‰€ä»¥è¿™æ˜¯tmpfsæ–‡ä»¶ç³»ç»Ÿä¸Š
+      åˆ›å»ºmmcblk0p5,è·Ÿå—è®¾å¤‡æ²¡å…³ç³»
       */
 	dentry = user_path_create(dfd, filename, &path, lookup_flags);
 	if (IS_ERR(dentry))
@@ -3302,14 +3302,14 @@ retry:
 		goto out;
 	switch (mode & S_IFMT) {
 		case 0: case S_IFREG:
-            //´´½¨Ò»°ãÎÄ¼ş£¬tmpfsÎÄ¼şÏµÍ³¿ÉÒÔÊÇÆÕÍ¨ÎÄ¼ş£¬±ÈÈç/home/app¾ÍÊôÓÚtmpfsÎÄ¼şÏµÍ³
+            //åˆ›å»ºä¸€èˆ¬æ–‡ä»¶ï¼Œtmpfsæ–‡ä»¶ç³»ç»Ÿå¯ä»¥æ˜¯æ™®é€šæ–‡ä»¶ï¼Œæ¯”å¦‚/home/appå°±å±äºtmpfsæ–‡ä»¶ç³»ç»Ÿ
 			error = vfs_create(path.dentry->d_inode,dentry,mode,true);
 			break;
-        //×Ö·ûÉè±¸¡¢¿éÉè±¸
+        //å­—ç¬¦è®¾å¤‡ã€å—è®¾å¤‡
 		case S_IFCHR: case S_IFBLK:
         /*
-           path.dentry->d_inode ÊÇ¸¸Ä¿Â¼/dev µÄinode£¬dentryÊÇ¸Õ´´½¨µÄmmcblk0p5µÄ¡£ÓÉÓÚ/devÊÇ¹ÒÔØµã£¬
-           udev on /dev type tmpfs£¬ÊôÓÚtmpfsÎÄ¼şÏµÍ³£¬ËùÒÔÕâÊÇtmpfsÎÄ¼şÏµÍ³ÉÏ´´½¨mmcblk0p5
+           path.dentry->d_inode æ˜¯çˆ¶ç›®å½•/dev çš„inodeï¼Œdentryæ˜¯åˆšåˆ›å»ºçš„mmcblk0p5çš„ã€‚ç”±äº/devæ˜¯æŒ‚è½½ç‚¹ï¼Œ
+           udev on /dev type tmpfsï¼Œå±äºtmpfsæ–‡ä»¶ç³»ç»Ÿï¼Œæ‰€ä»¥è¿™æ˜¯tmpfsæ–‡ä»¶ç³»ç»Ÿä¸Šåˆ›å»ºmmcblk0p5
          */    
 			error = vfs_mknod(path.dentry->d_inode,dentry,mode,
 					new_decode_dev(dev));
