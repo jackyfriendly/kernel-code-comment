@@ -31,7 +31,7 @@ typedef int (kiocb_cancel_fn)(struct kiocb *, struct io_event *);
 
 struct kiocb {
 	atomic_t		ki_users;
-    //ÎÄ¼şÖ¸Õëfilp£¬init_sync_kiocb()
+    //æ–‡ä»¶æŒ‡é’ˆfilpï¼Œinit_sync_kiocb()
 	struct file		*ki_filp;
 	struct kioctx		*ki_ctx;	/* NULL for sync ops */
 	kiocb_cancel_fn		*ki_cancel;
@@ -43,16 +43,16 @@ struct kiocb {
 	} ki_obj;
 
 	__u64			ki_user_data;	/* user's data for completion */
-    //±¾´Î¶ÁÈ¡µÄÎÄ¼şÖ¸ÕëÆ«ÒÆ,do_sync_read()
+    //æœ¬æ¬¡è¯»å–çš„æ–‡ä»¶æŒ‡é’ˆåç§»,do_sync_read()
 	loff_t			ki_pos;
 
 	void			*private;
 	/* State that we remember to be able to restart/retry  */
 	unsigned short		ki_opcode;
-    //±¾´Î¶ÁÈ¡ÎÄ¼ş´óĞ¡,do_sync_read()
+    //æœ¬æ¬¡è¯»å–æ–‡ä»¶å¤§å°,do_sync_read()
 	size_t			ki_nbytes; 	/* copy of iocb->aio_nbytes */
 	char 			__user *ki_buf;	/* remaining iocb->aio_buf */
-    //³õÖµÒ²ÊÇ±¾´Î¶ÁÈ¡ÎÄ¼ş´óĞ¡,do_sync_read()
+    //åˆå€¼ä¹Ÿæ˜¯æœ¬æ¬¡è¯»å–æ–‡ä»¶å¤§å°,do_sync_read()
 	size_t			ki_left; 	/* remaining bytes */
 	struct iovec		ki_inline_vec;	/* inline vector */
  	struct iovec		*ki_iovec;
