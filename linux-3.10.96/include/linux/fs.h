@@ -331,11 +331,11 @@ static inline size_t iov_iter_count(struct iov_iter *i)
  * mode.
  */
 typedef struct {
-	size_t written;//file_read_actor()ÒÑ¾­¶ÁÈ¡µ½µÄÎÄ¼şÊı¾İÁ¿
-	size_t count;//³õÖµÊÇ¶ÁÈ¡µÄÎÄ¼ş×Ö½ÚÊı
+	size_t written;//file_read_actor()å·²ç»è¯»å–åˆ°çš„æ–‡ä»¶æ•°æ®é‡
+	size_t count;//åˆå€¼æ˜¯è¯»å–çš„æ–‡ä»¶å­—èŠ‚æ•°
 	union {
-		char __user *buf;//Ö¸ÏòÓÃ»§¿Õ¼äbuf£¬generic_file_aio_read
-		void *data;//Ê£ÓàĞèÒª¶ÁÈ¡×Ö½ÚÊı£¬generic_file_aio_read
+		char __user *buf;//æŒ‡å‘ç”¨æˆ·ç©ºé—´bufï¼Œgeneric_file_aio_read
+		void *data;//å‰©ä½™éœ€è¦è¯»å–å­—èŠ‚æ•°ï¼Œgeneric_file_aio_read
 	} arg;
 	int error;
 } read_descriptor_t;
@@ -404,19 +404,19 @@ int pagecache_write_end(struct file *, struct address_space *mapping,
 				struct page *page, void *fsdata);
 
 struct backing_dev_info;
-struct address_space {//ÎÄ¼şÒ³¸ßËÙ»º´æºËĞÄ½á¹¹
+struct address_space {//æ–‡ä»¶é¡µé«˜é€Ÿç¼“å­˜æ ¸å¿ƒç»“æ„
 	struct inode		*host;		/* owner: inode, block_device */
-    //page cacheµÄpageÌí¼Óµ½page_tree£¬¼ûadd_to_page_cache_locked()ºÍreplace_page_cache_page()£¬»ØË¢ÔàÊı¾İÊ±find_get_pages_tag()ÔÙÈ¡³ö
-	struct radix_tree_root	page_tree;	/* radix tree of all pages *///Á´½ÓËùÓĞpage£¬¸ùroot
+    //page cacheçš„pageæ·»åŠ åˆ°page_treeï¼Œè§add_to_page_cache_locked()å’Œreplace_page_cache_page()ï¼Œå›åˆ·è„æ•°æ®æ—¶find_get_pages_tag()å†å–å‡º
+	struct radix_tree_root	page_tree;	/* radix tree of all pages *///é“¾æ¥æ‰€æœ‰pageï¼Œæ ¹root
 	spinlock_t		tree_lock;	/* and lock protecting it */
 	unsigned int		i_mmap_writable;/* count VM_SHARED mappings */
 	struct rb_root		i_mmap;		/* tree of private and shared mappings */
 	struct list_head	i_mmap_nonlinear;/*list VM_NONLINEAR mappings */
 	struct mutex		i_mmap_mutex;	/* protect tree, count, list */
 	/* Protected by tree_lock together with the radix tree */
-	unsigned long		nrpages;	/* number of total pages *///·ÖÅäµÄpageÊı
+	unsigned long		nrpages;	/* number of total pages *///åˆ†é…çš„pageæ•°
 	pgoff_t			writeback_index;/* writeback starts here */
-    //¿éÉè±¸µÄÔÚbdget()º¯Êı¸³Öµ£¬inode->i_data.a_ops = &def_blk_aops;
+    //å—è®¾å¤‡çš„åœ¨bdget()å‡½æ•°èµ‹å€¼ï¼Œinode->i_data.a_ops = &def_blk_aops;
 	const struct address_space_operations *a_ops;	/* methods */
 	unsigned long		flags;		/* error bits/gfp mask */
 	struct backing_dev_info *backing_dev_info; /* device readahead, etc */
@@ -432,20 +432,20 @@ struct address_space {//ÎÄ¼şÒ³¸ßËÙ»º´æºËĞÄ½á¹¹
 struct request_queue;
 
 /*
-¿éÉè±¸¶ÔÓ¦µÄblock_device ½á¹¹£¬ÔÚ bdget->iget5_locked·ÖÅä
-Ö÷·ÖÇømmclk0µÄbdevÉú³ÉÁ÷³Ì add_disk->register_disk->bdget_disk->bdget
-ÆäËû·ÖÇømmcblk0p4 block_deviceÉú³ÉÁ÷³Ì vfs_kern_mount->mount_fs->cramfs_mount->mount_bdev
+å—è®¾å¤‡å¯¹åº”çš„block_device ç»“æ„ï¼Œåœ¨ bdget->iget5_lockedåˆ†é…
+ä¸»åˆ†åŒºmmclk0çš„bdevç”Ÿæˆæµç¨‹ add_disk->register_disk->bdget_disk->bdget
+å…¶ä»–åˆ†åŒºmmcblk0p4 block_deviceç”Ÿæˆæµç¨‹ vfs_kern_mount->mount_fs->cramfs_mount->mount_bdev
 ->blkdev_get_by_path->lookup_bdev->bd_acquite->bdget
-Ò»¸ö¿éÉè±¸ÓĞ¶à¸öbdev£¬Ö÷·ÖÇømmcblk0Ò»¸ö£¬ÆäËû·ÖÇø¸÷Ò»¸ö
+ä¸€ä¸ªå—è®¾å¤‡æœ‰å¤šä¸ªbdevï¼Œä¸»åˆ†åŒºmmcblk0ä¸€ä¸ªï¼Œå…¶ä»–åˆ†åŒºå„ä¸€ä¸ª
 */
 struct block_device {
-    //°üº¬¿éÉè±¸µÄÖ÷´ÎÉè±¸ºÅ
+    //åŒ…å«å—è®¾å¤‡çš„ä¸»æ¬¡è®¾å¤‡å·
 	dev_t			bd_dev;  /* not a kdev_t - it's a search key */
-	int			bd_openers;//open¼ÆÊı
-	//¿éÉè±¸Ö÷·ÖÇømmcblk0ºÍÆäËû·ÖÇømmcblk0p4¸÷ÓĞÒ»¸öinode£¬²»ÊÇÍ¬Ò»¸ö£¬bd_inode¾ÍÖ¸Ïò¿éÉè±¸
-    //µÄinode,bdgetº¯Êı¸³Öµ
+	int			bd_openers;//openè®¡æ•°
+	//å—è®¾å¤‡ä¸»åˆ†åŒºmmcblk0å’Œå…¶ä»–åˆ†åŒºmmcblk0p4å„æœ‰ä¸€ä¸ªinodeï¼Œä¸æ˜¯åŒä¸€ä¸ªï¼Œbd_inodeå°±æŒ‡å‘å—è®¾å¤‡
+    //çš„inode,bdgetå‡½æ•°èµ‹å€¼
 	struct inode *		bd_inode;	/* will die */
-	struct super_block *	bd_super;//bdevÎÄ¼şÏµÍ³µÄ³¬¼¶¿ì£¬mount_bdevº¯Êı¸³Öµ
+	struct super_block *	bd_super;//bdevæ–‡ä»¶ç³»ç»Ÿçš„è¶…çº§å¿«ï¼Œmount_bdevå‡½æ•°èµ‹å€¼
 	struct mutex		bd_mutex;	/* open/close mutex */
 	struct list_head	bd_inodes;
 	void *			bd_claiming;
@@ -455,22 +455,22 @@ struct block_device {
 #ifdef CONFIG_SYSFS
 	struct list_head	bd_holder_disks;
 #endif
-    //¿éÉè±¸mmcblk0p4·ÖÇøµÄbdev->bd_containsÖ¸Ïò¿éÉè±¸Ö÷·ÖÇøµÄbdev,Ö÷·ÖÇøµÄbdevµÄ
-    //bdev->bd_containsÖ¸ÏòÖ÷·ÖÇøbdev
+    //å—è®¾å¤‡mmcblk0p4åˆ†åŒºçš„bdev->bd_containsæŒ‡å‘å—è®¾å¤‡ä¸»åˆ†åŒºçš„bdev,ä¸»åˆ†åŒºçš„bdevçš„
+    //bdev->bd_containsæŒ‡å‘ä¸»åˆ†åŒºbdev
 	struct block_device *	bd_contains;
-    //bd_set_size()º¯ÊıÖĞ¸³Öµ,¿éÉè±¸´óĞ¡
+    //bd_set_size()å‡½æ•°ä¸­èµ‹å€¼,å—è®¾å¤‡å¤§å°
 	unsigned		bd_block_size;
-    //ÔÚ__blkdev_get¶Ômmcblk0p4µÄbd_part¸³Öµ
+    //åœ¨__blkdev_getå¯¹mmcblk0p4çš„bd_partèµ‹å€¼
 	struct hd_struct *	bd_part;
 	/* number of times partitions within this device have been opened. */
 	unsigned		bd_part_count;
-    //Ö÷·ÖÇøregister_disk()ÖĞÉèÖÃ1£¬Ö®ºó²Å»áÉ¨Ãè¿éÉè±¸µÄ·ÖÇø
+    //ä¸»åˆ†åŒºregister_disk()ä¸­è®¾ç½®1ï¼Œä¹‹åæ‰ä¼šæ‰«æå—è®¾å¤‡çš„åˆ†åŒº
 	int			bd_invalidated;
-    //__blkdev_get()¸³ÖµÎªµ±Ç°·ÖÇø¶ÔÓ¦µÄdisk£¬Àï±ßÓĞstruct request_queue
+    //__blkdev_get()èµ‹å€¼ä¸ºå½“å‰åˆ†åŒºå¯¹åº”çš„diskï¼Œé‡Œè¾¹æœ‰struct request_queue
 	struct gendisk *	bd_disk;
-    //bio ¶ÓÁĞ????????£¬¿ÉÊÇstruct gendiskÒ²ÓĞrequest_queue£¬bdevºÍdiskµÄrequest_queueÓĞÊ²Ã´Çø±ğ??????
+    //bio é˜Ÿåˆ—????????ï¼Œå¯æ˜¯struct gendiskä¹Ÿæœ‰request_queueï¼Œbdevå’Œdiskçš„request_queueæœ‰ä»€ä¹ˆåŒºåˆ«??????
 	struct request_queue *  bd_queue;
-    //bdget()º¯ÊıÖĞÌí¼Óµ½all_bdevsÈ«¾ÖÁ´±í
+    //bdget()å‡½æ•°ä¸­æ·»åŠ åˆ°all_bdevså…¨å±€é“¾è¡¨
 	struct list_head	bd_list;
 	/*
 	 * Private data.  You must have bd_claim'ed the block_device
@@ -491,7 +491,7 @@ struct block_device {
  * radix trees
  */
 #define PAGECACHE_TAG_DIRTY	0
-#define PAGECACHE_TAG_WRITEBACK	1//Ôö¼Óradix treeµÄPAGECACHE_TAG_WRITEBACKÔàÒ³Êı£¬test_set_page_writeback()
+#define PAGECACHE_TAG_WRITEBACK	1//å¢åŠ radix treeçš„PAGECACHE_TAG_WRITEBACKè„é¡µæ•°ï¼Œtest_set_page_writeback()
 #define PAGECACHE_TAG_TOWRITE	2
 
 int mapping_tagged(struct address_space *mapping, int tag);
@@ -541,11 +541,11 @@ struct posix_acl;
  */
  
 /*
-¿éÉè±¸µÄinode£¬/dev/mmcblk0¶ÔÓ¦µÄ´ú±í¿éÉè±¸µÄinode£¬ÔÚbdget->iget5_locked·ÖÅä
-´´½¨inodeÊ±ÓÃµ½³¬¼¶¿ìµÄº¯Êıalloc_inode()ÖĞ sb->s_op->alloc_inode
+å—è®¾å¤‡çš„inodeï¼Œ/dev/mmcblk0å¯¹åº”çš„ä»£è¡¨å—è®¾å¤‡çš„inodeï¼Œåœ¨bdget->iget5_lockedåˆ†é…
+åˆ›å»ºinodeæ—¶ç”¨åˆ°è¶…çº§å¿«çš„å‡½æ•°alloc_inode()ä¸­ sb->s_op->alloc_inode
 */
 struct inode {
-    //ÎÄ¼şÊôĞÔ£¬´ú±íÎÄ¼ş»òÕßÄ¿Â¼»òÕßÁ´½Ó·ûºÅ
+    //æ–‡ä»¶å±æ€§ï¼Œä»£è¡¨æ–‡ä»¶æˆ–è€…ç›®å½•æˆ–è€…é“¾æ¥ç¬¦å·
 	umode_t			i_mode;
 	unsigned short		i_opflags;
 	kuid_t			i_uid;
@@ -557,10 +557,10 @@ struct inode {
 	struct posix_acl	*i_default_acl;
 #endif
 
-    //cgroupÊÇcgroup_dir_inode_operationsºÍcgroup_file_inode_operations£¬ÔÚcgroup_create_file()ÖĞÉèÖÃ
+    //cgroupæ˜¯cgroup_dir_inode_operationså’Œcgroup_file_inode_operationsï¼Œåœ¨cgroup_create_file()ä¸­è®¾ç½®
 	const struct inode_operations	*i_op;
-	struct super_block	*i_sb;//³¬¼¶¿ì
-	//¿éÉè±¸µÄi_mappingÊÇÔÚblkdev_open->bd_acquire ÖĞ¸³Öµ
+	struct super_block	*i_sb;//è¶…çº§å¿«
+	//å—è®¾å¤‡çš„i_mappingæ˜¯åœ¨blkdev_open->bd_acquire ä¸­èµ‹å€¼
 	struct address_space	*i_mapping;
 
 #ifdef CONFIG_SECURITY
@@ -568,7 +568,7 @@ struct inode {
 #endif
 
 	/* Stat data, not accessed from path walking */
-    //inodeµÄ±àºÅ£¬__ext4_new_inode()ÖĞ¼ÆËã
+    //inodeçš„ç¼–å·ï¼Œ__ext4_new_inode()ä¸­è®¡ç®—
 	unsigned long		i_ino;
 	/*
 	 * Filesystems may only read i_nlink directly.  They shall use the
@@ -582,22 +582,22 @@ struct inode {
 		unsigned int __i_nlink;
 	};
     /*
-      ¾ÍÊÇÖ÷´ÎÉè±¸ºÅ¼¯ºÏ£¬¿éÉè±¸×Ö·ûÉè±¸¶¼ÓĞ£¬major+minor ,/dev/mmcblk0p5µÄinode->i_rdevÊÇÔÚ
-      shmem_get_inode->init_special_inode ¸³Öµ£¬¿éÉè±¸mmcblk0p5 inode->i_rdevÔÚbdgetº¯Êı¸³Öµ
-      Õâ¸öi_rdevÊÇÁ¬½Ó /dev/mmcblk0p5 inode ºÍ¿éÉè±¸mmcblk0p5 inodeµÄÇÅÁº£¬Ç°ÕßÊôÓÚtmpfsÎÄ¼ş
-      ÏµÍ³£¬ºóÕßÊÇbdevÎÄ¼şÏµÍ³£¬ÓëÎÄ¼şÊı¾İ´æ´¢µÄext4ÎÄ¼şÏµÍ³ÓÖ²»ÊÇÒ»»ØÊÂ£¬¶şÕß¶¼ÊÇ¿éÉè±¸µÄ
-      Ö÷´ÎÉè±¸ºÅ£¬ÏàµÈµÄ
+      å°±æ˜¯ä¸»æ¬¡è®¾å¤‡å·é›†åˆï¼Œå—è®¾å¤‡å­—ç¬¦è®¾å¤‡éƒ½æœ‰ï¼Œmajor+minor ,/dev/mmcblk0p5çš„inode->i_rdevæ˜¯åœ¨
+      shmem_get_inode->init_special_inode èµ‹å€¼ï¼Œå—è®¾å¤‡mmcblk0p5 inode->i_rdevåœ¨bdgetå‡½æ•°èµ‹å€¼
+      è¿™ä¸ªi_rdevæ˜¯è¿æ¥ /dev/mmcblk0p5 inode å’Œå—è®¾å¤‡mmcblk0p5 inodeçš„æ¡¥æ¢ï¼Œå‰è€…å±äºtmpfsæ–‡ä»¶
+      ç³»ç»Ÿï¼Œåè€…æ˜¯bdevæ–‡ä»¶ç³»ç»Ÿï¼Œä¸æ–‡ä»¶æ•°æ®å­˜å‚¨çš„ext4æ–‡ä»¶ç³»ç»Ÿåˆä¸æ˜¯ä¸€å›äº‹ï¼ŒäºŒè€…éƒ½æ˜¯å—è®¾å¤‡çš„
+      ä¸»æ¬¡è®¾å¤‡å·ï¼Œç›¸ç­‰çš„
       */
 	dev_t			i_rdev;
-    //¿´×ÅÏñÊÇ¿éÉè±¸×Ü´óĞ¡£¬¾ÍÊÇ¸Ãflash·ÖÇø×Ü´óĞ¡£¬´íÁË£¬ÊÇÎÄ¼ş´óĞ¡°É
+    //çœ‹ç€åƒæ˜¯å—è®¾å¤‡æ€»å¤§å°ï¼Œå°±æ˜¯è¯¥flashåˆ†åŒºæ€»å¤§å°ï¼Œé”™äº†ï¼Œæ˜¯æ–‡ä»¶å¤§å°å§
 	loff_t			i_size;
-	struct timespec		i_atime;//ÎÄ¼şÊ±¼ä¶¼ÊÇ¸üĞÂµ½Õâ¼¸¸öinodeµÄtimeÀï
+	struct timespec		i_atime;//æ–‡ä»¶æ—¶é—´éƒ½æ˜¯æ›´æ–°åˆ°è¿™å‡ ä¸ªinodeçš„timeé‡Œ
 	struct timespec		i_mtime;
 	struct timespec		i_ctime;
 	spinlock_t		i_lock;	/* i_blocks, i_bytes, maybe i_size */
 	unsigned short          i_bytes;
-    //Óë³¬¼¶¿ìstruct super_block µÄs_blocksize_bitsÏàµÈ£¬bd_set_size()¸³Öµ¡£±íÊ¾ÎÄ¼şÏµÍ³Ò»¸öÎïÀí¿é´óĞ¡µÄbitÊı£¬
-    //ext4ÎÄ¼şÏµÍ³Ò»¸ö´ÅÅÌÎïÀí¿é´óĞ¡ÈôÎª4K£¬Ôòi_blkbits=12£¬2^12=4K
+    //ä¸è¶…çº§å¿«struct super_block çš„s_blocksize_bitsç›¸ç­‰ï¼Œbd_set_size()èµ‹å€¼ã€‚è¡¨ç¤ºæ–‡ä»¶ç³»ç»Ÿä¸€ä¸ªç‰©ç†å—å¤§å°çš„bitæ•°ï¼Œ
+    //ext4æ–‡ä»¶ç³»ç»Ÿä¸€ä¸ªç£ç›˜ç‰©ç†å—å¤§å°è‹¥ä¸º4Kï¼Œåˆ™i_blkbits=12ï¼Œ2^12=4K
 	unsigned int		i_blkbits;
 	blkcnt_t		i_blocks;
 
@@ -606,24 +606,24 @@ struct inode {
 #endif
 
 	/* Misc */
-    //ĞÂ´´½¨µÄÎ»I_NEW£¬inode_sleep_on_writeback()ÖĞ£¬bit_waitqueue(&inode->i_state, __I_SYNC)ÕâÕâ¸öµÈ´ı¶ÓÁĞÉÏĞİÃß
-	unsigned long		i_state;//writeback_sb_inodesË¢Êı¾İÇ°ÉèÖÃI_SYNC£¬Ë¢Êı¾İºóinode_sync_completeÇå³ıI_SYNC±ê¼Ç
+    //æ–°åˆ›å»ºçš„ä½I_NEWï¼Œinode_sleep_on_writeback()ä¸­ï¼Œbit_waitqueue(&inode->i_state, __I_SYNC)è¿™è¿™ä¸ªç­‰å¾…é˜Ÿåˆ—ä¸Šä¼‘çœ 
+	unsigned long		i_state;//writeback_sb_inodesåˆ·æ•°æ®å‰è®¾ç½®I_SYNCï¼Œåˆ·æ•°æ®åinode_sync_completeæ¸…é™¤I_SYNCæ ‡è®°
 	struct mutex		i_mutex;
-    //__mark_inode_dirty()ÖĞ±ê¼Çinode dirty±»¸³Öµjiffies£¬redirty_tail()Ò²»á¸üĞÂ
+    //__mark_inode_dirty()ä¸­æ ‡è®°inode dirtyè¢«èµ‹å€¼jiffiesï¼Œredirty_tail()ä¹Ÿä¼šæ›´æ–°
 	unsigned long		dirtied_when;	/* jiffies of first dirtying */
     /*
-      inode½á¹¹ÓĞ¸öÔÓ´Õ±íinode_hashtable£¬ÒÑ¾­´´½¨µÄinode ½á¹¹£¬¶¼ÒªÍ¨¹ıÆä³ÉÔ±i_hash¹ÒÔØµ½
-      inode_hashtableÄ³¸öÁ´±íÍ·
+      inodeç»“æ„æœ‰ä¸ªæ‚å‡‘è¡¨inode_hashtableï¼Œå·²ç»åˆ›å»ºçš„inode ç»“æ„ï¼Œéƒ½è¦é€šè¿‡å…¶æˆå‘˜i_hashæŒ‚è½½åˆ°
+      inode_hashtableæŸä¸ªé“¾è¡¨å¤´
       */
 	struct hlist_node	i_hash;
-    //requeue_io()¿¿inode->i_wb_list°ÑinodeÒÆ¶¯µ½µ½wb->b_more_ioÁ´±í£¬»ØĞ´¸Ãinode¶ÔÓ¦ÎÄ¼şµÄÔàÒ³
-    //__mark_inode_dirty()ÖĞ°Ñlist_move(&inode->i_wb_list, &bdi->wb.b_dirty)°ÑinodeÒÆ¶¯µ½bdi->wb.b_dirty
+    //requeue_io()é inode->i_wb_listæŠŠinodeç§»åŠ¨åˆ°åˆ°wb->b_more_ioé“¾è¡¨ï¼Œå›å†™è¯¥inodeå¯¹åº”æ–‡ä»¶çš„è„é¡µ
+    //__mark_inode_dirty()ä¸­æŠŠlist_move(&inode->i_wb_list, &bdi->wb.b_dirty)æŠŠinodeç§»åŠ¨åˆ°bdi->wb.b_dirty
 	struct list_head	i_wb_list;	/* backing dev IO list */
 	struct list_head	i_lru;		/* inode LRU list */
-    //inodeÍ¨¹ıÆäi_sb_list³ÉÔ±Ìí¼Óµ½³¬¼¶¿ésuper_blockµÄs_inodesÁ´±í
+    //inodeé€šè¿‡å…¶i_sb_listæˆå‘˜æ·»åŠ åˆ°è¶…çº§å—super_blockçš„s_inodesé“¾è¡¨
 	struct list_head	i_sb_list;
 	union {
-        //dentry½á¹¹Í¨¹ıd_alias¹ÒÈëinodeµÄi_dentryÁ´±í
+        //dentryç»“æ„é€šè¿‡d_aliasæŒ‚å…¥inodeçš„i_dentryé“¾è¡¨
 		struct hlist_head	i_dentry;
 		struct rcu_head		i_rcu;
 	};
@@ -632,14 +632,14 @@ struct inode {
 	atomic_t		i_dio_count;
 	atomic_t		i_writecount;
     /*
-     È¡ÖµÓĞext4_file_operations¡¢ext4_dir_operations¡¢def_chr_fops×Ö·ûÉè±¸µÄdef_blk_fops¡¢
-     def_blk_fops¿éÉè±¸µÄ¡£¸Ğ¾õinodeµÄi_fop¾ÍÊÇµ×²ãÎÄ¼şÏµÍ³open¡¢read¡¢writeµÄº¯Êı¼¯ºÏ£¬
-     ¿éÉè±¸×Ö·ûÉè±¸ÔÚshmem_get_inode->init_special_inode¸³Öµ¡£
-       ext4ÎÄ¼şÏµÍ³µÄÔÚext4_iget¸³Öµ£
+     å–å€¼æœ‰ext4_file_operationsã€ext4_dir_operationsã€def_chr_fopså­—ç¬¦è®¾å¤‡çš„def_blk_fopsã€
+     def_blk_fopså—è®¾å¤‡çš„ã€‚æ„Ÿè§‰inodeçš„i_fopå°±æ˜¯åº•å±‚æ–‡ä»¶ç³»ç»Ÿopenã€readã€writeçš„å‡½æ•°é›†åˆï¼Œ
+     å—è®¾å¤‡å­—ç¬¦è®¾å¤‡åœ¨shmem_get_inode->init_special_inodeèµ‹å€¼ã€‚
+       ext4æ–‡ä»¶ç³»ç»Ÿçš„åœ¨ext4_igetèµ‹å€¼ï¿½
       */
-	const struct file_operations	*i_fop;	/* former ->i_op->default_file_ops *///cgroupÊÇsimple_dir_operations£¬cgroup_create_file()ÖĞÉèÖÃ
+	const struct file_operations	*i_fop;	/* former ->i_op->default_file_ops *///cgroupæ˜¯simple_dir_operationsï¼Œcgroup_create_file()ä¸­è®¾ç½®
 	struct file_lock	*i_flock;
-    //mmclbk0p5¿éÉè±¸µÄinodeµÄstruct address_spacede i_dataµÄa_opsÊÇdef_blk_aops£¬bdgetº¯Êı¸³Öµ
+    //mmclbk0p5å—è®¾å¤‡çš„inodeçš„struct address_spacede i_dataçš„a_opsæ˜¯def_blk_aopsï¼Œbdgetå‡½æ•°èµ‹å€¼
 	struct address_space	i_data;
 #ifdef CONFIG_QUOTA
 	struct dquot		*i_dquot[MAXQUOTAS];
@@ -648,10 +648,10 @@ struct inode {
 	struct list_head	i_devices;
 	union {
 		struct pipe_inode_info	*i_pipe;
-        ///dev/mmcblk0p5µÄinodeµÄi_bdevÊÇÔÚblkdev_open->bd_acuireÖĞ¸³Öµ£¬¿éÉè±¸mmcblk0p5µÄ
-        //inodeµÄi_bdevÔÚblkdev_open->bd_acquire->bdget¸³Öµ
-		struct block_device	*i_bdev;//¿éÉè±¸
-		struct cdev		*i_cdev;//×Ö·ûÉè±¸
+        ///dev/mmcblk0p5çš„inodeçš„i_bdevæ˜¯åœ¨blkdev_open->bd_acuireä¸­èµ‹å€¼ï¼Œå—è®¾å¤‡mmcblk0p5çš„
+        //inodeçš„i_bdevåœ¨blkdev_open->bd_acquire->bdgetèµ‹å€¼
+		struct block_device	*i_bdev;//å—è®¾å¤‡
+		struct cdev		*i_cdev;//å­—ç¬¦è®¾å¤‡
 	};
 
 	__u32			i_generation;
@@ -796,14 +796,14 @@ struct fown_struct {
  * Track a single file's readahead state
  */
 struct file_ra_state {
-    //Ô¤¶Á¿ªÊ¼µÄÒ³Ãæ
+    //é¢„è¯»å¼€å§‹çš„é¡µé¢
 	pgoff_t start;			/* where readahead started */
-    //Ô¤¶Á×ÜpageÊı
+    //é¢„è¯»æ€»pageæ•°
 	unsigned int size;		/* # of readahead pages */
-    //Òì²½Ô¤¶ÁµÄÒ³ÃæÊı£¬±íÊ¾µ±Ç°´°¿ÚµÄÒ³ÃæÊı
+    //å¼‚æ­¥é¢„è¯»çš„é¡µé¢æ•°ï¼Œè¡¨ç¤ºå½“å‰çª—å£çš„é¡µé¢æ•°
 	unsigned int async_size;	/* do asynchronous readahead when
 					   there are only # of pages ahead */
-    //±¾´Î×î´óÔ¤¶ÁpageÊı
+    //æœ¬æ¬¡æœ€å¤§é¢„è¯»pageæ•°
 	unsigned int ra_pages;		/* Maximum readahead window */
 	unsigned int mmap_miss;		/* Cache miss stat for mmap accesses */
 	loff_t prev_pos;		/* Cache last read() position */
@@ -826,12 +826,12 @@ struct file {
 		struct llist_node	fu_llist;
 		struct rcu_head 	fu_rcuhead;
 	} f_u;
-    //±£´æÎÄ¼şËù´¦ÎÄ¼şÏµÍ³µÄ¸ùÄ¿Â¼dentry£¬vfsmount£¬ÎÄ¼şµÄdentry
+    //ä¿å­˜æ–‡ä»¶æ‰€å¤„æ–‡ä»¶ç³»ç»Ÿçš„æ ¹ç›®å½•dentryï¼Œvfsmountï¼Œæ–‡ä»¶çš„dentry
 	struct path		f_path;
 #define f_dentry	f_path.dentry
 	struct inode		*f_inode;	/* cached value */
-    /*×Ö·ûÉè±¸µÄÊÇÔÚchrdev_openº¯ÊıÀïfilp->f_op=fops_get(p->ops).ext4 ÆäËûµÄÔÚdo_dentry_open
-      filp->f_op=fops_get(inode->ops)»ñµÃinodeµÄfile_operation£¬ext4_file_operationsËùÒÔ*/
+    /*å­—ç¬¦è®¾å¤‡çš„æ˜¯åœ¨chrdev_openå‡½æ•°é‡Œfilp->f_op=fops_get(p->ops).ext4 å…¶ä»–çš„åœ¨do_dentry_open
+      filp->f_op=fops_get(inode->ops)è·å¾—inodeçš„file_operationï¼Œext4_file_operationsæ‰€ä»¥*/
 	const struct file_operations	*f_op;
 
 	/*
@@ -842,10 +842,10 @@ struct file {
 	atomic_long_t		f_count;
 	unsigned int 		f_flags;
 	fmode_t			f_mode;
-	loff_t			f_pos;//ÎÄ¼şÖ¸Õë
+	loff_t			f_pos;//æ–‡ä»¶æŒ‡é’ˆ
 	struct fown_struct	f_owner;
 	const struct cred	*f_cred;
-	struct file_ra_state	f_ra;//±íÊ¾Ô¤¶Á´°¿Ú
+	struct file_ra_state	f_ra;//è¡¨ç¤ºé¢„è¯»çª—å£
 
 	u64			f_version;
 #ifdef CONFIG_SECURITY
@@ -1294,16 +1294,16 @@ struct super_block {
 	struct list_head	s_list;		/* Keep this first */
 	dev_t			s_dev;		/* search index; _not_ kdev_t */
 	unsigned char		s_blocksize_bits;
-	unsigned long		s_blocksize;//ext4ÎÄ¼şÏµÍ³Ò»¸öblock²âÊÔÊ±4K´óĞ¡
+	unsigned long		s_blocksize;//ext4æ–‡ä»¶ç³»ç»Ÿä¸€ä¸ªblockæµ‹è¯•æ—¶4Kå¤§å°
 	loff_t			s_maxbytes;	/* Max file size */
-	struct file_system_type	*s_type;//ÎÄ¼şÏµÍ³ÀàĞÍ
+	struct file_system_type	*s_type;//æ–‡ä»¶ç³»ç»Ÿç±»å‹
 	const struct super_operations	*s_op;
 	const struct dquot_operations	*dq_op;
 	const struct quotactl_ops	*s_qcop;
 	const struct export_operations *s_export_op;
 	unsigned long		s_flags;
 	unsigned long		s_magic;
-	struct dentry		*s_root;//¶¥²ãÄ¿Â¼µÄdentry½á¹¹
+	struct dentry		*s_root;//é¡¶å±‚ç›®å½•çš„dentryç»“æ„
 	struct rw_semaphore	s_umount;
 	int			s_count;
 	atomic_t		s_active;
@@ -1325,7 +1325,7 @@ struct super_block {
 	int			s_nr_inodes_unused;	/* # of inodes on lru */
 
 	struct block_device	*s_bdev;
-	struct backing_dev_info *s_bdi;//set_bdev_superÖĞs->s_bdiÀ´×Ô¿éÉè±¸µÄÔËĞĞ¶ÓÁĞµÄbacking_dev_info
+	struct backing_dev_info *s_bdi;//set_bdev_superä¸­s->s_bdiæ¥è‡ªå—è®¾å¤‡çš„è¿è¡Œé˜Ÿåˆ—çš„backing_dev_info
 	struct mtd_info		*s_mtd;
 	struct hlist_node	s_instances;
 	struct quota_info	s_dquot;	/* Diskquota specific options */
@@ -1334,7 +1334,7 @@ struct super_block {
 
 	char s_id[32];				/* Informational name */
 	u8 s_uuid[16];				/* UUID */
-    //cgroupÀïÖ¸Ïòstruct cgroupfs_root£¬
+    //cgroupé‡ŒæŒ‡å‘struct cgroupfs_rootï¼Œ
 	void 			*s_fs_info;	/* Filesystem private info */
 	unsigned int		s_max_links;
 	fmode_t			s_mode;
@@ -1360,7 +1360,7 @@ struct super_block {
 	 * generic_show_options()
 	 */
 	char __rcu *s_options;
-	const struct dentry_operations *s_d_op; /* default d_op for dentries *///cgroupÊÇcgroup_dops()
+	const struct dentry_operations *s_d_op; /* default d_op for dentries *///cgroupæ˜¯cgroup_dops()
 
 	/*
 	 * Saved pool identifier for cleancache (-1 means none)
@@ -1565,12 +1565,12 @@ struct block_device_operations;
  * fields in struct file_operations. */
 #define HAVE_COMPAT_IOCTL 1
 #define HAVE_UNLOCKED_IOCTL 1
-//cgroupÏµÍ³µÄÊÇcgroup_file_operations
+//cgroupç³»ç»Ÿçš„æ˜¯cgroup_file_operations
 struct file_operations {
 	struct module *owner;
 	loff_t (*llseek) (struct file *, loff_t, int);
 	ssize_t (*read) (struct file *, char __user *, size_t, loff_t *);
-    //cgroupĞ´ÎÄ¼şÊ±µ÷ÓÃµÄÊÇcgroup_file_write()
+    //cgroupå†™æ–‡ä»¶æ—¶è°ƒç”¨çš„æ˜¯cgroup_file_write()
 	ssize_t (*write) (struct file *, const char __user *, size_t, loff_t *);
 	ssize_t (*aio_read) (struct kiocb *, const struct iovec *, unsigned long, loff_t);
 	ssize_t (*aio_write) (struct kiocb *, const struct iovec *, unsigned long, loff_t);
@@ -1597,7 +1597,7 @@ struct file_operations {
 			  loff_t len);
 	int (*show_fdinfo)(struct seq_file *m, struct file *f);
 };
-//cgroup×ÓÏµÍ³µÄÓĞcgroup_dir_inode_operationsºÍcgroup_file_inode_operations
+//cgroupå­ç³»ç»Ÿçš„æœ‰cgroup_dir_inode_operationså’Œcgroup_file_inode_operations
 struct inode_operations {
 	struct dentry * (*lookup) (struct inode *,struct dentry *, unsigned int);
 	void * (*follow_link) (struct dentry *, struct nameidata *);
@@ -1611,7 +1611,7 @@ struct inode_operations {
 	int (*link) (struct dentry *,struct inode *,struct dentry *);
 	int (*unlink) (struct inode *,struct dentry *);
 	int (*symlink) (struct inode *,struct dentry *,const char *);
-    //cgroup´´½¨Ä¿Â¼Ê±Ö´ĞĞµÄÊÇcgroup_mkdir()
+    //cgroupåˆ›å»ºç›®å½•æ—¶æ‰§è¡Œçš„æ˜¯cgroup_mkdir()
 	int (*mkdir) (struct inode *,struct dentry *,umode_t);
 	int (*rmdir) (struct inode *,struct dentry *);
 	int (*mknod) (struct inode *,struct dentry *,umode_t,dev_t);
@@ -1779,9 +1779,9 @@ struct super_operations {
  *
  * Q: What is the difference between I_WILL_FREE and I_FREEING?
  */
-#define I_DIRTY_SYNC		(1 << 0)//inodeÔà
+#define I_DIRTY_SYNC		(1 << 0)//inodeè„
 #define I_DIRTY_DATASYNC	(1 << 1)
-#define I_DIRTY_PAGES		(1 << 2)//Ö»ÊÇÓĞÔàpage£¬inode¿ÉÄÜÊÇ¸É¾»µÄ
+#define I_DIRTY_PAGES		(1 << 2)//åªæ˜¯æœ‰è„pageï¼Œinodeå¯èƒ½æ˜¯å¹²å‡€çš„
 #define __I_NEW			3
 #define I_NEW			(1 << __I_NEW)
 #define I_WILL_FREE		(1 << 4)
