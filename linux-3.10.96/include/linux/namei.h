@@ -11,11 +11,11 @@ struct vfsmount;
 enum { MAX_NESTED_LINKS = 8 };
 
 struct nameidata {
-    //Ò»°ãÔÚpath_init()ÉèÖÃ³õÊ¼pathÎªcurrent->fs->root£¬°üÀ¨Àï±ßµÄstruct vfsmount *mnt.Ö®ºó¸ù¾İ±éÀúµÄÃ¿Ò»¼¶Ä¿Â¼£¬ÔÙ
+    //ä¸€èˆ¬åœ¨path_init()è®¾ç½®åˆå§‹pathä¸ºcurrent->fs->rootï¼ŒåŒ…æ‹¬é‡Œè¾¹çš„struct vfsmount *mnt.ä¹‹åæ ¹æ®éå†çš„æ¯ä¸€çº§ç›®å½•ï¼Œå†
 	struct path	path;
-	struct qstr	last;//±¾´ÎËÑË÷µÄÎÄ¼ş»òÕßµÄÄ¿Â¼Ãû×ÖhashÖµ
+	struct qstr	last;//æœ¬æ¬¡æœç´¢çš„æ–‡ä»¶æˆ–è€…çš„ç›®å½•åå­—hashå€¼
 	struct path	root;
-    //path_init×îºóÓĞ¸³Öµ£¬nd->inode=nd->path.dentry->d_inode£¬Õâ¾ÍÊÇËÑË÷µÄÆğÊ¼Ä¿Â¼
+    //path_initæœ€åæœ‰èµ‹å€¼ï¼Œnd->inode=nd->path.dentry->d_inodeï¼Œè¿™å°±æ˜¯æœç´¢çš„èµ·å§‹ç›®å½•
 	struct inode	*inode; /* path.dentry.d_inode */
 	unsigned int	flags;
 	unsigned	seq;
